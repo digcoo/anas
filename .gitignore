@@ -1,0 +1,11 @@
+.project
+.pydevproject
+.idea
+test/results
+*.class
+*.classpath
+*.orig
+MANIFEST
+dist
+build
+.settings
