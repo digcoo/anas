@@ -18,11 +18,6 @@
 
 	<dependencies>
 		<!--Model Module -->
-		<dependency>
-			<groupId>com.bestv</groupId>
-			<artifactId>bestv_api</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 	</dependencies>
 
 	<build>
