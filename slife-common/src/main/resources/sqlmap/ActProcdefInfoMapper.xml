@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slife.mapper.ActProcdefInfoMapper">
+  <resultMap id="BaseResultMap" type="com.slife.model.ActProcdefInfo">
+    <id column="ID_" jdbcType="VARCHAR" property="id" />
+    <result column="PROC_DEF_ID_" jdbcType="VARCHAR" property="procDefId" />
+    <result column="REV_" jdbcType="INTEGER" property="rev" />
+    <result column="INFO_JSON_ID_" jdbcType="VARCHAR" property="infoJsonId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID_, PROC_DEF_ID_, REV_, INFO_JSON_ID_
+  </sql>
+  <select id="selectByExample" parameterType="com.slife.model.ActProcdefInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from act_procdef_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from act_procdef_info
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from act_procdef_info
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.slife.model.ActProcdefInfoExample">
+    delete from act_procdef_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.slife.model.ActProcdefInfo">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into act_procdef_info (PROC_DEF_ID_, REV_, INFO_JSON_ID_
+      )
+    values (#{procDefId,jdbcType=VARCHAR}, #{rev,jdbcType=INTEGER}, #{infoJsonId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.slife.model.ActProcdefInfo">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into act_procdef_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="procDefId != null">
+        PROC_DEF_ID_,
+      </if>
+      <if test="rev != null">
+        REV_,
+      </if>
+      <if test="infoJsonId != null">
+        INFO_JSON_ID_,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="procDefId != null">
+        #{procDefId,jdbcType=VARCHAR},
+      </if>
+      <if test="rev != null">
+        #{rev,jdbcType=INTEGER},
+      </if>
+      <if test="infoJsonId != null">
+        #{infoJsonId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.slife.model.ActProcdefInfoExample" resultType="java.lang.Long">
+    select count(*) from act_procdef_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update act_procdef_info
+    <set>
+      <if test="record.id != null">
+        ID_ = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.procDefId != null">
+        PROC_DEF_ID_ = #{record.procDefId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rev != null">
+        REV_ = #{record.rev,jdbcType=INTEGER},
+      </if>
+      <if test="record.infoJsonId != null">
+        INFO_JSON_ID_ = #{record.infoJsonId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update act_procdef_info
+    set ID_ = #{record.id,jdbcType=VARCHAR},
+      PROC_DEF_ID_ = #{record.procDefId,jdbcType=VARCHAR},
+      REV_ = #{record.rev,jdbcType=INTEGER},
+      INFO_JSON_ID_ = #{record.infoJsonId,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.slife.model.ActProcdefInfo">
+    update act_procdef_info
+    <set>
+      <if test="procDefId != null">
+        PROC_DEF_ID_ = #{procDefId,jdbcType=VARCHAR},
+      </if>
+      <if test="rev != null">
+        REV_ = #{rev,jdbcType=INTEGER},
+      </if>
+      <if test="infoJsonId != null">
+        INFO_JSON_ID_ = #{infoJsonId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.slife.model.ActProcdefInfo">
+    update act_procdef_info
+    set PROC_DEF_ID_ = #{procDefId,jdbcType=VARCHAR},
+      REV_ = #{rev,jdbcType=INTEGER},
+      INFO_JSON_ID_ = #{infoJsonId,jdbcType=VARCHAR}
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

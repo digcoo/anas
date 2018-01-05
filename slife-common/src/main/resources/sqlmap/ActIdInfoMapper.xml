@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slife.mapper.ActIdInfoMapper">
+  <resultMap id="BaseResultMap" type="com.slife.model.ActIdInfo">
+    <id column="ID_" jdbcType="VARCHAR" property="id" />
+    <result column="REV_" jdbcType="INTEGER" property="rev" />
+    <result column="USER_ID_" jdbcType="VARCHAR" property="userId" />
+    <result column="TYPE_" jdbcType="VARCHAR" property="type" />
+    <result column="KEY_" jdbcType="VARCHAR" property="key" />
+    <result column="VALUE_" jdbcType="VARCHAR" property="value" />
+    <result column="PARENT_ID_" jdbcType="VARCHAR" property="parentId" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.slife.model.ActIdInfo">
+    <result column="PASSWORD_" jdbcType="LONGVARBINARY" property="password" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PARENT_ID_
+  </sql>
+  <sql id="Blob_Column_List">
+    PASSWORD_
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.slife.model.ActIdInfoExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from act_id_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.slife.model.ActIdInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from act_id_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from act_id_info
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from act_id_info
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.slife.model.ActIdInfoExample">
+    delete from act_id_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.slife.model.ActIdInfo">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into act_id_info (REV_, USER_ID_, TYPE_, 
+      KEY_, VALUE_, PARENT_ID_, 
+      PASSWORD_)
+    values (#{rev,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{key,jdbcType=VARCHAR}, #{value,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{password,jdbcType=LONGVARBINARY})
+  </insert>
+  <insert id="insertSelective" parameterType="com.slife.model.ActIdInfo">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into act_id_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="rev != null">
+        REV_,
+      </if>
+      <if test="userId != null">
+        USER_ID_,
+      </if>
+      <if test="type != null">
+        TYPE_,
+      </if>
+      <if test="key != null">
+        KEY_,
+      </if>
+      <if test="value != null">
+        VALUE_,
+      </if>
+      <if test="parentId != null">
+        PARENT_ID_,
+      </if>
+      <if test="password != null">
+        PASSWORD_,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="rev != null">
+        #{rev,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="key != null">
+        #{key,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null">
+        #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=LONGVARBINARY},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.slife.model.ActIdInfoExample" resultType="java.lang.Long">
+    select count(*) from act_id_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update act_id_info
+    <set>
+      <if test="record.id != null">
+        ID_ = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rev != null">
+        REV_ = #{record.rev,jdbcType=INTEGER},
+      </if>
+      <if test="record.userId != null">
+        USER_ID_ = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null">
+        TYPE_ = #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.key != null">
+        KEY_ = #{record.key,jdbcType=VARCHAR},
+      </if>
+      <if test="record.value != null">
+        VALUE_ = #{record.value,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentId != null">
+        PARENT_ID_ = #{record.parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.password != null">
+        PASSWORD_ = #{record.password,jdbcType=LONGVARBINARY},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update act_id_info
+    set ID_ = #{record.id,jdbcType=VARCHAR},
+      REV_ = #{record.rev,jdbcType=INTEGER},
+      USER_ID_ = #{record.userId,jdbcType=VARCHAR},
+      TYPE_ = #{record.type,jdbcType=VARCHAR},
+      KEY_ = #{record.key,jdbcType=VARCHAR},
+      VALUE_ = #{record.value,jdbcType=VARCHAR},
+      PARENT_ID_ = #{record.parentId,jdbcType=VARCHAR},
+      PASSWORD_ = #{record.password,jdbcType=LONGVARBINARY}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update act_id_info
+    set ID_ = #{record.id,jdbcType=VARCHAR},
+      REV_ = #{record.rev,jdbcType=INTEGER},
+      USER_ID_ = #{record.userId,jdbcType=VARCHAR},
+      TYPE_ = #{record.type,jdbcType=VARCHAR},
+      KEY_ = #{record.key,jdbcType=VARCHAR},
+      VALUE_ = #{record.value,jdbcType=VARCHAR},
+      PARENT_ID_ = #{record.parentId,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.slife.model.ActIdInfo">
+    update act_id_info
+    <set>
+      <if test="rev != null">
+        REV_ = #{rev,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        USER_ID_ = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        TYPE_ = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="key != null">
+        KEY_ = #{key,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null">
+        VALUE_ = #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        PARENT_ID_ = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        PASSWORD_ = #{password,jdbcType=LONGVARBINARY},
+      </if>
+    </set>
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.slife.model.ActIdInfo">
+    update act_id_info
+    set REV_ = #{rev,jdbcType=INTEGER},
+      USER_ID_ = #{userId,jdbcType=VARCHAR},
+      TYPE_ = #{type,jdbcType=VARCHAR},
+      KEY_ = #{key,jdbcType=VARCHAR},
+      VALUE_ = #{value,jdbcType=VARCHAR},
+      PARENT_ID_ = #{parentId,jdbcType=VARCHAR},
+      PASSWORD_ = #{password,jdbcType=LONGVARBINARY}
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.slife.model.ActIdInfo">
+    update act_id_info
+    set REV_ = #{rev,jdbcType=INTEGER},
+      USER_ID_ = #{userId,jdbcType=VARCHAR},
+      TYPE_ = #{type,jdbcType=VARCHAR},
+      KEY_ = #{key,jdbcType=VARCHAR},
+      VALUE_ = #{value,jdbcType=VARCHAR},
+      PARENT_ID_ = #{parentId,jdbcType=VARCHAR}
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

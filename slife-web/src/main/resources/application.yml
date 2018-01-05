@@ -1,3 +1,9 @@
+app:
+  name: anas
+  db:
+    username: lsrk
+    password: Lsrk_727478
+    url: jdbc:mysql://39.108.150.73:3306/anas
 spring:
   application:
     name: slife

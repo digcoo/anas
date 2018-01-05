@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slife.mapper.ActRuExecutionMapper">
+  <resultMap id="BaseResultMap" type="com.slife.model.ActRuExecution">
+    <id column="ID_" jdbcType="VARCHAR" property="id" />
+    <result column="REV_" jdbcType="INTEGER" property="rev" />
+    <result column="PROC_INST_ID_" jdbcType="VARCHAR" property="procInstId" />
+    <result column="BUSINESS_KEY_" jdbcType="VARCHAR" property="businessKey" />
+    <result column="PARENT_ID_" jdbcType="VARCHAR" property="parentId" />
+    <result column="PROC_DEF_ID_" jdbcType="VARCHAR" property="procDefId" />
+    <result column="SUPER_EXEC_" jdbcType="VARCHAR" property="superExec" />
+    <result column="ACT_ID_" jdbcType="VARCHAR" property="actId" />
+    <result column="IS_ACTIVE_" jdbcType="TINYINT" property="isActive" />
+    <result column="IS_CONCURRENT_" jdbcType="TINYINT" property="isConcurrent" />
+    <result column="IS_SCOPE_" jdbcType="TINYINT" property="isScope" />
+    <result column="IS_EVENT_SCOPE_" jdbcType="TINYINT" property="isEventScope" />
+    <result column="SUSPENSION_STATE_" jdbcType="INTEGER" property="suspensionState" />
+    <result column="CACHED_ENT_STATE_" jdbcType="INTEGER" property="cachedEntState" />
+    <result column="TENANT_ID_" jdbcType="VARCHAR" property="tenantId" />
+    <result column="NAME_" jdbcType="VARCHAR" property="name" />
+    <result column="LOCK_TIME_" jdbcType="TIMESTAMP" property="lockTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PARENT_ID_, PROC_DEF_ID_, SUPER_EXEC_, ACT_ID_, 
+    IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_, IS_EVENT_SCOPE_, SUSPENSION_STATE_, CACHED_ENT_STATE_, 
+    TENANT_ID_, NAME_, LOCK_TIME_
+  </sql>
+  <select id="selectByExample" parameterType="com.slife.model.ActRuExecutionExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from act_ru_execution
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from act_ru_execution
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from act_ru_execution
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.slife.model.ActRuExecutionExample">
+    delete from act_ru_execution
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.slife.model.ActRuExecution">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into act_ru_execution (REV_, PROC_INST_ID_, BUSINESS_KEY_, 
+      PARENT_ID_, PROC_DEF_ID_, SUPER_EXEC_, 
+      ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, 
+      IS_SCOPE_, IS_EVENT_SCOPE_, SUSPENSION_STATE_, 
+      CACHED_ENT_STATE_, TENANT_ID_, NAME_, 
+      LOCK_TIME_)
+    values (#{rev,jdbcType=INTEGER}, #{procInstId,jdbcType=VARCHAR}, #{businessKey,jdbcType=VARCHAR}, 
+      #{parentId,jdbcType=VARCHAR}, #{procDefId,jdbcType=VARCHAR}, #{superExec,jdbcType=VARCHAR}, 
+      #{actId,jdbcType=VARCHAR}, #{isActive,jdbcType=TINYINT}, #{isConcurrent,jdbcType=TINYINT}, 
+      #{isScope,jdbcType=TINYINT}, #{isEventScope,jdbcType=TINYINT}, #{suspensionState,jdbcType=INTEGER}, 
+      #{cachedEntState,jdbcType=INTEGER}, #{tenantId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{lockTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.slife.model.ActRuExecution">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into act_ru_execution
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="rev != null">
+        REV_,
+      </if>
+      <if test="procInstId != null">
+        PROC_INST_ID_,
+      </if>
+      <if test="businessKey != null">
+        BUSINESS_KEY_,
+      </if>
+      <if test="parentId != null">
+        PARENT_ID_,
+      </if>
+      <if test="procDefId != null">
+        PROC_DEF_ID_,
+      </if>
+      <if test="superExec != null">
+        SUPER_EXEC_,
+      </if>
+      <if test="actId != null">
+        ACT_ID_,
+      </if>
+      <if test="isActive != null">
+        IS_ACTIVE_,
+      </if>
+      <if test="isConcurrent != null">
+        IS_CONCURRENT_,
+      </if>
+      <if test="isScope != null">
+        IS_SCOPE_,
+      </if>
+      <if test="isEventScope != null">
+        IS_EVENT_SCOPE_,
+      </if>
+      <if test="suspensionState != null">
+        SUSPENSION_STATE_,
+      </if>
+      <if test="cachedEntState != null">
+        CACHED_ENT_STATE_,
+      </if>
+      <if test="tenantId != null">
+        TENANT_ID_,
+      </if>
+      <if test="name != null">
+        NAME_,
+      </if>
+      <if test="lockTime != null">
+        LOCK_TIME_,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="rev != null">
+        #{rev,jdbcType=INTEGER},
+      </if>
+      <if test="procInstId != null">
+        #{procInstId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessKey != null">
+        #{businessKey,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="procDefId != null">
+        #{procDefId,jdbcType=VARCHAR},
+      </if>
+      <if test="superExec != null">
+        #{superExec,jdbcType=VARCHAR},
+      </if>
+      <if test="actId != null">
+        #{actId,jdbcType=VARCHAR},
+      </if>
+      <if test="isActive != null">
+        #{isActive,jdbcType=TINYINT},
+      </if>
+      <if test="isConcurrent != null">
+        #{isConcurrent,jdbcType=TINYINT},
+      </if>
+      <if test="isScope != null">
+        #{isScope,jdbcType=TINYINT},
+      </if>
+      <if test="isEventScope != null">
+        #{isEventScope,jdbcType=TINYINT},
+      </if>
+      <if test="suspensionState != null">
+        #{suspensionState,jdbcType=INTEGER},
+      </if>
+      <if test="cachedEntState != null">
+        #{cachedEntState,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="lockTime != null">
+        #{lockTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.slife.model.ActRuExecutionExample" resultType="java.lang.Long">
+    select count(*) from act_ru_execution
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update act_ru_execution
+    <set>
+      <if test="record.id != null">
+        ID_ = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rev != null">
+        REV_ = #{record.rev,jdbcType=INTEGER},
+      </if>
+      <if test="record.procInstId != null">
+        PROC_INST_ID_ = #{record.procInstId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessKey != null">
+        BUSINESS_KEY_ = #{record.businessKey,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentId != null">
+        PARENT_ID_ = #{record.parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.procDefId != null">
+        PROC_DEF_ID_ = #{record.procDefId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.superExec != null">
+        SUPER_EXEC_ = #{record.superExec,jdbcType=VARCHAR},
+      </if>
+      <if test="record.actId != null">
+        ACT_ID_ = #{record.actId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isActive != null">
+        IS_ACTIVE_ = #{record.isActive,jdbcType=TINYINT},
+      </if>
+      <if test="record.isConcurrent != null">
+        IS_CONCURRENT_ = #{record.isConcurrent,jdbcType=TINYINT},
+      </if>
+      <if test="record.isScope != null">
+        IS_SCOPE_ = #{record.isScope,jdbcType=TINYINT},
+      </if>
+      <if test="record.isEventScope != null">
+        IS_EVENT_SCOPE_ = #{record.isEventScope,jdbcType=TINYINT},
+      </if>
+      <if test="record.suspensionState != null">
+        SUSPENSION_STATE_ = #{record.suspensionState,jdbcType=INTEGER},
+      </if>
+      <if test="record.cachedEntState != null">
+        CACHED_ENT_STATE_ = #{record.cachedEntState,jdbcType=INTEGER},
+      </if>
+      <if test="record.tenantId != null">
+        TENANT_ID_ = #{record.tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null">
+        NAME_ = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lockTime != null">
+        LOCK_TIME_ = #{record.lockTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update act_ru_execution
+    set ID_ = #{record.id,jdbcType=VARCHAR},
+      REV_ = #{record.rev,jdbcType=INTEGER},
+      PROC_INST_ID_ = #{record.procInstId,jdbcType=VARCHAR},
+      BUSINESS_KEY_ = #{record.businessKey,jdbcType=VARCHAR},
+      PARENT_ID_ = #{record.parentId,jdbcType=VARCHAR},
+      PROC_DEF_ID_ = #{record.procDefId,jdbcType=VARCHAR},
+      SUPER_EXEC_ = #{record.superExec,jdbcType=VARCHAR},
+      ACT_ID_ = #{record.actId,jdbcType=VARCHAR},
+      IS_ACTIVE_ = #{record.isActive,jdbcType=TINYINT},
+      IS_CONCURRENT_ = #{record.isConcurrent,jdbcType=TINYINT},
+      IS_SCOPE_ = #{record.isScope,jdbcType=TINYINT},
+      IS_EVENT_SCOPE_ = #{record.isEventScope,jdbcType=TINYINT},
+      SUSPENSION_STATE_ = #{record.suspensionState,jdbcType=INTEGER},
+      CACHED_ENT_STATE_ = #{record.cachedEntState,jdbcType=INTEGER},
+      TENANT_ID_ = #{record.tenantId,jdbcType=VARCHAR},
+      NAME_ = #{record.name,jdbcType=VARCHAR},
+      LOCK_TIME_ = #{record.lockTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.slife.model.ActRuExecution">
+    update act_ru_execution
+    <set>
+      <if test="rev != null">
+        REV_ = #{rev,jdbcType=INTEGER},
+      </if>
+      <if test="procInstId != null">
+        PROC_INST_ID_ = #{procInstId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessKey != null">
+        BUSINESS_KEY_ = #{businessKey,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        PARENT_ID_ = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="procDefId != null">
+        PROC_DEF_ID_ = #{procDefId,jdbcType=VARCHAR},
+      </if>
+      <if test="superExec != null">
+        SUPER_EXEC_ = #{superExec,jdbcType=VARCHAR},
+      </if>
+      <if test="actId != null">
+        ACT_ID_ = #{actId,jdbcType=VARCHAR},
+      </if>
+      <if test="isActive != null">
+        IS_ACTIVE_ = #{isActive,jdbcType=TINYINT},
+      </if>
+      <if test="isConcurrent != null">
+        IS_CONCURRENT_ = #{isConcurrent,jdbcType=TINYINT},
+      </if>
+      <if test="isScope != null">
+        IS_SCOPE_ = #{isScope,jdbcType=TINYINT},
+      </if>
+      <if test="isEventScope != null">
+        IS_EVENT_SCOPE_ = #{isEventScope,jdbcType=TINYINT},
+      </if>
+      <if test="suspensionState != null">
+        SUSPENSION_STATE_ = #{suspensionState,jdbcType=INTEGER},
+      </if>
+      <if test="cachedEntState != null">
+        CACHED_ENT_STATE_ = #{cachedEntState,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        TENANT_ID_ = #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        NAME_ = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="lockTime != null">
+        LOCK_TIME_ = #{lockTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.slife.model.ActRuExecution">
+    update act_ru_execution
+    set REV_ = #{rev,jdbcType=INTEGER},
+      PROC_INST_ID_ = #{procInstId,jdbcType=VARCHAR},
+      BUSINESS_KEY_ = #{businessKey,jdbcType=VARCHAR},
+      PARENT_ID_ = #{parentId,jdbcType=VARCHAR},
+      PROC_DEF_ID_ = #{procDefId,jdbcType=VARCHAR},
+      SUPER_EXEC_ = #{superExec,jdbcType=VARCHAR},
+      ACT_ID_ = #{actId,jdbcType=VARCHAR},
+      IS_ACTIVE_ = #{isActive,jdbcType=TINYINT},
+      IS_CONCURRENT_ = #{isConcurrent,jdbcType=TINYINT},
+      IS_SCOPE_ = #{isScope,jdbcType=TINYINT},
+      IS_EVENT_SCOPE_ = #{isEventScope,jdbcType=TINYINT},
+      SUSPENSION_STATE_ = #{suspensionState,jdbcType=INTEGER},
+      CACHED_ENT_STATE_ = #{cachedEntState,jdbcType=INTEGER},
+      TENANT_ID_ = #{tenantId,jdbcType=VARCHAR},
+      NAME_ = #{name,jdbcType=VARCHAR},
+      LOCK_TIME_ = #{lockTime,jdbcType=TIMESTAMP}
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
