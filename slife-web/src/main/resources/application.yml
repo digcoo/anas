@@ -4,6 +4,17 @@ app:
     username: lsrk
     password: Lsrk_727478
     url: jdbc:mysql://39.108.150.73:3306/anas
+oss:
+    url: http://digcoo99-anas.oss-cn-hangzhou-internal.aliyuncs.com/
+    endpoint: http://digcoo99-anas.oss-cn-hangzhou-internal.aliyuncs.com/
+    bucket:
+          name: digcoo99-anas
+    access:
+          key:
+              id: LTAIhTxMgJWWCmqs
+              secret: Vz6nscR0JP8Va2aQDVHVv7upPybywQ
+
+
 spring:
   application:
     name: slife
