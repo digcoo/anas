@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slife.mapper.SysRoleSysMenuMapper">
+  <resultMap id="BaseResultMap" type="com.slife.model.SysRoleSysMenuKey">
+    <id column="sys_menu_id" jdbcType="BIGINT" property="sysMenuId" />
+    <id column="sys_role_id" jdbcType="BIGINT" property="sysRoleId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sys_menu_id, sys_role_id
+  </sql>
+  <delete id="deleteByPrimaryKey" parameterType="com.slife.model.SysRoleSysMenuKey">
+    delete from sys_role_sys_menu
+    where sys_menu_id = #{sysMenuId,jdbcType=BIGINT}
+      and sys_role_id = #{sysRoleId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.slife.model.SysRoleSysMenuKey">
+    insert into sys_role_sys_menu (sys_menu_id, sys_role_id)
+    values (#{sysMenuId,jdbcType=BIGINT}, #{sysRoleId,jdbcType=BIGINT})
+  </insert>
+</mapper>

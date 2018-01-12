@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slife.mapper.SysLogMapper">
+  <resultMap id="BaseResultMap" type="com.slife.model.SysLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_id" jdbcType="BIGINT" property="createId" />
+    <result column="update_id" jdbcType="BIGINT" property="updateId" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="del_flag" jdbcType="CHAR" property="delFlag" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="tag" jdbcType="VARCHAR" property="tag" />
+    <result column="src" jdbcType="VARCHAR" property="src" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="msg" jdbcType="VARCHAR" property="msg" />
+    <result column="params" jdbcType="VARCHAR" property="params" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="use_time" jdbcType="BIGINT" property="useTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_id, update_id, create_date, update_date, remark, del_flag, type, tag, 
+    src, ip, msg, params, login_name, name, use_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.slife.model.SysLog">
+    insert into sys_log (id, create_id, update_id, 
+      create_date, update_date, remark, 
+      del_flag, type, tag, src, 
+      ip, msg, params, login_name, 
+      name, use_time)
+    values (#{id,jdbcType=BIGINT}, #{createId,jdbcType=BIGINT}, #{updateId,jdbcType=BIGINT}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, 
+      #{delFlag,jdbcType=CHAR}, #{type,jdbcType=VARCHAR}, #{tag,jdbcType=VARCHAR}, #{src,jdbcType=VARCHAR}, 
+      #{ip,jdbcType=VARCHAR}, #{msg,jdbcType=VARCHAR}, #{params,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{useTime,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.slife.model.SysLog">
+    update sys_log
+    set create_id = #{createId,jdbcType=BIGINT},
+      update_id = #{updateId,jdbcType=BIGINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=CHAR},
+      type = #{type,jdbcType=VARCHAR},
+      tag = #{tag,jdbcType=VARCHAR},
+      src = #{src,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      msg = #{msg,jdbcType=VARCHAR},
+      params = #{params,jdbcType=VARCHAR},
+      login_name = #{loginName,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      use_time = #{useTime,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
