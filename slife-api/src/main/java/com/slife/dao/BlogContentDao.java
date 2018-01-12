@@ -1,7 +1,7 @@
 package com.slife.dao;
 
 import com.slife.base.dao.CrudDao;
-import com.slife.entity.BlogContent;
+import com.slife.model.entity.BlogContent;
 
 /**
  * Created by chen on 2017/11/20.

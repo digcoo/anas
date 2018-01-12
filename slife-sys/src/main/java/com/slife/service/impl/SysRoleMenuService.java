@@ -2,7 +2,7 @@ package com.slife.service.impl;
 
 import com.slife.base.service.impl.BaseService;
 import com.slife.dao.SysRoleMenuDao;
-import com.slife.entity.SysRoleMenu;
+import com.slife.model.entity.SysRoleMenu;
 import com.slife.service.ISysRoleMenuService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

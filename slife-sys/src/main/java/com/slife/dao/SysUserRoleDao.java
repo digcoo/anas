@@ -1,7 +1,7 @@
 package com.slife.dao;
 
 import com.slife.base.dao.CrudDao;
-import com.slife.entity.SysUserRole;
+import com.slife.model.entity.SysUserRole;
 import org.springframework.stereotype.Component;
 
 /**

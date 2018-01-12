@@ -2,8 +2,7 @@ package com.slife.dao;
 
 
 import com.slife.base.dao.CrudDao;
-import com.slife.entity.SlifeLog;
-import org.springframework.stereotype.Component;
+import com.slife.model.entity.SlifeLog;
 
 /**
  * Created by chen on 2017/4/10.

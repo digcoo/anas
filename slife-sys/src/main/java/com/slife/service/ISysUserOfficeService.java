@@ -2,8 +2,8 @@ package com.slife.service;
 
 import com.slife.base.service.IBaseService;
 import com.slife.base.vo.DataTable;
-import com.slife.entity.SysUser;
-import com.slife.entity.SysUserOffice;
+import com.slife.model.entity.SysUser;
+import com.slife.model.entity.SysUserOffice;
 
 /**
  *

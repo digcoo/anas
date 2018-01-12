@@ -1,7 +1,7 @@
 package com.slife.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.slife.entity.Result;
+import com.slife.model.entity.Result;
 import com.slife.oss.OSSMultipartManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;

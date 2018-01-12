@@ -7,7 +7,7 @@ import com.slife.base.service.impl.BaseService;
 import com.slife.base.vo.JsTree;
 import com.slife.constant.Global;
 import com.slife.dao.SysMenuDao;
-import com.slife.entity.SysMenu;
+import com.slife.model.entity.SysMenu;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
 import com.slife.service.ISysMenuService;

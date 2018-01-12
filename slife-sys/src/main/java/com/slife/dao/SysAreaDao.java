@@ -2,7 +2,7 @@ package com.slife.dao;
 
 
 import com.slife.base.dao.CrudDao;
-import com.slife.entity.SysArea;
+import com.slife.model.entity.SysArea;
 
 /**
  * Created by chen on 2017/4/10.

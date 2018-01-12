@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.mapper.Condition;
 import com.slife.base.service.impl.BaseService;
 import com.slife.base.vo.DataTable;
 import com.slife.dao.SysUserDao;
-import com.slife.entity.SysUser;
+import com.slife.model.entity.SysUser;
 import com.slife.service.ISysRoleService;
 import com.slife.service.ISysUserService;
 import com.slife.util.PasswordUtils;

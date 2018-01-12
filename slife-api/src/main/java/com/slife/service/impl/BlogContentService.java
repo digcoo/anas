@@ -2,7 +2,7 @@ package com.slife.service.impl;
 
 import com.slife.base.service.impl.BaseService;
 import com.slife.dao.BlogContentDao;
-import com.slife.entity.BlogContent;
+import com.slife.model.entity.BlogContent;
 import com.slife.service.IBlogContentService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

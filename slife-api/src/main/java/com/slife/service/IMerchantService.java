@@ -1,7 +1,7 @@
 package com.slife.service;
 
 import com.slife.base.service.IBaseService;
-import com.slife.entity.Merchant;
+import com.slife.model.entity.Merchant;
 
 /**
  * @author tod

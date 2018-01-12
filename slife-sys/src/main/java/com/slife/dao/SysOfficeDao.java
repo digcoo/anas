@@ -2,7 +2,7 @@ package com.slife.dao;
 
 
 import com.slife.base.dao.TreeDao;
-import com.slife.entity.SysOffice;
+import com.slife.model.entity.SysOffice;
 
 /**
  * Created by chen on 2017/3/13.
