@@ -15,17 +15,53 @@ public class DigcooAnasUser implements Serializable {
     /**
      * 微信id
      */
-    private String weixinId;
+    private String openId;
+
+    /**
+     * 微信头像
+     */
+    private String wxHeadImg;
+
+    private String headImg;
+
+    /**
+     * 1:男，2:女
+     */
+    private int sex;
+
+    private String mobile;
+
+    private String nick;
 
     /**
      * 用户昵称
      */
-    private String nick;
+    private String wxNick;
 
     /**
-     * 肖像url
+     * 所在国家
      */
-    private String logo;
+    private String country;
+
+    /**
+     * 所在省市
+     */
+    private String province;
+
+    /**
+     * 关注时间
+     */
+    private Date followTime;
+
+    /**
+     * 所在城市
+     */
+    private String city;
+
+    /**
+     * 临时票据,用来获取二维码
+     */
+    private String qrTicket;
 
     private Date gmtCreated;
 
@@ -41,12 +77,36 @@ public class DigcooAnasUser implements Serializable {
         this.id = id;
     }
 
-    public String getWeixinId() {
-        return weixinId;
+    public String getOpenId() {
+        return openId;
     }
 
-    public void setWeixinId(String weixinId) {
-        this.weixinId = weixinId;
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
+    public String getHeadImg() {
+        return headImg;
+    }
+
+    public void setHeadImg(String headImg) {
+        this.headImg = headImg;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getNick() {
@@ -57,12 +117,52 @@ public class DigcooAnasUser implements Serializable {
         this.nick = nick;
     }
 
-    public String getLogo() {
-        return logo;
+    public String getWxNick() {
+        return wxNick;
     }
 
-    public void setLogo(String logo) {
-        this.logo = logo;
+    public void setWxNick(String wxNick) {
+        this.wxNick = wxNick;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public Date getFollowTime() {
+        return followTime;
+    }
+
+    public void setFollowTime(Date followTime) {
+        this.followTime = followTime;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getQrTicket() {
+        return qrTicket;
+    }
+
+    public void setQrTicket(String qrTicket) {
+        this.qrTicket = qrTicket;
     }
 
     public Date getGmtCreated() {
