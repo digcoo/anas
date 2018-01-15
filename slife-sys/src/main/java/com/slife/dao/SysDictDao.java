@@ -2,7 +2,7 @@ package com.slife.dao;
 
 
 import com.slife.base.dao.TreeDao;
-import com.slife.model.entity.SysDict;
+import com.slife.entity.SysDict;
 
 /**
  * Created by chen on 2017/4/10.

@@ -2,7 +2,7 @@ package com.slife.service.impl;
 
 import com.slife.base.service.impl.BaseService;
 import com.slife.dao.SysUserRoleDao;
-import com.slife.model.entity.SysUserRole;
+import com.slife.entity.SysUserRole;
 import com.slife.service.ISysUserRoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,7 +1,7 @@
 package com.slife.service;
 
 import com.slife.base.service.IBaseService;
-import com.slife.model.entity.SysCompany;
+import com.slife.entity.SysCompany;
 
 /**
  * Created by chen on 2017/11/6.

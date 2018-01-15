@@ -2,7 +2,7 @@ package com.slife.service.impl;
 
 import com.slife.base.service.impl.BaseService;
 import com.slife.dao.MerchantDao;
-import com.slife.model.entity.Merchant;
+import com.slife.entity.Merchant;
 import com.slife.service.IMerchantService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

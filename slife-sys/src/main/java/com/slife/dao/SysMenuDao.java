@@ -2,7 +2,9 @@ package com.slife.dao;
 
 
 import com.slife.base.dao.TreeDao;
-import com.slife.model.entity.SysMenu;
+import com.slife.entity.SysMenu;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.slife.vo;
 
-import com.slife.model.entity.SysUser;
+import com.slife.entity.SysUser;
 
 import java.util.List;
 

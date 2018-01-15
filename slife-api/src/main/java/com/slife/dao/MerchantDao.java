@@ -2,7 +2,7 @@ package com.slife.dao;
 
 
 import com.slife.base.dao.CrudDao;
-import com.slife.model.entity.Merchant;
+import com.slife.entity.Merchant;
 
 /**
  * @author tod

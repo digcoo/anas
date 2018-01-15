@@ -1,7 +1,7 @@
 package com.slife.dao;
 
 import com.slife.base.dao.CrudDao;
-import com.slife.model.entity.SysRoleMenu;
+import com.slife.entity.SysRoleMenu;
 import org.springframework.stereotype.Component;
 
 /**

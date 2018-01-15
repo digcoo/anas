@@ -3,7 +3,7 @@ package com.slife.controller;
 import com.slife.base.controller.BaseController;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.vo.DataTable;
-import com.slife.model.entity.Merchant;
+import com.slife.entity.Merchant;
 import com.slife.service.IMerchantService;
 import com.slife.util.ReturnDTOUtil;
 import io.swagger.annotations.ApiOperation;

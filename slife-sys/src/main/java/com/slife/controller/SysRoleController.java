@@ -5,7 +5,7 @@ import com.slife.annotation.SLog;
 import com.slife.base.controller.BaseController;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.vo.DataTable;
-import com.slife.model.entity.SysRole;
+import com.slife.entity.SysRole;
 import com.slife.service.ISysMenuService;
 import com.slife.service.ISysRoleService;
 import com.slife.util.ReturnDTOUtil;

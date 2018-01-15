@@ -2,7 +2,7 @@ package com.slife.service;
 
 import com.slife.base.service.IBaseService;
 import com.slife.base.vo.JsTree;
-import com.slife.model.entity.SysOffice;
+import com.slife.entity.SysOffice;
 
 import java.util.List;
 

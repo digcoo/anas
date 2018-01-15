@@ -3,7 +3,7 @@ package com.slife.controller;
 import com.slife.base.controller.BaseController;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.vo.DataTable;
-import com.slife.model.entity.SlifeLog;
+import com.slife.entity.SlifeLog;
 import com.slife.service.ISlifeLogService;
 import com.slife.util.ReturnDTOUtil;
 import io.swagger.annotations.ApiOperation;

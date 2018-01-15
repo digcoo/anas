@@ -2,7 +2,7 @@ package com.slife.service.impl;
 
 import com.slife.base.service.impl.BaseService;
 import com.slife.dao.SlifeLogDao;
-import com.slife.model.entity.SlifeLog;
+import com.slife.entity.SlifeLog;
 import com.slife.service.ISlifeLogService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

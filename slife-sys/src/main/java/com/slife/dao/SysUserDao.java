@@ -1,8 +1,9 @@
 package com.slife.dao;
 
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.slife.base.dao.CrudDao;
-import com.slife.model.entity.SysUser;
+import com.slife.entity.SysUser;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 

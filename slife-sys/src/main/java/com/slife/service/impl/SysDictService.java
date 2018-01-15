@@ -8,7 +8,7 @@ import com.slife.base.vo.JsTree;
 import com.slife.base.vo.PCAjaxVO;
 import com.slife.constant.Global;
 import com.slife.dao.SysDictDao;
-import com.slife.model.entity.SysDict;
+import com.slife.entity.SysDict;
 import com.slife.service.ISysDictService;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Strings;

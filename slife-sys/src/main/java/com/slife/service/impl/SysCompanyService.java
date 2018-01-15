@@ -2,7 +2,7 @@ package com.slife.service.impl;
 
 import com.slife.base.service.impl.BaseService;
 import com.slife.dao.SysCompanyDao;
-import com.slife.model.entity.SysCompany;
+import com.slife.entity.SysCompany;
 import com.slife.service.ISysCompanyService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

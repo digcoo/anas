@@ -1,7 +1,7 @@
 package com.slife.vo;
 
 import com.slife.base.vo.BaseVO;
-import com.slife.model.entity.SysArea;
+import com.slife.entity.SysArea;
 
 /**
  * Created by chen on 2017/7/31.

@@ -1,9 +1,10 @@
 package com.slife.service;
 
+import com.baomidou.mybatisplus.service.IService;
 import com.slife.base.service.IBaseService;
 import com.slife.base.vo.DataTable;
 import com.slife.base.vo.JsTree;
-import com.slife.model.entity.SysRole;
+import com.slife.entity.SysRole;
 import com.slife.vo.SysRoleVO;
 
 import java.util.List;

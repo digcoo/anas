@@ -2,7 +2,7 @@ package com.slife.shiro;
 
 import com.slife.constant.Global;
 import com.slife.constant.Setting;
-import com.slife.model.entity.SysUser;
+import com.slife.entity.SysUser;
 import com.slife.service.ISysRoleService;
 import com.slife.service.ISysUserService;
 import com.slife.util.ApplicationContextRegister;
@@ -12,6 +12,7 @@ import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 

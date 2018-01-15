@@ -1,7 +1,7 @@
 package com.slife.service;
 
 import com.slife.base.service.IBaseService;
-import com.slife.model.entity.BlogContent;
+import com.slife.entity.BlogContent;
 
 /**
  *
