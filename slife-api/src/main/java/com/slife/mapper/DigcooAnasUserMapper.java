@@ -4,11 +4,13 @@ import com.slife.model.DigcooAnasUser;
 
 public interface DigcooAnasUserMapper {
 
-    int deleteByPrimaryKey(Long id);
+    DigcooAnasUser getUserByOpenId(String openId);
+
+    int deleteByPrimaryKey(long id);
 
     int insert(DigcooAnasUser record);
 
-    DigcooAnasUser selectByPrimaryKey(Long id);
+    DigcooAnasUser selectByPrimaryKey(long id);
 
     int updateByPrimaryKey(DigcooAnasUser record);
 }
