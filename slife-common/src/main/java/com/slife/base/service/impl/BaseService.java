@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static javafx.scene.input.KeyCode.F;
-
 
 /**
  * @author chen
