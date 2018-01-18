@@ -1,7 +1,9 @@
 package com.slife.service;
 
 import com.slife.base.service.IBaseService;
-import com.slife.entity.Merchant;
+import com.slife.entity.Shop;
+
+import java.util.List;
 
 /**
  * @author tod
@@ -11,7 +13,6 @@ import com.slife.entity.Merchant;
  * <p>
  * Describe: merchant service
  */
-public interface IMerchantService extends IBaseService<Merchant> {
-
+public interface IShopService extends IBaseService<Shop> {
 
 }

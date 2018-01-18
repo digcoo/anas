@@ -50,8 +50,7 @@ public class ShiroConfig {
         LinkedHashMap<String, String> filterChainDefinitionMap=new LinkedHashMap<>();
 
         filterChainDefinitionMap.put("/logout","logout");
-
-
+        filterChainDefinitionMap.put("/api/**", "anon");//网站图标
         //开放的静态资源
         filterChainDefinitionMap.put("/favicon.ico", "anon");//网站图标
         filterChainDefinitionMap.put("/css/**","anon");

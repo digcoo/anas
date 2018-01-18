@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slife.dao.ShopAdDao">
+
+
+    <resultMap id="BaseResultMap" type="com.slife.entity.ShopAd">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="type" jdbcType="TINYINT" property="type" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="items" jdbcType="VARCHAR" property="items" />
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+        <result column="favor_num" jdbcType="INTEGER" property="favorNum" />
+        <result column="publish_time" jdbcType="TIMESTAMP" property="publishTime" />
+        <result column="status" jdbcType="TINYINT" property="status" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        <result column="shop_id" jdbcType="BIGINT" property="shopId" />
+        <result column="geohash" jdbcType="VARCHAR" property="geohash" />
+    </resultMap>
+
+
+    <select id="selectAdsByGeohash" resultMap="BaseResultMap">
+        <![CDATA[
+          select * from `digcoo_anas_shop_ad` where start_time<NOW() and end_time>Now() and geohash like CONCAT(#{geohash},'%') order by update_date desc limit #{index},10
+        ]]>
+    </select>
+
+
+
+
+</mapper>

@@ -1,0 +1,160 @@
+package com.slife.entity;
+
+
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.FieldFill;
+import com.slife.base.entity.ApiEntity;
+import com.slife.base.entity.DataEntity;
+
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * @author tod
+ * @date 2018/1/2
+ * <p>
+ * Email will_tao@126.com
+ * <p>
+ * Describe: merchant实体映射
+ */
+@TableName("digcoo_anas_shop_ad")
+public class ShopAd extends ApiEntity<ShopAd> {
+
+    /**
+     * varchar(20) 活动类型
+     */
+    private Integer type;
+    /**
+     * varchar(500) 活动标题
+     */
+    private String title;
+
+    /**
+     * varchar(500) 内容
+     */
+    private String items;
+
+    /**
+     * varchar(500) 活动收藏数
+     */
+    @TableField(value = "favor_num")
+    private String favorNum;
+    /**
+     * varchar(15) 活动状态
+     */
+    private Integer status;
+
+    /**
+     * varchar(50) geo编码
+     */
+    private String geohash;
+
+    @TableField(value = "shop_id")
+    private Long shopId;
+    /**
+     * 创建日期
+     */
+    @TableField(value = "start_time")
+    private Date startTime;
+
+
+    /**
+     * 更新日期
+     */
+    @TableField(value = "end_time")
+    private Date endTime;
+
+    /**
+     * 更新日期
+     */
+    @TableField(value = "publish_time")
+    private Date publishTime;
+
+
+    @Override
+    protected Serializable pkVal() {
+        return this.id;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getFavorNum() {
+        return favorNum;
+    }
+
+    public void setFavorNum(String favorNum) {
+        this.favorNum = favorNum;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getGeohash() {
+        return geohash;
+    }
+
+    public void setGeohash(String geohash) {
+        this.geohash = geohash;
+    }
+
+    public Long getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+
+    public String getItems() {
+        return items;
+    }
+
+    public void setItems(String items) {
+        this.items = items;
+    }
+
+    public Date getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
+    }
+}
