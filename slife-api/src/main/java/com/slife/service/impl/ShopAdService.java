@@ -4,6 +4,7 @@ import com.slife.base.service.impl.BaseService;
 import com.slife.dao.ShopAdDao;
 import com.slife.entity.ShopAd;
 import com.slife.service.IShopAdService;
+import com.slife.util.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,5 +27,19 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
     public List<ShopAd> selectAdsByGeohash(Integer index,String geohash) {
 
         return this.baseMapper.selectAdsByGeohash(index,geohash);
+    }
+
+    @Override
+    public List<ShopAd> selectAdsByGeohashAndName(Integer index,String geohash,String name) {
+        if(StringUtils.isBlank(name)){
+            return selectAdsByGeohash(index,geohash);
+        }else{
+            return this.baseMapper.selectAdsByGeohashAndName(index,geohash,name);
+        }
+    }
+
+    @Override
+    public List<ShopAd> selectAdsByShopId(Integer index, Long shopId) {
+        return this.baseMapper.selectAdsByShopId(index,shopId);
     }
 }

@@ -19,14 +19,40 @@
         <result column="geohash" jdbcType="VARCHAR" property="geohash" />
     </resultMap>
 
+    <sql id="Base_Column_List">
+        id, type, title,items,favor_num,publish_time,shop_id,geohash
+    </sql>
 
     <select id="selectAdsByGeohash" resultMap="BaseResultMap">
         <![CDATA[
-          select * from `digcoo_anas_shop_ad` where start_time<NOW() and end_time>Now() and geohash like CONCAT(#{geohash},'%') order by update_date desc limit #{index},10
+          select id, type, title,items,favor_num,publish_time,shop_id,geohash from `digcoo_anas_shop_ad` where status= 1 and start_time<NOW() and end_time>Now() and geohash like CONCAT(#{geohash},'%') order by update_date desc limit #{index},10
         ]]>
     </select>
 
+    <select id="selectAdsByGeohashAndName" resultMap="BaseResultMap">
+        <![CDATA[
+          select id, type, title,items,favor_num,publish_time,shop_id,geohash from `digcoo_anas_shop_ad` where status=1 and start_time<NOW() and end_time>Now() and geohash like CONCAT(#{geohash},'%') and title like  CONCAT('%',#{name},'%')
+          order by
+                CASE
+                     WHEN  title = #{name}
+                          THEN 1
+                     WHEN  title like  CONCAT(#{name},'%')
+                          THEN 2
+                     WHEN  title like  CONCAT('%',#{name})
+                          THEN 3
+                     WHEN  title like  CONCAT('%',#{name},'%')
+                          THEN 4
+                END
+                ,update_date desc limit #{index},10
+        ]]>
+    </select>
 
+    <select id="selectAdsByShopId" resultMap="BaseResultMap">
+        <![CDATA[
+          select id, type, title,items,favor_num,publish_time,shop_id,geohash from `digcoo_anas_shop_ad` where status=1 and start_time<NOW() and end_time>Now() and shop_id = #{shopId}
+          order by update_date desc limit #{index},10
+        ]]>
+    </select>
 
 
 </mapper>
