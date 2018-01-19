@@ -7,12 +7,13 @@ package com.slife.base.entity;
  * <p>
  * Describe: 返回的 数据模型
  */
-public class ReturnDTO {
+
+public class ReturnDTO<T> {
     private int code;
     private String error;
-    private Object message;
+    private T message;
 
-    public ReturnDTO(int code, String error, Object message) {
+    public ReturnDTO(int code, String error, T message) {
         this.code = code;
         this.error = error;
         this.message = message;
@@ -42,11 +43,11 @@ public class ReturnDTO {
         this.error = error;
     }
 
-    public Object getMessage() {
+    public T getMessage() {
         return message;
     }
 
-    public void setMessage(Object message) {
+    public void setMessage(T message) {
         this.message = message;
     }
 }
