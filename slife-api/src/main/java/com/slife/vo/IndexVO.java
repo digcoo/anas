@@ -1,6 +1,9 @@
 package com.slife.vo;
 
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -12,6 +15,7 @@ import java.util.List;
  * <p>
  *
  */
+@ApiModel(value="首页活动对象",description="用于呈现用户首页附近所有活动")
 public class IndexVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -19,32 +23,49 @@ public class IndexVO implements Serializable {
     /**
      * 商家名称
      */
+    @ApiModelProperty(value="商家名称",name="name",required = true)
     private String name;
 
     /**
      * 商家ID
      */
+    @ApiModelProperty(value="商家ID",name="shopId",required = true)
     private Long shopId;
 
     /**
      * 商家logo
      */
+    @ApiModelProperty(value="商家logo",name="logo")
     private String logo;
 
     /**
      * 地址
      */
+    @ApiModelProperty(value="商家地址",name="addr",required = true)
     private String addr;
 
-
+    @ApiModelProperty(value="时间说明",name="timeDesc",required = true)
+    private String timeDesc;
     /**
      * 地址
      */
+    @ApiModelProperty(value="商家粉丝",name="followNum")
     private Integer followNum;
 
+    @ApiModelProperty(value="活动名称",name="adName",required = true)
+    private String adName;
 
+    @ApiModelProperty(value="活动类型",name="type",required = true,notes = "1-新品,2-开业,3-打折,4-预售,5-其他")
+    private Byte type;
+
+    @ApiModelProperty(value="商家活动详情",name="items")
     private List<Item> items;
 
+    @ApiModelProperty(value="纬度",name="latitudes")
+    private Double lat;
+
+    @ApiModelProperty(value="经度",name="longitude")
+    private Double lng;
 
     public String getName() {
         return name;
@@ -92,5 +113,45 @@ public class IndexVO implements Serializable {
 
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    public String getAdName() {
+        return adName;
+    }
+
+    public void setAdName(String adName) {
+        this.adName = adName;
+    }
+
+    public Byte getType() {
+        return type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
+    }
+
+    public String getTimeDesc() {
+        return timeDesc;
+    }
+
+    public void setTimeDesc(String timeDesc) {
+        this.timeDesc = timeDesc;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLng() {
+        return lng;
+    }
+
+    public void setLng(Double lng) {
+        this.lng = lng;
     }
 }

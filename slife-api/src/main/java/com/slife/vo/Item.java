@@ -1,6 +1,9 @@
 package com.slife.vo;
 
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -11,6 +14,7 @@ import java.io.Serializable;
  * <p>
  *
  */
+@ApiModel(value="活动详情对象",description="用于呈现商家活动内容")
 public class Item implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -18,11 +22,13 @@ public class Item implements Serializable {
     /**
      * 图片url
      */
+    @ApiModelProperty(value="图片url地址",name="url",required = true)
     private String url;
 
     /**
      * 图片标签
      */
+    @ApiModelProperty(value="图片上的标签",name="label")
     private String label;
 
     public String getUrl() {

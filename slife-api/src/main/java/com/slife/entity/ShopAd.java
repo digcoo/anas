@@ -24,7 +24,7 @@ public class ShopAd extends ApiEntity<ShopAd> {
     /**
      * varchar(20) 活动类型
      */
-    private Integer type;
+    private Byte type;
     /**
      * varchar(500) 活动标题
      */
@@ -43,7 +43,7 @@ public class ShopAd extends ApiEntity<ShopAd> {
     /**
      * varchar(15) 活动状态
      */
-    private Integer status;
+    private Byte status;
 
     /**
      * varchar(50) geo编码
@@ -77,13 +77,6 @@ public class ShopAd extends ApiEntity<ShopAd> {
         return this.id;
     }
 
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
 
     public String getTitle() {
         return title;
@@ -99,14 +92,6 @@ public class ShopAd extends ApiEntity<ShopAd> {
 
     public void setFavorNum(String favorNum) {
         this.favorNum = favorNum;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     public String getGeohash() {
@@ -156,5 +141,21 @@ public class ShopAd extends ApiEntity<ShopAd> {
 
     public void setPublishTime(Date publishTime) {
         this.publishTime = publishTime;
+    }
+
+    public Byte getType() {
+        return type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
+    }
+
+    public Byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(Byte status) {
+        this.status = status;
     }
 }
