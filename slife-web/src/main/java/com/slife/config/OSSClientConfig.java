@@ -15,7 +15,7 @@ public class OSSClientConfig {
 
     @Value("${aliyun.oss.bucket}")
     private String bucketName;
-    @Value("${aliyun.oss.domain}")
+    @Value("${aliyun.oss.endpoint}")
     private String ossEndpoint;
     @Value("${aliyun.oss.accessKeyId}")
     private String accessKeyId;

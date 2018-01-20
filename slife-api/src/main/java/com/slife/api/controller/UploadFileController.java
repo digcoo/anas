@@ -4,8 +4,8 @@ import com.slife.aliyun.OSSMultipartManager;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.util.ReturnDTOUtil;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import com.slife.vo.IndexVO;
+import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +20,7 @@ import javax.annotation.Resource;
  */
 @RequestMapping("/upload/")
 @Controller
+@Api(description = "上传文件")
 public class UploadFileController {
 
     @Resource
@@ -32,7 +33,8 @@ public class UploadFileController {
     @ApiOperation(value = "上传图片接口", notes = "用户上传文件,返回key")
     @ApiImplicitParam(name = "uploadImg", paramType = "MultipartFile", dataType = "File", required = true)
     @PostMapping(value = "image", consumes = "multipart/form-data")
-    public ReturnDTO image(@RequestParam("uploadImg") MultipartFile uploadImg) {
+    @ApiResponses({@ApiResponse(code = 200,message = "成功",response = String.class)})
+    public ReturnDTO<String> image(@RequestParam("uploadImg") MultipartFile uploadImg) {
         if (uploadImg.isEmpty()) {
             return ReturnDTOUtil.custom(HttpCodeEnum.UPLOAD_FILE_NOT_FOUND);
         }

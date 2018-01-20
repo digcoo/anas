@@ -10,7 +10,7 @@ import com.slife.wxapi.response.SessionKeyWX;
  */
 public interface UserService {
 
-    ReturnDTO getSessionKeyWx(String code);
+    ReturnDTO<SessionKeyVO> getSessionKeyWx(String code);
 
 
     User getUserByOpenId(String openId);
