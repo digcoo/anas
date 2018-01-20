@@ -1,5 +1,6 @@
 package com.slife.service;
 
+import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.IBaseService;
 import com.slife.entity.Shop;
 
@@ -14,5 +15,7 @@ import java.util.List;
  * Describe: merchant service
  */
 public interface IShopService extends IBaseService<Shop> {
+
+    ReturnDTO requestRegSms(String Phone);
 
 }

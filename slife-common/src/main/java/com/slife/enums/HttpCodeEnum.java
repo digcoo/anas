@@ -32,10 +32,13 @@ public enum HttpCodeEnum {
     INTERNAL_SERVER_ERROR(500,"服务器发生错误"),
     UN_KNOW_ERROR(500,"未知错误"),
     FAIL(501,"操作失败"),
+    SEND_SMS_FAIL(502,"短信发送失败"),
+
 
     //用户相关错误统一使用1000开头错误码
     USERNAME_OR_PASSWORD_ERR(1000,"用户名或密码错误"),
     DELETE_DEFAULT_PHOTO_ERR(1001,"默认头像不可删除"),
+
 
     //商户相关错误统一使用2000开头错误码
     SHOP_NOT_EXISTS(2000,"商户不存在！")

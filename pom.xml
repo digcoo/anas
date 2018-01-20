@@ -34,6 +34,7 @@
         <sitemesh.version>3.0.1</sitemesh.version>
         <mybatisplus-spring-boot-starter.version>1.0.4</mybatisplus-spring-boot-starter.version>
         <drools.version>7.5.0.Final</drools.version>
+        <aliyun-sdk.version>3.2.2</aliyun-sdk.version>
 
     </properties>
 
@@ -267,6 +268,19 @@
                 <groupId>org.sitemesh</groupId>
                 <artifactId>sitemesh</artifactId>
                 <version>${sitemesh.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-core</artifactId>
+                <version>${aliyun-sdk.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+                <version>1.0.0</version>
             </dependency>
 
 

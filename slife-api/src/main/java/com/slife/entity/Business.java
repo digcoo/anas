@@ -19,11 +19,31 @@ public class Business extends ApiEntity<Business> {
 
     private String name;
 
-    private long parentId;
+    private Long parentId;
 
-    private int layer;
+    private Integer layer;
 
+    public String getName() {
+        return name;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    public Long getParentId() {
+        return parentId;
+    }
 
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
+
+    public Integer getLayer() {
+        return layer;
+    }
+
+    public void setLayer(Integer layer) {
+        this.layer = layer;
+    }
 }
