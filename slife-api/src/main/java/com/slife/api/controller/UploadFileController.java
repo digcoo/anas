@@ -7,6 +7,7 @@ import com.slife.util.ReturnDTOUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,7 +31,7 @@ public class UploadFileController {
     @ResponseBody
     @ApiOperation(value = "上传图片接口", notes = "用户上传文件,返回key")
     @ApiImplicitParam(name = "uploadImg", paramType = "MultipartFile", dataType = "File", required = true)
-    @RequestMapping(value = "image", consumes = "multipart/form-data")
+    @PostMapping(value = "image", consumes = "multipart/form-data")
     public ReturnDTO image(@RequestParam("uploadImg") MultipartFile uploadImg) {
         if (uploadImg.isEmpty()) {
             return ReturnDTOUtil.custom(HttpCodeEnum.UPLOAD_FILE_NOT_FOUND);
