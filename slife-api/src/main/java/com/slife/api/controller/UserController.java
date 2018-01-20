@@ -23,7 +23,7 @@ public class UserController {
 
 
     @ApiOperation(value = "获取微信SessionKey", notes = "根据wx.login获取的code得到session key")
-    @ApiImplicitParam(name = "code", paramType = "code", dataType = "String", required = true)
+    @ApiImplicitParam(name = "code", paramType = "query", dataType = "String", required = true)
     @GetMapping("getSessionKey")
     @ApiResponses({@ApiResponse(code = 200,message = "成功",response = SessionKeyVO.class)})
     public ReturnDTO<SessionKeyVO> getSessionKeyWx(@RequestParam("code") String code) {
@@ -32,7 +32,7 @@ public class UserController {
 
 
     @ApiOperation(value = "获取用户信息", notes = "根据微信openId获取用户信息")
-    @ApiImplicitParam(name = "openId", paramType = "String", dataType = "String", required = true)
+    @ApiImplicitParam(name = "openId", paramType = "query", dataType = "String", required = true)
     @GetMapping("getByOpenId")
     @ApiResponses({@ApiResponse(code = 200,message = "成功",response = User.class)})
     public ReturnDTO<User> getUserByOpenId(String openId){
@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "添加新用户", notes = "将微信获取的用户信息添加到系统")
-    @ApiImplicitParam(name = "user", paramType = "Object", dataType = "User", required = true)
+    @ApiImplicitParam(name = "user", paramType = "form", dataType = "User", required = true)
     @PostMapping("add")
     @ApiResponses({@ApiResponse(code = 200,message = "成功",response = Boolean.class)})
     public ReturnDTO<Boolean> addUser(@RequestParam("user") User user) {

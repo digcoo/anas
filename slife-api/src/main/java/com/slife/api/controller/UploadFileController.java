@@ -5,12 +5,11 @@ import com.slife.base.entity.ReturnDTO;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.vo.IndexVO;
+import com.slife.vo.UploadFileVO;
 import io.swagger.annotations.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -23,6 +22,8 @@ import javax.annotation.Resource;
 @Api(description = "上传文件")
 public class UploadFileController {
 
+    @Value("${aliyun.oss.domain}")
+    private String ossDomain;
     @Resource
     private OSSMultipartManager ossMultipartManager;
 
@@ -30,26 +31,32 @@ public class UploadFileController {
 
 
     @ResponseBody
-    @ApiOperation(value = "上传图片接口", notes = "用户上传文件,返回key")
-    @ApiImplicitParam(name = "uploadImg", paramType = "MultipartFile", dataType = "File", required = true)
-    @PostMapping(value = "image", consumes = "multipart/form-data")
-    @ApiResponses({@ApiResponse(code = 200,message = "成功",response = String.class)})
-    public ReturnDTO<String> image(@RequestParam("uploadImg") MultipartFile uploadImg) {
-        if (uploadImg.isEmpty()) {
+    @ApiOperation(value = "上传图片接口", notes = "用户上传文件,返回key", response = String.class)
+//    @ApiImplicitParam(name = "file", paramType = "body", dataType = "file", required = true)
+    @PostMapping(value = "image", produces = "application/json", consumes = "multipart/form-data")
+    //consumes = "multipart/form-data"
+    @ApiResponses({@ApiResponse(code = 200, message = "成功", response = String.class)})
+    public ReturnDTO<UploadFileVO> image(@RequestPart("uploadFile") MultipartFile uploadFile) {
+        if (uploadFile == null) {
             return ReturnDTOUtil.custom(HttpCodeEnum.UPLOAD_FILE_NOT_FOUND);
         }
-        long fileSize = uploadImg.getSize();
+        if (uploadFile.isEmpty()) {
+            return ReturnDTOUtil.custom(HttpCodeEnum.UPLOAD_FILE_NOT_FOUND);
+        }
+        long fileSize = uploadFile.getSize();
         if (fileSize > fileSizeFlag) {
             return ReturnDTOUtil.custom(HttpCodeEnum.OVER_MAX_SIZE);
         }
         String imgUrl = "";
         try {
-            imgUrl = ossMultipartManager.uploadImages(uploadImg);
+            imgUrl = ossMultipartManager.uploadImages(uploadFile);
         } catch (Exception e) {
             return ReturnDTOUtil.error();
         }
-        ReturnDTO returnDTO = new ReturnDTO();
-        returnDTO.setMessage(imgUrl);
+        UploadFileVO uploadFileVO = new UploadFileVO();
+        uploadFileVO.setPath(imgUrl);
+        uploadFileVO.setDomain(ossDomain);
+        ReturnDTO<UploadFileVO> returnDTO = new ReturnDTO(uploadFileVO);
         return returnDTO;
     }
 }
