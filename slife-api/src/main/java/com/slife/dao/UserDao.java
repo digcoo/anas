@@ -9,5 +9,7 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface UserDao extends CrudDao<User> {
 
-    public User selectUserByOpendId(@Param("openId") String openId);
+    User selectByOpenId(@Param("openId") String openId);
+
+
 }

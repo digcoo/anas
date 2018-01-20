@@ -1,5 +1,6 @@
 package com.slife.service;
 
+import com.slife.base.entity.ReturnDTO;
 import com.slife.entity.User;
 import com.slife.vo.SessionKeyVO;
 import com.slife.wxapi.response.SessionKeyWX;
@@ -9,7 +10,7 @@ import com.slife.wxapi.response.SessionKeyWX;
  */
 public interface UserService {
 
-    SessionKeyVO getSessionKeyWx(String code);
+    ReturnDTO getSessionKeyWx(String code);
 
 
     User getUserByOpenId(String openId);

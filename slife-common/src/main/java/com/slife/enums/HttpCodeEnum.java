@@ -34,6 +34,10 @@ public enum HttpCodeEnum {
     FAIL(501,"操作失败"),
     SEND_SMS_FAIL(502,"短信发送失败"),
 
+    //长传文件相关错误码800开头
+    UPLOAD_FILE_NOT_FOUND(800,"上传文件不存在"),
+    OVER_MAX_SIZE(801,"超过最大值"),
+
 
     //用户相关错误统一使用1000开头错误码
     USERNAME_OR_PASSWORD_ERR(1000,"用户名或密码错误"),

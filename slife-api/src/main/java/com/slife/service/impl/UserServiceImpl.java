@@ -1,5 +1,6 @@
 package com.slife.service.impl;
 
+import com.slife.base.entity.ReturnDTO;
 import com.slife.dao.UserDao;
 import com.slife.entity.User;
 import com.slife.service.UserService;
@@ -25,28 +26,32 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public SessionKeyVO getSessionKeyWx(String code) {
+    public ReturnDTO getSessionKeyWx(String code) {
         SessionKeyWX sessionKey = requestWechatApi.getSessionKey(code);
         if (sessionKey == null) {
             return null;
         }
+        ReturnDTO returnDTO = new ReturnDTO();
         if (StringUtils.isEmpty(sessionKey.getOpenId())) {
-            return null;
+            returnDTO.setCode(Integer.parseInt(sessionKey.getErrcode()));
+            returnDTO.setError(sessionKey.getErrmsg());
+            return returnDTO;
         }
         SessionKeyVO sessionKeyVO = new SessionKeyVO();
         sessionKeyVO.setOpenId(sessionKey.getOpenId());
         sessionKeyVO.setSessionKey(sessionKey.getSessionKey());
         sessionKeyVO.setUnionId(sessionKey.getUnionid());
-        User user = userDao.selectUserByOpendId(sessionKey.getOpenId());
+        User user = userDao.selectByOpenId(sessionKey.getOpenId());
         if (user != null) {
             sessionKeyVO.setNewUser(true);
         }
-        return sessionKeyVO;
+        returnDTO.setMessage(sessionKeyVO);
+        return returnDTO;
     }
 
     @Override
     public User getUserByOpenId(String openId) {
-        return userDao.selectUserByOpendId(openId);
+        return userDao.selectByOpenId(openId);
     }
 
     @Override

@@ -98,3 +98,10 @@ wechat:
     appId: wxb866ce80c22239ba
     appSecret: 49cb0d268ba09be29e431de348c23763
     encodingAESKey:
+
+aliyun:
+      oss:
+          bucket: digcoo99-anas
+          domain: digcoo99-anas.oss-cn-hangzhou.aliyuncs.com
+          accessKeyId: LTAIhTxMgJWWCmqs
+          accessKeySecret: Vz6nscR0JP8Va2aQDVHVv7upPybywQ
