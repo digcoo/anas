@@ -13,7 +13,10 @@
     <name>slife-common</name>
 
     <dependencies>
-
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>

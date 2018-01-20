@@ -1,5 +1,7 @@
 package com.slife.service;
 
+import com.slife.entity.User;
+import com.slife.vo.SessionKeyVO;
 import com.slife.wxapi.response.SessionKeyWX;
 
 /**
@@ -7,6 +9,12 @@ import com.slife.wxapi.response.SessionKeyWX;
  */
 public interface UserService {
 
-    public SessionKeyWX getSessionKeyWx(String code);
+    SessionKeyVO getSessionKeyWx(String code);
 
+
+    User getUserByOpenId(String openId);
+
+    boolean addUser(User user);
+
+    User editUser(User user);
 }
