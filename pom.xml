@@ -35,6 +35,8 @@
         <mybatisplus-spring-boot-starter.version>1.0.4</mybatisplus-spring-boot-starter.version>
         <drools.version>7.5.0.Final</drools.version>
         <aliyun-sdk.version>3.2.2</aliyun-sdk.version>
+        <spring-data-redis.version>1.7.1.RELEASE</spring-data-redis.version>
+
 
     </properties>
 
@@ -270,6 +272,19 @@
                 <version>${sitemesh.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-redis</artifactId>
+                <version>${spring-data-redis.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-redis</artifactId>
+                <version>1.4.7.RELEASE</version>
+            </dependency>
+
+
 
             <dependency>
                 <groupId>com.aliyun</groupId>
@@ -282,6 +297,8 @@
                 <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
                 <version>1.0.0</version>
             </dependency>
+
+
 
 
         </dependencies>
