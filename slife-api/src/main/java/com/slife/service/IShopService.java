@@ -3,6 +3,7 @@ package com.slife.service;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.IBaseService;
 import com.slife.entity.Shop;
+import com.slife.vo.ShopBaseVO;
 
 import java.util.List;
 
@@ -17,5 +18,7 @@ import java.util.List;
 public interface IShopService extends IBaseService<Shop> {
 
     ReturnDTO requestRegSms(String Phone);
+
+    ReturnDTO saveShopBase(ShopBaseVO shopBaseVO);
 
 }

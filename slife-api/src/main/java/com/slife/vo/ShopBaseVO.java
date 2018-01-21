@@ -15,6 +15,10 @@ public class ShopBaseVO {
     private  String shopName;
 
 
+    @ApiModelProperty(value = "职位",required = true)
+    private  String position;
+
+
     @ApiModelProperty(value = "联系电话",required = true)
     private  String phone;
 

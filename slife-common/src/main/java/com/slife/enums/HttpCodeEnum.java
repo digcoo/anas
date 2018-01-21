@@ -39,6 +39,7 @@ public enum HttpCodeEnum {
     OVER_MAX_SIZE(801,"超过最大值"),
 
 
+
     //用户相关错误统一使用1000开头错误码
     USERNAME_OR_PASSWORD_ERR(1000,"用户名或密码错误"),
     DELETE_DEFAULT_PHOTO_ERR(1001,"默认头像不可删除"),
@@ -48,8 +49,13 @@ public enum HttpCodeEnum {
 
 
     //商户相关错误统一使用2000开头错误码
-    SHOP_NOT_EXISTS(2000,"商户不存在！")
+    SHOP_NOT_EXISTS(2000,"商户不存在！"),
+    SHOP_SMS_FRE(2001,"短信请求频繁"),
+    SHOP_SMS_ERROR(2002,"短信验证码错误"),
+
+
     //活动相关错误统一使用3000开头错误码
+
 
     ;
     private final int code;
