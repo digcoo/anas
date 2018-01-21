@@ -43,7 +43,7 @@ public class UserController {
     @ApiImplicitParam(name = "user", paramType = "form", dataType = "User", required = true)
     @PostMapping("add")
     @ApiResponses({@ApiResponse(code = 200, message = "成功", response = Boolean.class)})
-    public ReturnDTO<Boolean> addUser(@RequestParam("user") User user) {
+    public ReturnDTO<Boolean> addUser(@RequestBody @RequestParam("user") User user) {
         boolean result = userService.addUser(user);
         if (result) {
             return ReturnDTOUtil.fail();
@@ -57,7 +57,7 @@ public class UserController {
     @ApiImplicitParam(name = "user", paramType = "form", dataType = "User", required = true)
     @PostMapping("edit")
     @ApiResponses({@ApiResponse(code = 200, message = "成功", response = Boolean.class)})
-    public ReturnDTO<Boolean> editUser(@RequestParam("user") User user) {
+    public ReturnDTO<Boolean> editUser(@RequestBody @RequestParam("user") User user) {
         return userService.editUser(user);
     }
 
@@ -67,7 +67,7 @@ public class UserController {
     @PostMapping("editNick")
     @ApiResponses({@ApiResponse(code = 200, message = "成功", response = Boolean.class)})
     public ReturnDTO<Boolean> editNick(@RequestParam("id") long id, @RequestParam("nick") String nick) {
-        return userService.editNick(id ,nick);
+        return userService.editNick(id, nick);
     }
 
     @ApiOperation(value = "上传头像", notes = "用户重新上传头像，默认使用微信头像")
@@ -76,7 +76,7 @@ public class UserController {
     @PostMapping("editHeadImg")
     @ApiResponses({@ApiResponse(code = 200, message = "成功", response = Boolean.class)})
     public ReturnDTO<Boolean> editHeadImg(@RequestParam("id") long id, @RequestParam("headImg") String headImg) {
-        return userService.editHeadImg(id ,headImg);
+        return userService.editHeadImg(id, headImg);
     }
 
 }
