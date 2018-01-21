@@ -10,8 +10,7 @@ import java.util.Date;
  * Created by cq on 18-1-20.
  */
 @TableName("digcoo_anas_user")
-public class User extends ApiEntity<Shop> {
-
+public class User extends ApiEntity<User> {
     private String openId;
 
     private int type;
@@ -20,7 +19,7 @@ public class User extends ApiEntity<Shop> {
 
     private String headImg;
 
-    private String gender;
+    private int gender;
 
     private String mobile;
 
@@ -76,11 +75,11 @@ public class User extends ApiEntity<Shop> {
         this.headImg = headImg;
     }
 
-    public String getGender() {
+    public int getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(int gender) {
         this.gender = gender;
     }
 

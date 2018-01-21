@@ -1,16 +1,14 @@
 package com.slife.entity;
 
+import com.slife.base.entity.ApiEntity;
+
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author 
  */
-public class Feedback implements Serializable {
-    /**
-     * 用户举报
-     */
-    private long id;
+public class Feedback extends ApiEntity<Feedback> implements Serializable {
 
     /**
      * 提交者用户id
@@ -22,19 +20,8 @@ public class Feedback implements Serializable {
      */
     private String content;
 
-    private Date createDate;
-
-    private Date updateDate;
 
     private static final long serialVersionUID = 1L;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public long getUserId() {
         return userId;
@@ -52,19 +39,8 @@ public class Feedback implements Serializable {
         this.content = content;
     }
 
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
+    @Override
+    protected Serializable pkVal() {
+        return null;
     }
 }

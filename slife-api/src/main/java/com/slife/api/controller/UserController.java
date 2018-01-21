@@ -40,12 +40,11 @@ public class UserController {
     }
 
     @ApiOperation(value = "添加新用户", notes = "将微信获取的用户信息添加到系统")
-    @ApiImplicitParam(name = "user", paramType = "form", dataType = "User", required = true)
     @PostMapping("add")
     @ApiResponses({@ApiResponse(code = 200, message = "成功", response = Boolean.class)})
-    public ReturnDTO<Boolean> addUser(@RequestBody @RequestParam("user") User user) {
+    public ReturnDTO<Boolean> addUser(@RequestBody User user) {
         boolean result = userService.addUser(user);
-        if (result) {
+        if (!result) {
             return ReturnDTOUtil.fail();
         }
         ReturnDTO<Boolean> returnDTO = new ReturnDTO();
@@ -54,10 +53,9 @@ public class UserController {
     }
 
     @ApiOperation(value = "更新用户信息", notes = "当用户进入个人资料页，根据updateTime判断，更新用户微信账号信息")
-    @ApiImplicitParam(name = "user", paramType = "form", dataType = "User", required = true)
     @PostMapping("edit")
     @ApiResponses({@ApiResponse(code = 200, message = "成功", response = Boolean.class)})
-    public ReturnDTO<Boolean> editUser(@RequestBody @RequestParam("user") User user) {
+    public ReturnDTO<Boolean> editUser(@RequestBody User user) {
         return userService.editUser(user);
     }
 

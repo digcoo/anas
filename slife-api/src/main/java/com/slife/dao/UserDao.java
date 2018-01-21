@@ -7,13 +7,14 @@ import org.apache.ibatis.annotations.Param;
 /**
  * Created by cq on 18-1-20.
  */
-public interface UserDao extends CrudDao<User> {
+public interface UserDao {
+    Integer insert(User record);
 
     User selectByPrimaryKey(@Param("id") long id);
 
     User selectByOpenId(@Param("openId") String openId);
 
-    int updateByPrimaryKey(@Param("user") User record);
+    int updateByPrimaryKey(User record);
 
     int updateNick(@Param("id") long id ,@Param("nick") String nick);
 

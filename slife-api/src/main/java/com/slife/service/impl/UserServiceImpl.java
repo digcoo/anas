@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ReturnDTO<Boolean> editUser(User user) {
-        if (checkParam.test(user)) {
+        if (!checkParam.test(user)) {
             return ReturnDTOUtil.paramError();
         }
         if (user.getId() <= 0) {
