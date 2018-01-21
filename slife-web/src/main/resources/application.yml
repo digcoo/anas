@@ -35,9 +35,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/slife?useUnicode=true&characterEncoding=utf8&useSSL=false
-    username: all
-    password: all
+    url: jdbc:mysql://47.100.53.10:3306/anas?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: Root123!
     druid:
       validationQuery: SELECT 1
       initialSize: 10
@@ -90,4 +90,19 @@ mybatis-plus:
 security:
   basic:
     enabled: false
+http:
+    max:
+      connection: 50
+      perRoute: 100
+wechat:
+    appId: wxb866ce80c22239ba
+    appSecret: 49cb0d268ba09be29e431de348c23763
+    encodingAESKey:
 
+aliyun:
+      oss:
+          bucket: digcoo99-anas
+          domain: http://img.digcoo.com
+          endpoint: http://oss-cn-hangzhou.aliyuncs.com
+          accessKeyId: LTAIhTxMgJWWCmqs
+          accessKeySecret: Vz6nscR0JP8Va2aQDVHVv7upPybywQ

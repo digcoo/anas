@@ -13,6 +13,10 @@ public class ReturnDTO<T> {
     private String error;
     private T message;
 
+    public ReturnDTO(T message) {
+        this.message = message;
+    }
+
     public ReturnDTO(int code, String error, T message) {
         this.code = code;
         this.error = error;
