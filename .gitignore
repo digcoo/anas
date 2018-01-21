@@ -8,3 +8,5 @@ LICENSE
 .settings/org.eclipse.m2e.core.prefs
 logs/slife.log
 logs/slife.log.1
+
+/slife-web/src/main/resources/application.yml
