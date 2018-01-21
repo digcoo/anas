@@ -102,7 +102,7 @@ wechat:
 aliyun:
       oss:
           bucket: digcoo99-anas
-          domain: https://digcoo99-anas.oss-cn-hangzhou.aliyuncs.com
+          domain: http://img.digcoo.com
           endpoint: http://oss-cn-hangzhou.aliyuncs.com
           accessKeyId: LTAIhTxMgJWWCmqs
           accessKeySecret: Vz6nscR0JP8Va2aQDVHVv7upPybywQ

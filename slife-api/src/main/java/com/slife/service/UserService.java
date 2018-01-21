@@ -17,5 +17,9 @@ public interface UserService {
 
     boolean addUser(User user);
 
-    User editUser(User user);
+    ReturnDTO<Boolean> editUser(User user);
+
+    ReturnDTO<Boolean> editNick(long id, String nick);
+
+    ReturnDTO<Boolean> editHeadImg(long id, String path);
 }

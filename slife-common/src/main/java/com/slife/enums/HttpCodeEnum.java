@@ -42,6 +42,9 @@ public enum HttpCodeEnum {
     //用户相关错误统一使用1000开头错误码
     USERNAME_OR_PASSWORD_ERR(1000,"用户名或密码错误"),
     DELETE_DEFAULT_PHOTO_ERR(1001,"默认头像不可删除"),
+    USER_NOT_FOUND_ERR(1002,"用户不存在"),
+    USER_NICK_DUPLICATE(1002,"用户昵称重复"),
+
 
 
     //商户相关错误统一使用2000开头错误码

@@ -40,13 +40,13 @@
   <insert id="insert" parameterType="com.slife.entity.User">
     insert into digcoo_anas_user (id, open_id, wx_head_img, 
       head_img, gender, mobile, 
-      nick, wx_nick, country, 
+      wx_nick, country,
       province, follow_time, city, 
       qr_ticket, create_date, update_date, 
       type)
     values (#{id,jdbcType=BIGINT}, #{openId,jdbcType=VARCHAR}, #{wxHeadImg,jdbcType=VARCHAR}, 
-      #{headImg,jdbcType=VARCHAR}, #{gender,jdbcType=TINYINT}, #{mobile,jdbcType=VARCHAR}, 
-      #{nick,jdbcType=VARCHAR}, #{wxNick,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, 
+      #{gender,jdbcType=TINYINT}, #{mobile,jdbcType=VARCHAR},
+      #{wxNick,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR},
       #{province,jdbcType=VARCHAR}, #{followTime,jdbcType=TIMESTAMP}, #{city,jdbcType=VARCHAR}, 
       #{qrTicket,jdbcType=VARCHAR}, now(), now(),
       #{type,jdbcType=TINYINT})
@@ -71,5 +71,15 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  
+  <update id="updateNick">
+    update digcoo_anas_user
+    set nick = #{nick,jdbcType=VARCHAR},update_date = now()
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateHeadImg">
+    update digcoo_anas_user
+    set head_img = #{headImg,jdbcType=VARCHAR}, update_date = now()
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 </mapper>

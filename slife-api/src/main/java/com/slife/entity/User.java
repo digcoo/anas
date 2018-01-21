@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotations.TableName;
 import com.slife.base.entity.ApiEntity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by cq on 18-1-20.
@@ -33,7 +34,7 @@ public class User extends ApiEntity<Shop> {
 
     private String city;
 
-    private String followTime;
+    private Date followTime;
 
     private String qrTicket;
 
@@ -131,11 +132,11 @@ public class User extends ApiEntity<Shop> {
         this.city = city;
     }
 
-    public String getFollowTime() {
+    public Date getFollowTime() {
         return followTime;
     }
 
-    public void setFollowTime(String followTime) {
+    public void setFollowTime(Date followTime) {
         this.followTime = followTime;
     }
 

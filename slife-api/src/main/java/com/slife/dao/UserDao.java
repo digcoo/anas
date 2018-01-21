@@ -9,7 +9,16 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface UserDao extends CrudDao<User> {
 
+    User selectByPrimaryKey(@Param("id") long id);
+
     User selectByOpenId(@Param("openId") String openId);
+
+    int updateByPrimaryKey(@Param("user") User record);
+
+    int updateNick(@Param("id") long id ,@Param("nick") String nick);
+
+    int updateHeadImg(@Param("id") long id ,@Param("headImg") String headImg);
+
 
 
 }
