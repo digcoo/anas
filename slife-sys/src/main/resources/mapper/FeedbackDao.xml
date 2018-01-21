@@ -28,14 +28,13 @@
     insert into digcoo_anas_feedback (id, user_id, content, 
       create_date, update_date)
     values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, 
-      #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP})
+      now(), now())
   </insert>
 
   <update id="updateByPrimaryKey" parameterType="com.slife.entity.Feedback">
     update digcoo_anas_feedback
     set user_id = #{userId,jdbcType=BIGINT},
       content = #{content,jdbcType=VARCHAR},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
       update_date = #{updateDate,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>

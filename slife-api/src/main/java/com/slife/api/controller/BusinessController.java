@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = "/business")
+@RequestMapping(value = "/api/business")
 @Api(description = "行业信息和广告类型")
 public class BusinessController {
 

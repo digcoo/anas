@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 /**
  * Created by cq on 18-1-19.
  */
-@RequestMapping("/user/")
+@RequestMapping("/api/user/")
 @RestController
 @Api(description = "获取用户信息相关接口")
 public class UserController {

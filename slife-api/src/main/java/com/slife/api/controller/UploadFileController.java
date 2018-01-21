@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 /**
  * Created by cq on 17-5-21.
  */
-@RequestMapping("/upload/")
+@RequestMapping("/api/upload/")
 @Controller
 @Api(description = "上传文件")
 public class UploadFileController {
