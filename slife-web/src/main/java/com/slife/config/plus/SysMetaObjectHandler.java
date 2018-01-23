@@ -23,23 +23,23 @@ public class SysMetaObjectHandler extends MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         logger.debug("insert set createTime createBy updateTime updateBy param");
         Object createDate = metaObject.getValue("createDate");
-        Object createId = metaObject.getValue("createId");
+        //Object createId = metaObject.getValue("createId");
         Object updateDate = metaObject.getValue("updateDate");
-        Object updateId = metaObject.getValue("updateId");
+        //Object updateId = metaObject.getValue("updateId");
 
 
         if (null == createDate) {
             metaObject.setValue("createDate", new Date());
         }
-        if (null == createId) {
-            metaObject.setValue("createId", SlifeSysUser.id());
-        }
+//        if (null == createId) {
+//            metaObject.setValue("createId", SlifeSysUser.id());
+//        }
         if (null == updateDate) {
             metaObject.setValue("updateDate", new Date());
         }
-        if (null == updateId) {
-            metaObject.setValue("updateId", SlifeSysUser.id());
-        }
+//        if (null == updateId) {
+//            metaObject.setValue("updateId", SlifeSysUser.id());
+//        }
     }
 
     //更新填充
@@ -49,7 +49,7 @@ public class SysMetaObjectHandler extends MetaObjectHandler {
 
         metaObject.setValue("updateDate", new Date());
 
-        metaObject.setValue("updateId", SlifeSysUser.id());
+//       metaObject.setValue("updateId", SlifeSysUser.id());
 
 
     }

@@ -19,6 +19,7 @@ public interface IShopService extends IBaseService<Shop> {
 
     ReturnDTO requestRegSms(String Phone);
 
-    ReturnDTO saveShopBase(ShopBaseVO shopBaseVO);
+    ReturnDTO<ShopBaseVO> saveShopBase(ShopBaseVO shopBaseVO);
+
 
 }

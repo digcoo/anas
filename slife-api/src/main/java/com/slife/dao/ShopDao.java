@@ -18,5 +18,5 @@ import java.util.List;
  */
 public interface ShopDao extends CrudDao<Shop> {
 
-
+    Shop selectByUserId(@Param("userId") long userId);
 }

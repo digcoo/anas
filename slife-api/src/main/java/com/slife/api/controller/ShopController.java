@@ -7,6 +7,7 @@ import com.slife.service.impl.ShopService;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.vo.BusinessVO;
 import com.slife.vo.ShopBaseVO;
+import com.slife.vo.ShopMallVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -33,17 +34,22 @@ public class ShopController {
             @ApiImplicitParam(paramType = "query", dataType = "String", name = "phone", value = "手机号码",required = true)
     })
     public ReturnDTO requestRegSms(String  phone, HttpServletRequest request) {
-
         return shopService.requestRegSms(phone);
     }
 
 
-    @ApiOperation(value = "31-商家注册步骤1", notes = "32-商家注册步骤1",httpMethod = "POST")
-    @PostMapping(value = "/regShopBaseInfo")
+    @ApiOperation(value = "32-商家注册步骤1", notes = "32-商家注册步骤1",httpMethod = "POST")
+    @PostMapping(value = "/submitShopBaseInfo")
     @ResponseBody
-    public ReturnDTO regShopBaseInfo(@RequestBody ShopBaseVO shopBaseVO   , HttpServletRequest request) {
+    public ReturnDTO<ShopBaseVO> submitShopBaseInfo(@RequestBody ShopBaseVO shopBaseVO   , HttpServletRequest request) {
+        return shopService.saveShopBase(shopBaseVO);
+    }
 
-        shopService.saveShopBase(shopBaseVO);
-        return ReturnDTOUtil.success();
+
+    @ApiOperation(value = "33-商家注册步骤2", notes = "32-商家注册步骤1",httpMethod = "POST")
+    @PostMapping(value = "/submitShopMallInfo")
+    @ResponseBody
+    public ReturnDTO submitShopMallInfo(@RequestBody ShopMallVO shopMallVO   , HttpServletRequest request) {
+        return shopService.saveShop(shopMallVO);
     }
 }

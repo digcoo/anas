@@ -30,6 +30,15 @@ public class ShopBaseVO {
     @ApiModelProperty(value = "商家地址",required = true)
     private  String addr;
 
+    @ApiModelProperty(value = "纬度",required = true)
+    private double lat;
+
+    @ApiModelProperty(value = "经度",required = true)
+    private double lng;
+
+    @ApiModelProperty(value = "geo编码",required = true)
+    private String geohash;
+
 
     @ApiModelProperty(value = "行业Id",required = true)
     private  long  businessId;
@@ -92,5 +101,37 @@ public class ShopBaseVO {
 
     public void setOpenMobile(boolean openMobile) {
         this.openMobile = openMobile;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public String getGeohash() {
+        return geohash;
+    }
+
+    public void setGeohash(String geohash) {
+        this.geohash = geohash;
     }
 }

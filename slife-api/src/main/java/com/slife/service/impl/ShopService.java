@@ -3,6 +3,7 @@ package com.slife.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.impl.BaseService;
+import com.slife.dao.ShopAdDao;
 import com.slife.dao.ShopDao;
 import com.slife.entity.Shop;
 import com.slife.enums.HttpCodeEnum;
@@ -12,6 +13,8 @@ import com.slife.util.ReturnDTOUtil;
 import com.slife.utils.CodeGenUtils;
 import com.slife.utils.RedisKey;
 import com.slife.vo.ShopBaseVO;
+import com.slife.vo.ShopMallVO;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -39,6 +42,8 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
     private ISmsService smsService;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private ShopDao shopDao;
 
     private DateFormat dayFormat = new SimpleDateFormat("yyyyMMdd");
 
@@ -50,8 +55,8 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
 
         long ttl = stringRedisTemplate.getExpire(phoneCodekey,TimeUnit.SECONDS);
 
-        if(ttl > 2*60){
-            return ReturnDTOUtil.custom(HttpCodeEnum.SEND_SMS_FAIL);
+        if(ttl > 9*60){
+            return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_SMS_FRE);
         }
 
         String phoneCode = CodeGenUtils.generateVerifyCode();
@@ -61,24 +66,52 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
         if(!sendResult){
             return ReturnDTOUtil.error(HttpCodeEnum.SEND_SMS_FAIL);
         }
-        stringRedisTemplate.opsForValue().set(phoneCodekey,phoneCode,3*60, TimeUnit.SECONDS);
+        stringRedisTemplate.opsForValue().set(phoneCodekey,phoneCode,10*60, TimeUnit.SECONDS);
 
         return ReturnDTOUtil.success();
     }
 
 
     @Override
-    public ReturnDTO saveShopBase(ShopBaseVO shopBaseVO) {
+    public ReturnDTO<ShopBaseVO> saveShopBase(ShopBaseVO shopBaseVO) {
+        String phoneCodekey = RedisKey.PhoneCodeKey + shopBaseVO.getPhone();
 
         String phoneCode = shopBaseVO.getPhoneCode();
-        String  code = stringRedisTemplate.opsForValue().get(phoneCode);
-        if(code == null || code .equals(phoneCode)){
+        String  code = stringRedisTemplate.opsForValue().get(phoneCodekey);
+
+        if(code == null || !code .equals(phoneCode)){
             return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_SMS_ERROR);
         }
-        String shopBaseKey = RedisKey.shopBaseKey + String.valueOf(shopBaseVO.getUserId());
-        stringRedisTemplate.opsForValue().set(shopBaseKey, JSON.toJSONString(shopBaseVO),10,TimeUnit.MINUTES);
-        return ReturnDTOUtil.success();
+        Shop shop = new Shop();
+        shop.setId(100L);
+        shop.setUserId(shopBaseVO.getUserId());
+        shop.setName(shopBaseVO.getShopName());
+        shop.setAgentPosition(shopBaseVO.getPosition());
+        shop.setTel(shopBaseVO.getPhone());
+        shop.setAddr(shopBaseVO.getAddr());
+        shop.setLat(shopBaseVO.getLat());
+        shop.setLng(shopBaseVO.getLng());
+        shop.setGeohash(shopBaseVO.getGeohash());
+        shop.setBusinessId(shopBaseVO.getBusinessId());
+        shop.setOpenMobile(shopBaseVO.isOpenMobile()?Byte.valueOf("1"):Byte.valueOf("0"));
+        shop.setStatus(Byte.valueOf("0"));
+        shop.setAuditState(0);
+        shop.setFollowNum(0);
+        shopDao.insert(shop);
+        return ReturnDTOUtil.success(shopBaseVO);
 
     }
 
+    public ReturnDTO saveShop(ShopMallVO shopMallVO) {
+        Shop shop = shopDao.selectByUserId(shopMallVO.getUserId());
+        shop.setShopType(shopMallVO.getShopType());
+        shop.setMallId(shopMallVO.getMallId());
+        shop.setFloor(shopMallVO.getFloor());
+        shop.setRoom(shopMallVO.getRoom());
+        shop.setAgentIdentifyCard(shopMallVO.getAgentIdentifyCard());
+        shop.setAgentPortrait(shopMallVO.getAgentPortrait());
+        shop.setBusinessLicense(shopMallVO.getBusinessLicense());
+        shopDao.updateById(shop);
+        return ReturnDTOUtil.success();
+    }
 }

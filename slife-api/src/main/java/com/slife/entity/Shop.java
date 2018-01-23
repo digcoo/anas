@@ -4,6 +4,7 @@ package com.slife.entity;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.slife.base.entity.ApiEntity;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -102,6 +103,33 @@ public class Shop extends ApiEntity<Shop> {
      * 0:冻结,1:正常,
      */
     private Byte status;
+
+    /**
+     * 店铺类型
+     */
+    private String shopType;
+
+    /**
+     * 购物中心
+     */
+    private long mallId;
+
+    /**
+     * 楼层
+     */
+    private String floor;
+
+    /**
+     * 门牌号
+     */
+    private String room;
+
+    /**
+     * 审核状态
+     */
+    private int  auditState;
+
+
 
     @Override
     protected Serializable pkVal() {
@@ -242,5 +270,50 @@ public class Shop extends ApiEntity<Shop> {
 
     public void setStatus(Byte status) {
         this.status = status;
+    }
+
+
+    public String getShopType() {
+        return shopType;
+    }
+
+    public void setShopType(String shopType) {
+        this.shopType = shopType;
+    }
+
+    public long getMallId() {
+        return mallId;
+    }
+
+    public void setMallId(long mallId) {
+        this.mallId = mallId;
+    }
+
+    public String getFloor() {
+        return floor;
+    }
+
+    public void setFloor(String floor) {
+        this.floor = floor;
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public int getAuditState() {
+        return auditState;
+    }
+
+    public void setAuditState(int auditState) {
+        this.auditState = auditState;
     }
 }
