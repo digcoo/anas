@@ -2,6 +2,7 @@ package com.slife.api.controller;
 
 import java.util.List;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -18,6 +19,7 @@ import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
 import com.slife.vo.ItemPhotoVO;
 
+@Api(description = "图片库模块功能接口(主页、更多、搜索)")
 @RestController
 @RequestMapping("/api/photo")
 public class ItemPhotoController {
