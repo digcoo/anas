@@ -81,7 +81,7 @@ public class SlifeExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ReturnDTO> handleException(Exception e) {
-        e.printStackTrace();
+        logger.error("",e);
         return new ResponseEntity(ReturnDTOUtil.error(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -102,7 +102,7 @@ public class SlifeExceptionHandler {
      * @return
      */
     private ResponseEntity<ReturnDTO> general(HttpStatus httpStatus, Exception e){
-        e.printStackTrace();
+        logger.error("",e);
         return new ResponseEntity(ReturnDTOUtil.custom(httpStatus.value(), httpStatus.name()), httpStatus);
     }
 
