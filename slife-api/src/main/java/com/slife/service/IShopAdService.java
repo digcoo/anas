@@ -2,6 +2,8 @@ package com.slife.service;
 
 import com.slife.base.service.IBaseService;
 import com.slife.entity.ShopAd;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ public interface IShopAdService extends IBaseService<ShopAd> {
      * @param geohash
      * @return
      */
+
     public List<ShopAd> selectAdsByGeohash(Integer index,String geohash);
 
     /**

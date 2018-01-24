@@ -2,6 +2,7 @@ package com.slife.service;
 
 import com.slife.base.entity.ReturnDTO;
 import com.slife.entity.User;
+import com.slife.exception.SlifeException;
 import com.slife.vo.SessionKeyVO;
 import com.slife.wxapi.response.SessionKeyWX;
 
@@ -10,16 +11,16 @@ import com.slife.wxapi.response.SessionKeyWX;
  */
 public interface UserService {
 
-    ReturnDTO<SessionKeyVO> getSessionKeyWx(String code);
+    SessionKeyVO getSessionKeyWx(String code);
 
 
     User getUserByOpenId(String openId);
 
-    boolean addUser(User user);
+    Integer addUser(User user);
 
-    ReturnDTO<Boolean> editUser(User user);
+    Integer editUser(User user);
 
-    ReturnDTO<Boolean> editNick(long id, String nick);
+    Integer editNick(long id, String nick) throws SlifeException;
 
-    ReturnDTO<Boolean> editHeadImg(long id, String path);
+    Integer editHeadImg(long id, String path) throws SlifeException;
 }

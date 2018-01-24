@@ -30,6 +30,15 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
+  <select id="selectByIdAndNickname" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from digcoo_anas_user
+    where id != #{id,jdbcType=BIGINT} and nick = #{nickname,jdbcType=VARCHAR}
+  </select>
+
+
+
   <select id="selectByOpenId" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

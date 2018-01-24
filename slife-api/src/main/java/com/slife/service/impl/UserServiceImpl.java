@@ -4,6 +4,7 @@ import com.slife.base.entity.ReturnDTO;
 import com.slife.dao.UserDao;
 import com.slife.entity.User;
 import com.slife.enums.HttpCodeEnum;
+import com.slife.exception.SlifeException;
 import com.slife.service.UserService;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
@@ -39,27 +40,19 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public ReturnDTO getSessionKeyWx(String code) {
+    public SessionKeyVO getSessionKeyWx(String code) {
         SessionKeyWX sessionKey = requestWechatApi.getSessionKey(code);
-        if (sessionKey == null) {
-            return null;
-        }
-        ReturnDTO returnDTO = new ReturnDTO();
-        if (StringUtils.isEmpty(sessionKey.getOpenId())) {
-            returnDTO.setCode(Integer.parseInt(sessionKey.getErrcode()));
-            returnDTO.setError(sessionKey.getErrmsg());
-            return returnDTO;
-        }
         SessionKeyVO sessionKeyVO = new SessionKeyVO();
-        sessionKeyVO.setOpenId(sessionKey.getOpenId());
-        sessionKeyVO.setSessionKey(sessionKey.getSessionKey());
-        sessionKeyVO.setUnionId(sessionKey.getUnionid());
-        User user = userDao.selectByOpenId(sessionKey.getOpenId());
-        if (user != null) {
-            sessionKeyVO.setNewUser(true);
+        if (sessionKey == null || StringUtils.isEmpty(sessionKey.getOpenId())) {
+            return null;
+        }else{
+            sessionKeyVO.setOpenId(sessionKey.getOpenId());
+            sessionKeyVO.setSessionKey(sessionKey.getSessionKey());
+            sessionKeyVO.setUnionId(sessionKey.getUnionid());
+            User user = userDao.selectByOpenId(sessionKey.getOpenId());
+            sessionKeyVO.setNewUser(user != null);
         }
-        returnDTO.setMessage(sessionKeyVO);
-        return returnDTO;
+        return sessionKeyVO;
     }
 
     @Override
@@ -68,65 +61,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean addUser(User user) {
-        if (user == null) {
-            return false;
-        }
-        if (StringUtils.isEmpty(user.getOpenId())) {
-            return false;
-        }
-        int addCount = userDao.insert(user);
-        return addCount == 1 ? Boolean.TRUE : Boolean.FALSE;
+    public Integer addUser(User user) {
+        return userDao.insert(user);
     }
 
     @Override
-    public ReturnDTO<Boolean> editUser(User user) {
-        if (!checkParam.test(user)) {
-            return ReturnDTOUtil.paramError();
-        }
-        if (user.getId() <= 0) {
-            return ReturnDTOUtil.paramError();
-        }
-        User original = userDao.selectByPrimaryKey(user.getId());
-        if (original == null) {
-            return ReturnDTOUtil.custom(HttpCodeEnum.USER_NOT_FOUND_ERR);
-        }
-        int editCount = userDao.updateByPrimaryKey(user);
-        boolean bl = editCount == 1 ? Boolean.TRUE : Boolean.FALSE;
-        ReturnDTO<Boolean> returnDTO = new ReturnDTO<>(bl);
-        return returnDTO;
+    public Integer editUser(User user) {
+        return userDao.updateByPrimaryKey(user);
     }
 
     @Override
-    public ReturnDTO<Boolean> editNick(long id, String nick) {
-        if (id <= 0 || StringUtils.isEmpty(nick)) {
-            return ReturnDTOUtil.paramError();
-        }
+    public Integer editNick(long id, String nick) throws SlifeException{
         User original = userDao.selectByPrimaryKey(id);
         if (original == null) {
-            return ReturnDTOUtil.custom(HttpCodeEnum.USER_NOT_FOUND_ERR);
+            throw new SlifeException(HttpCodeEnum.USER_NOT_FOUND_ERR);
         }
-        if (nick.equals(original.getNick())) {
-            return ReturnDTOUtil.custom(HttpCodeEnum.USER_NICK_DUPLICATE);
+        User userOther = userDao.selectByIdAndNickname(id,nick);
+        if (userOther != null) {
+            throw new SlifeException(HttpCodeEnum.USER_NICK_DUPLICATE);
         }
-        int editCount = userDao.updateNick(id, nick);
-        boolean bl = editCount == 1 ? Boolean.TRUE : Boolean.FALSE;
-        ReturnDTO<Boolean> returnDTO = new ReturnDTO<>(bl);
-        return returnDTO;
+        return userDao.updateNick(id, nick);
     }
 
     @Override
-    public ReturnDTO<Boolean> editHeadImg(long id, String path) {
-        if (id <= 0 || StringUtils.isEmpty(path)) {
-            return ReturnDTOUtil.paramError();
-        }
+    public Integer editHeadImg(long id, String path) throws SlifeException{
         User original = userDao.selectByPrimaryKey(id);
         if (original == null) {
-            return ReturnDTOUtil.custom(HttpCodeEnum.USER_NOT_FOUND_ERR);
+            throw new SlifeException(HttpCodeEnum.USER_NOT_FOUND_ERR);
         }
-        int editCount = userDao.updateHeadImg(id, path);
-        boolean bl = editCount == 1 ? Boolean.TRUE : Boolean.FALSE;
-        ReturnDTO<Boolean> returnDTO = new ReturnDTO<>(bl);
-        return returnDTO;
+        return userDao.updateHeadImg(id, path);
     }
 }
