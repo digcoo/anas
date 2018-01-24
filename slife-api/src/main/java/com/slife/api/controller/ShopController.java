@@ -8,6 +8,7 @@ import com.slife.util.ReturnDTOUtil;
 import com.slife.vo.BusinessVO;
 import com.slife.vo.ShopBaseVO;
 import com.slife.vo.ShopMallVO;
+import com.slife.vo.ShopVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -27,6 +28,19 @@ public class ShopController {
     @Autowired
     private ShopService shopService;
 
+
+    @ApiOperation(value = "30-获取店铺信息", notes = "30-获取店铺信息",httpMethod = "GET")
+    @GetMapping(value = "/getShopInfo")
+    @ResponseBody
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "long", name = "userId", value = "用户Id",required = true)
+    })
+    public ReturnDTO<ShopVO> getShopInfo(@RequestParam("userId") long userId) {
+        return shopService.getShopInfo(userId);
+
+    }
+
+
     @ApiOperation(value = "31-商家注册获取短信验证码", notes = "31-商家注册获取短信验证码",httpMethod = "GET")
     @GetMapping(value = "/requestRegSms")
     @ResponseBody
@@ -36,6 +50,8 @@ public class ShopController {
     public ReturnDTO requestRegSms(String  phone, HttpServletRequest request) {
         return shopService.requestRegSms(phone);
     }
+
+
 
 
     @ApiOperation(value = "32-商家注册步骤1", notes = "32-商家注册步骤1",httpMethod = "POST")

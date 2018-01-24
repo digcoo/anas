@@ -53,7 +53,7 @@ public enum HttpCodeEnum {
     SHOP_SMS_FRE(2001,"短信请求频繁"),
     SHOP_SMS_ERROR(2002,"短信验证码错误"),
     SHOP_USER_DUP(2003,"用户已注册"),
-    SHOP_USER_SKIP(2004,"用户跳过步骤"),
+    SHOP_USER_NOT_FOUND(2004,"用户未注册"),
 
 
 

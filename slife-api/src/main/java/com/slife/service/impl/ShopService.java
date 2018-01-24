@@ -14,6 +14,7 @@ import com.slife.utils.CodeGenUtils;
 import com.slife.utils.RedisKey;
 import com.slife.vo.ShopBaseVO;
 import com.slife.vo.ShopMallVO;
+import com.slife.vo.ShopVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -109,11 +110,22 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
 
     }
 
+    @Override
+    public ReturnDTO<ShopVO> getShopInfo(long userId) {
+        Shop shop = shopDao.selectByUserId(userId);
+        if(shop == null ){
+            return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_USER_NOT_FOUND);
+        }
+        ShopVO shopVO  = new ShopVO();
+        return ReturnDTOUtil.success(shopVO);
+
+    }
+
     public ReturnDTO saveShop(ShopMallVO shopMallVO) {
         Shop shop = shopDao.selectByUserId(shopMallVO.getUserId());
 
         if(shop == null ){
-            return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_USER_SKIP);
+            return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_USER_NOT_FOUND);
         }
         if(shop.getAuditState() != 0){
             return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_USER_DUP);
