@@ -14,7 +14,7 @@ import com.slife.utils.CodeGenUtils;
 import com.slife.utils.RedisKey;
 import com.slife.vo.ShopBaseVO;
 import com.slife.vo.ShopMallVO;
-import io.swagger.annotations.ApiModelProperty;
+import com.slife.vo.ShopVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -82,8 +82,12 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
         if(code == null || !code .equals(phoneCode)){
             return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_SMS_ERROR);
         }
-        Shop shop = new Shop();
-        shop.setId(100L);
+        Shop shop = shopDao.selectByUserId(shopBaseVO.getUserId());
+        if(shop != null && (shop.getAuditState() == 1 || shop.getAuditState() == 2)){
+            return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_USER_DUP);
+        }
+
+        shop = new Shop();
         shop.setUserId(shopBaseVO.getUserId());
         shop.setName(shopBaseVO.getShopName());
         shop.setAgentPosition(shopBaseVO.getPosition());
@@ -97,13 +101,35 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
         shop.setStatus(Byte.valueOf("0"));
         shop.setAuditState(0);
         shop.setFollowNum(0);
-        shopDao.insert(shop);
+        if(shop.getId() == null){
+            shopDao.insert(shop);
+        }else{
+            shopDao.updateById(shop);
+        }
         return ReturnDTOUtil.success(shopBaseVO);
+
+    }
+
+    @Override
+    public ReturnDTO<ShopVO> getShopInfo(long userId) {
+        Shop shop = shopDao.selectByUserId(userId);
+        if(shop == null ){
+            return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_USER_NOT_FOUND);
+        }
+        ShopVO shopVO  = new ShopVO();
+        return ReturnDTOUtil.success(shopVO);
 
     }
 
     public ReturnDTO saveShop(ShopMallVO shopMallVO) {
         Shop shop = shopDao.selectByUserId(shopMallVO.getUserId());
+
+        if(shop == null ){
+            return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_USER_NOT_FOUND);
+        }
+        if(shop.getAuditState() != 0){
+            return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_USER_DUP);
+        }
         shop.setShopType(shopMallVO.getShopType());
         shop.setMallId(shopMallVO.getMallId());
         shop.setFloor(shopMallVO.getFloor());
@@ -111,6 +137,7 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
         shop.setAgentIdentifyCard(shopMallVO.getAgentIdentifyCard());
         shop.setAgentPortrait(shopMallVO.getAgentPortrait());
         shop.setBusinessLicense(shopMallVO.getBusinessLicense());
+        shop.setAuditState(1); //等待审核
         shopDao.updateById(shop);
         return ReturnDTOUtil.success();
     }

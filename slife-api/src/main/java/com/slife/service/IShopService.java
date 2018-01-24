@@ -4,6 +4,7 @@ import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.IBaseService;
 import com.slife.entity.Shop;
 import com.slife.vo.ShopBaseVO;
+import com.slife.vo.ShopVO;
 
 import java.util.List;
 
@@ -22,4 +23,5 @@ public interface IShopService extends IBaseService<Shop> {
     ReturnDTO<ShopBaseVO> saveShopBase(ShopBaseVO shopBaseVO);
 
 
+    ReturnDTO<ShopVO> getShopInfo(long userId);
 }

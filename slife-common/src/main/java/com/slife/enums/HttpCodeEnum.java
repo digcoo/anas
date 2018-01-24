@@ -52,6 +52,9 @@ public enum HttpCodeEnum {
     SHOP_NOT_EXISTS(2000,"商户不存在！"),
     SHOP_SMS_FRE(2001,"短信请求频繁"),
     SHOP_SMS_ERROR(2002,"短信验证码错误"),
+    SHOP_USER_DUP(2003,"用户已注册"),
+    SHOP_USER_NOT_FOUND(2004,"用户未注册"),
+
 
 
     //活动相关错误统一使用3000开头错误码

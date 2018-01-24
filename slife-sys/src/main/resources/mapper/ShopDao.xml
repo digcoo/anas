@@ -4,7 +4,7 @@
 
     <resultMap id="BaseResultMap" type="com.slife.entity.Shop">
         <id column="id" jdbcType="BIGINT" property="id" />
-        <result column="user_id" jdbcType="BIGINT" property="user_id" />
+        <result column="user_id" jdbcType="BIGINT" property="userId" />
         <result column="name" jdbcType="VARCHAR" property="name" />
         <result column="picture" jdbcType="VARCHAR" property="picture" />
         <result column="tel" jdbcType="VARCHAR" property="tel" />
@@ -46,11 +46,11 @@
         )
     </insert>
 
-    <select id="selectByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="selectByUserId"  resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from digcoo_anas_shop
-        where user_id = #{userId}
+        where user_id = #{userId,jdbcType=BIGINT}
     </select>
 
 

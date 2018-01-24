@@ -1,6 +1,7 @@
 package com.slife.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.slife.vo.ItemPhotoVO;
 
@@ -9,7 +10,7 @@ import com.slife.vo.ItemPhotoVO;
  */
 public interface IItemPhotoService {
 	
-	List<ItemPhotoVO> findIndexs();
+	Map<Integer, List<ItemPhotoVO>> findIndexs();
 	
     List<ItemPhotoVO> findPageByCategory(Integer index, String category);
     
