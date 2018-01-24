@@ -4,6 +4,8 @@ package com.slife.dao;
 import com.slife.base.dao.CrudDao;
 import com.slife.entity.ShopAd;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -15,6 +17,7 @@ import java.util.List;
  * <p>
  * Describe: merchant dao
  */
+@CacheConfig(cacheNames = "ads")
 public interface ShopAdDao extends CrudDao<ShopAd> {
 
     /**
@@ -23,6 +26,7 @@ public interface ShopAdDao extends CrudDao<ShopAd> {
      * @param geohash
      * @return
      */
+    @Cacheable
     public List<ShopAd> selectAdsByGeohash(@Param("index") Integer index,@Param("geohash") String geohash);
 
     /**
@@ -32,6 +36,7 @@ public interface ShopAdDao extends CrudDao<ShopAd> {
      * @param name
      * @return
      */
+    @Cacheable
     public List<ShopAd> selectAdsByGeohashAndName(@Param("index") Integer index,@Param("geohash") String geohash,@Param("name") String name);
 
 
@@ -41,6 +46,7 @@ public interface ShopAdDao extends CrudDao<ShopAd> {
      * @param shopId
      * @return
      */
+    @Cacheable
     public List<ShopAd> selectAdsByShopId(@Param("index") Integer index,@Param("shopId") Long shopId);
 
 

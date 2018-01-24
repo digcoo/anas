@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slife.dao.ItemPhotoDao">
+
+    <resultMap id="BaseResultMap" type="com.slife.entity.ItemPhoto">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="refer_id" jdbcType="BIGINT" property="referId" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="tag" jdbcType="VARCHAR" property="tag" />
+        <result column="category" jdbcType="TINYINT" property="category" />
+        <result column="big_photo" jdbcType="VARCHAR" property="bigPhoto" />
+        <result column="small_photo" jdbcType="VARCHAR" property="smallPhoto" />
+        <result column="recommend" jdbcType="TINYINT" property="recommend" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+         id, refer_id, title, tag, category, big_photo, small_photo, create_date, update_date
+    </sql>
+    
+    <select id="findIndexs" resultMap="BaseResultMap">
+        <![CDATA[
+          select id, refer_id, title, tag, category, big_photo, small_photo, recommend from `digcoo_anas_item_photo` where recommend = 1
+        ]]>
+    </select>
+    
+
+    <select id="findPageByCategory" resultMap="BaseResultMap">
+        <![CDATA[
+          select id, refer_id, title, tag, category, big_photo, small_photo, recommend from `digcoo_anas_item_photo` where category=#{category}  order by recommend desc limit #{index}, 10
+        ]]>
+    </select>
+
+
+    <select id="search" resultMap="BaseResultMap">
+        <![CDATA[
+          select id, refer_id, title, tag, category, big_photo, small_photo, recommend from `digcoo_anas_item_photo` where title like CONCAT('%', #{key},'%')  order by recommend desc limit #{index}, 10
+        ]]>
+    </select>
+
+
+</mapper>

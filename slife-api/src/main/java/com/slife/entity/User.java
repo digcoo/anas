@@ -1,6 +1,7 @@
 package com.slife.entity;
 
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.toolkit.StringUtils;
 import com.slife.base.entity.ApiEntity;
 
 import java.io.Serializable;
@@ -15,27 +16,27 @@ public class User extends ApiEntity<User> {
 
     private int type;
 
-    private String wxHeadImg;
+    private String wxHeadImg = StringUtils.EMPTY;
 
-    private String headImg;
+    private String headImg = StringUtils.EMPTY;
 
     private int gender;
 
-    private String mobile;
+    private String mobile = StringUtils.EMPTY;
 
-    private String nick;
+    private String nick = StringUtils.EMPTY;
 
-    private String wxNick;
+    private String wxNick = StringUtils.EMPTY;
 
-    private String country;
+    private String country = StringUtils.EMPTY;
 
-    private String province;
+    private String province = StringUtils.EMPTY;
 
-    private String city;
+    private String city = StringUtils.EMPTY;
 
     private Date followTime;
 
-    private String qrTicket;
+    private String qrTicket = StringUtils.EMPTY;
 
 
     @Override
