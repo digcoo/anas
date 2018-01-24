@@ -44,7 +44,7 @@ public class SlifeExceptionHandler {
      */
     @ExceptionHandler(SlifeException.class)
     public ResponseEntity<ReturnDTO> handleBlifeException(SlifeException e) {
-        logger.info(e.getError());
+        logger.error(e.getError());
         return new ResponseEntity(e.getReturnDTO(), HttpStatus.OK);
     }
 
