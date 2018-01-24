@@ -7,7 +7,7 @@
         <result column="refer_id" jdbcType="BIGINT" property="referId" />
         <result column="title" jdbcType="VARCHAR" property="title" />
         <result column="tag" jdbcType="VARCHAR" property="tag" />
-        <result column="category" jdbcType="VARCHAR" property="category" />
+        <result column="category" jdbcType="TINYINT" property="category" />
         <result column="big_photo" jdbcType="VARCHAR" property="bigPhoto" />
         <result column="small_photo" jdbcType="VARCHAR" property="smallPhoto" />
         <result column="recommend" jdbcType="TINYINT" property="recommend" />
@@ -28,14 +28,14 @@
 
     <select id="findPageByCategory" resultMap="BaseResultMap">
         <![CDATA[
-          select id, refer_id, title, tag, category, big_photo, small_photo, recommend from `digcoo_anas_item_photo` where category=#{category}  order by recomend desc limit #{index}, 10
+          select id, refer_id, title, tag, category, big_photo, small_photo, recommend from `digcoo_anas_item_photo` where category=#{category}  order by recommend desc limit #{index}, 10
         ]]>
     </select>
 
 
     <select id="search" resultMap="BaseResultMap">
         <![CDATA[
-          select id, refer_id, title, tag, category, big_photo, small_photo, recommend from `digcoo_anas_item_photo` where title like CONCAT('%', #{key},'%')  order by recomend desc limit #{index}, 10
+          select id, refer_id, title, tag, category, big_photo, small_photo, recommend from `digcoo_anas_item_photo` where title like CONCAT('%', #{key},'%')  order by recommend desc limit #{index}, 10
         ]]>
     </select>
 

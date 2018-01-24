@@ -19,7 +19,7 @@ public class ItemPhoto extends ApiEntity<ItemPhoto> {
     
     private String tag;
     
-    private String category;
+    private byte category;
 
     private String bigPhoto;
 
@@ -51,11 +51,11 @@ public class ItemPhoto extends ApiEntity<ItemPhoto> {
 		this.tag = tag;
 	}
 
-	public String getCategory() {
+	public byte getCategory() {
 		return category;
 	}
 
-	public void setCategory(String category) {
+	public void setCategory(byte category) {
 		this.category = category;
 	}
 
