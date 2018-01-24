@@ -1,6 +1,9 @@
 package com.slife.entity;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.FieldFill;
+import com.baomidou.mybatisplus.toolkit.StringUtils;
 import com.slife.base.entity.ApiEntity;
 
 import java.io.Serializable;
@@ -15,7 +18,7 @@ public class User extends ApiEntity<User> {
 
     private int type;
 
-    private String wxHeadImg;
+    private String wxHeadImg = StringUtils.EMPTY;
 
     private String headImg;
 
