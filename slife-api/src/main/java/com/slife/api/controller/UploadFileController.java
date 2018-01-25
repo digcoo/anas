@@ -56,7 +56,6 @@ public class UploadFileController {
         UploadFileVO uploadFileVO = new UploadFileVO();
         uploadFileVO.setPath(imgUrl);
         uploadFileVO.setDomain(ossDomain);
-        ReturnDTO<UploadFileVO> returnDTO = new ReturnDTO(uploadFileVO);
-        return returnDTO;
+        return ReturnDTOUtil.success(uploadFileVO);
     }
 }

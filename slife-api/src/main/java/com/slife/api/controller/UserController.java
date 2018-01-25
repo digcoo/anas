@@ -65,7 +65,7 @@ public class UserController {
         return userService.editNick(id, nick)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
     }
 
-    @ApiOperation(value = "上传头像", notes = "用户重新上传头像，默认使用微信头像")
+    @ApiOperation(value = "编辑头像", notes = "用户重新上传头像，默认使用微信头像")
     @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "form", dataType = "long", required = true),
             @ApiImplicitParam(name = "headImg", paramType = "form", dataType = "String", required = true)})
     @PostMapping("/head_img/edit")
