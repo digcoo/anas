@@ -40,8 +40,8 @@ public class ItemPhotoController {
     @ApiOperation(value = "D-2 图片库首页更多接口", notes = "图片库首页更多接口")
     @GetMapping("/more")
     @ApiResponses({@ApiResponse(code = 200, message = "成功", response = ItemPhotoVO.class)})
-    public ReturnDTO more(@RequestParam("index") Integer index, @RequestParam("category") String category) {
-        if (index == null || StringUtils.isEmpty(category)) {
+    public ReturnDTO more(@RequestParam("index") Integer index, @RequestParam("category") Integer category) {
+        if (index == null || category == null) {
             ReturnDTOUtil.paramError();
         }
         List<ItemPhotoVO> retList = itemPhotoService.findPageByCategory(index, category);

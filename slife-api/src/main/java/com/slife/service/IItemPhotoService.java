@@ -12,7 +12,7 @@ public interface IItemPhotoService {
 	
 	Map<Integer, List<ItemPhotoVO>> findIndexs();
 	
-    List<ItemPhotoVO> findPageByCategory(Integer index, String category);
+    List<ItemPhotoVO> findPageByCategory(Integer index, Integer category);
     
     List<ItemPhotoVO> search(Integer index, String key);
 
