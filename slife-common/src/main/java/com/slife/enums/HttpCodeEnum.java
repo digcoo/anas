@@ -58,7 +58,7 @@ public enum HttpCodeEnum {
 
 
     //活动相关错误统一使用3000开头错误码
-
+    AD_NOT_EXISTS(3000,"活动不存在！"),
 
     ;
     private final int code;

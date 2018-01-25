@@ -1,11 +1,10 @@
 package com.slife.service;
 
+import java.util.List;
+
+import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.IBaseService;
 import com.slife.entity.ShopAd;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
-
-import java.util.List;
 
 /**
  * @author tod
@@ -44,6 +43,20 @@ public interface IShopAdService extends IBaseService<ShopAd> {
      * @return
      */
     public List<ShopAd> selectAdsByShopId(Integer index,Long shopId);
+
+    /**
+     * 新增商家广告
+     * @param shopAd
+     * @return
+     */
+    public ReturnDTO addShopAd(ShopAd shopAd);
+
+    /**
+     * 修改商家广告
+     * @param shopAd
+     * @return
+     */
+    public ReturnDTO updateShopAd(ShopAd shopAd);
 
 
 }

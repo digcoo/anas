@@ -7,15 +7,15 @@ import io.swagger.annotations.ApiModelProperty;
 public class AdTypeVO {
 
     @ApiModelProperty(value = "广告类型")
-    private String type;
+    private int type;
     @ApiModelProperty(value = "广告类型描述")
     private String desc;
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 

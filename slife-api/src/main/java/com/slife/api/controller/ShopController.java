@@ -1,32 +1,46 @@
 package com.slife.api.controller;
 
 
-import com.slife.base.entity.ReturnDTO;
-import com.slife.entity.Business;
-import com.slife.service.impl.ShopService;
-import com.slife.util.ReturnDTOUtil;
-import com.slife.vo.BusinessVO;
-import com.slife.vo.ShopBaseVO;
-import com.slife.vo.ShopMallVO;
-import com.slife.vo.ShopVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSON;
+import com.slife.base.entity.ReturnDTO;
+import com.slife.entity.ShopAd;
+import com.slife.service.impl.ShopAdService;
+import com.slife.service.impl.ShopService;
+import com.slife.util.ReturnDTOUtil;
+import com.slife.vo.ShopBaseVO;
+import com.slife.vo.ShopMallVO;
+import com.slife.vo.ShopVO;
 
 @Controller
 @RequestMapping(value = "/api/shop")
 @Api(description = "店铺注册相关接口")
 public class ShopController {
 
+    protected Logger logger= LoggerFactory.getLogger(getClass());
+	
     @Autowired
     private ShopService shopService;
+    
+    @Autowired
+    private ShopAdService shopAdService;
 
 
     @ApiOperation(value = "30-获取店铺信息", notes = "30-获取店铺信息",httpMethod = "GET")
@@ -39,7 +53,6 @@ public class ShopController {
         return shopService.getShopInfo(userId);
 
     }
-
 
     @ApiOperation(value = "31-商家注册获取短信验证码", notes = "31-商家注册获取短信验证码",httpMethod = "GET")
     @GetMapping(value = "/requestRegSms")
@@ -67,5 +80,22 @@ public class ShopController {
     @ResponseBody
     public ReturnDTO submitShopMallInfo(@RequestBody ShopMallVO shopMallVO   , HttpServletRequest request) {
         return shopService.saveShop(shopMallVO);
+    }
+    
+    @ApiOperation(value = "Cj-6 新建活动", notes = "新建活动",httpMethod = "POST")
+    @PostMapping(value = "/ad/add")
+    @ResponseBody
+    public ReturnDTO addAd(@RequestBody ShopAd shopAd, HttpServletRequest request) {
+    	logger.debug("[ShopController]-[addAd] : params = " + JSON.toJSONString(shopAd));
+        return shopAdService.addShopAd(shopAd);
+    }
+    
+    
+    @ApiOperation(value = "Cj-7 编辑活动", notes = "编辑活动",httpMethod = "POST")
+    @PostMapping(value = "/ad/update")
+    @ResponseBody
+    public ReturnDTO updateAd(@RequestBody ShopAd shopAd, HttpServletRequest request) {
+    	logger.debug("[ShopController]-[updateAd] : params = " + JSON.toJSONString(shopAd));
+    	return shopAdService.updateShopAd(shopAd);
     }
 }
