@@ -21,7 +21,8 @@ public class ShopAdServiceTest extends WebApplicationTests{
     private ShopAdService shopAdService;
     @Autowired
     private ShopService shopService;
-
+    @Autowired
+    private CacheManager cacheManager;
     @Test
     public void selectAdsByGeohash() throws Exception {
         List<ShopAd> shopAdList = shopAdService.selectAdsByGeohash(0,"wtw2");

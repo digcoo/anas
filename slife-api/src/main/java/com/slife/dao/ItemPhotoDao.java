@@ -11,7 +11,7 @@ public interface ItemPhotoDao extends CrudDao<ItemPhoto> {
 
 	List<ItemPhoto> findIndexs();
 
-	List<ItemPhoto> findPageByCategory(@Param("index")Integer index, @Param("category")String category);
+	List<ItemPhoto> findPageByCategory(@Param("index")Integer index, @Param("category")Integer category);
 
 	List<ItemPhoto> search(@Param("index")Integer index, @Param("key")String key);
 

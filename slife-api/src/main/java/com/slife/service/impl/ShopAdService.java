@@ -5,6 +5,8 @@ import com.slife.dao.ShopAdDao;
 import com.slife.entity.ShopAd;
 import com.slife.service.IShopAdService;
 import com.slife.util.StringUtils;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +22,12 @@ import java.util.List;
  */
 @Service
 @Transactional(readOnly = true, rollbackFor = Exception.class)
+@CacheConfig(cacheNames = "ads")
 public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements IShopAdService {
 
 
     @Override
+    @Cacheable(key = "#geohash")
     public List<ShopAd> selectAdsByGeohash(Integer index,String geohash) {
 
         return this.baseMapper.selectAdsByGeohash(index,geohash);

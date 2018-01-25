@@ -29,6 +29,6 @@ public class FeedbackController {
             ReturnDTOUtil.paramError();
         }
         boolean bl = feedbackService.addFeedBack(feedback);
-        return new ReturnDTO<>(bl);
+        return bl?ReturnDTOUtil.success():ReturnDTOUtil.fail();
     }
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slife.dao.MallDao">
+
+    <resultMap id="BaseResultMap" type="com.slife.entity.Mall">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="picture" jdbcType="VARCHAR" property="picture" />
+        <result column="addr" jdbcType="VARCHAR" property="addr" />
+        <result column="lat" jdbcType="DECIMAL" property="lat" />
+        <result column="lng" jdbcType="DECIMAL" property="lng" />
+        <result column="geohash" jdbcType="BIGINT" property="geohash" />
+        <result column="status" jdbcType="TINYINT" property="status" />
+        <result column="logo" jdbcType="VARCHAR" property="logo" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,picture,addr,lat,lng,geohash,status,logo,create_date,update_date
+    </sql>
+
+    <select id="findPageByKey"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from digcoo_anas_mall
+        where name like CONCAT('%', #{key},'%')
+    </select>
+
+
+</mapper>

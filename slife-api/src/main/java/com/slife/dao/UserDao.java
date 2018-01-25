@@ -12,6 +12,8 @@ public interface UserDao {
 
     User selectByPrimaryKey(@Param("id") long id);
 
+    User selectByIdAndNickname(@Param("id") long id,@Param("nickname") String nickname);
+
     User selectByOpenId(@Param("openId") String openId);
 
     int updateByPrimaryKey(User record);

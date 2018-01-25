@@ -40,7 +40,7 @@ public class ItemPhotoService extends BaseService<ItemPhotoDao, ItemPhoto> imple
 	
 
 	@Override
-	public List<ItemPhotoVO> findPageByCategory(Integer index, String category) {
+	public List<ItemPhotoVO> findPageByCategory(Integer index, Integer category) {
 		List<ItemPhotoVO> list = new ArrayList<ItemPhotoVO>();
 		List<ItemPhoto> locals = this.baseMapper.findPageByCategory(index, category);
 		for (ItemPhoto itemPhoto : locals) {
