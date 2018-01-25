@@ -74,7 +74,7 @@ public class ShopVO {
 
 
     @ApiModelProperty(value = "审核状态 0-编辑状态 1:提交审核2:审核通过,3:审核未通过",required = true)
-    private String auditState;
+    private int auditState;
 
     @ApiModelProperty(value = "商家logo",required = true)
     private String logo;
@@ -83,7 +83,7 @@ public class ShopVO {
     private String picture;
 
     @ApiModelProperty(value = "用户关注数量",required = true)
-    private String followum;
+    private int followum;
 
     public long getId() {
         return id;
@@ -157,13 +157,7 @@ public class ShopVO {
         this.businessLicense = businessLicense;
     }
 
-    public String getAuditState() {
-        return auditState;
-    }
 
-    public void setAuditState(String auditState) {
-        this.auditState = auditState;
-    }
 
     public String getLogo() {
         return logo;
@@ -181,11 +175,11 @@ public class ShopVO {
         this.picture = picture;
     }
 
-    public String getFollowum() {
+    public int getFollowum() {
         return followum;
     }
 
-    public void setFollowum(String followum) {
+    public void setFollowum(int followum) {
         this.followum = followum;
     }
 
@@ -267,6 +261,14 @@ public class ShopVO {
 
     public void setOpenMobile(boolean openMobile) {
         this.openMobile = openMobile;
+    }
+
+    public int getAuditState() {
+        return auditState;
+    }
+
+    public void setAuditState(int auditState) {
+        this.auditState = auditState;
     }
 }
 

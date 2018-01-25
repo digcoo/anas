@@ -117,6 +117,28 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
             return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_USER_NOT_FOUND);
         }
         ShopVO shopVO  = new ShopVO();
+        shopVO.setId(shop.getId());
+        shopVO.setUserId(shop.getUserId());
+        shopVO.setAddr(shop.getAddr());
+        shopVO.setAgentIdentifyCard(shop.getAgentIdentifyCard());
+        shopVO.setAgentPortrait(shop.getAgentPortrait());
+        shopVO.setAuditState(shop.getAuditState());
+        shopVO.setBusinessId(shop.getBusinessId());
+        shopVO.setBusinessLicense(shop.getBusinessLicense());
+        shopVO.setFloor(shop.getFloor());
+        shopVO.setFollowum(shop.getFollowNum());
+        shopVO.setGeohash(shop.getGeohash());
+        shopVO.setLat(shop.getLat());
+        shopVO.setLng(shop.getLng());
+        shopVO.setLogo(shop.getLogo());
+        shopVO.setMallId(shop.getMallId());
+        shopVO.setOpenMobile(shop.getOpenMobile().equals(Byte.valueOf("1"))?true:false);
+        shopVO.setPhone(shop.getTel());
+        shopVO.setPicture(shop.getPicture());
+        shopVO.setPosition(shop.getAgentPosition());
+        shopVO.setRoom(shop.getRoom());
+        shopVO.setShopName(shop.getName());
+        shopVO.setShopType(shop.getShopType());
         return ReturnDTOUtil.success(shopVO);
 
     }
