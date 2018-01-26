@@ -33,8 +33,8 @@ public class ShopServiceTest extends WebApplicationTests{
     public void addShopAd(){
     	Calendar calendar = Calendar.getInstance();
     	ShopAd shopAd = new ShopAd();
-    	shopAd.setShopId(1l);
-    	shopAd.setType((byte)1);
+    	shopAd.setShopId(955727017696542738l);
+    	shopAd.setType((byte)1);	//打折促销
     	shopAd.setStartTime(calendar.getTime());
     	
     	calendar.add(Calendar.DAY_OF_MONTH, 6);
