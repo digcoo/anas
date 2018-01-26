@@ -57,7 +57,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByOpenId(String openId) {
-        return userDao.selectByOpenId(openId);
+        User user = userDao.selectByOpenId(openId);
+        if (user ==null){
+            throw new SlifeException(HttpCodeEnum.USER_NOT_FOUND_ERR);
+        }
+        return user;
     }
 
     @Override

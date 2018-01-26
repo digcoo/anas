@@ -71,6 +71,12 @@ public class ShopAd extends ApiEntity<ShopAd> {
     @TableField(value = "publish_time")
     private Date publishTime;
 
+    /**
+     * 商铺名称：冗余字段
+     */
+    @TableField(value = "shop_name")
+    private String shopName;
+
 
     @Override
     protected Serializable pkVal() {
@@ -158,4 +164,13 @@ public class ShopAd extends ApiEntity<ShopAd> {
     public void setStatus(Byte status) {
         this.status = status;
     }
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+    
 }

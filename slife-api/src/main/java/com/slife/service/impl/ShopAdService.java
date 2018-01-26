@@ -32,7 +32,6 @@ import com.slife.util.StringUtils;
  */
 @Service
 @Transactional(readOnly = true, rollbackFor = Exception.class)
-@CacheConfig(cacheNames = "ads")
 public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements IShopAdService {
 
     protected Logger logger= LoggerFactory.getLogger(getClass());
@@ -41,7 +40,6 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	ShopDao shopDao;
 
     @Override
-    @Cacheable(key = "#geohash")
     public List<ShopAd> selectAdsByGeohash(Integer index,String geohash) {
 
         return this.baseMapper.selectAdsByGeohash(index,geohash);
@@ -62,6 +60,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
     }
 
 	@Override
+	@Transactional(readOnly = false)
 	public ReturnDTO addShopAd(ShopAd shopAd) {
 		Shop localShop = shopDao.selectById(shopAd.getShopId());
 		if(localShop == null) {
@@ -73,25 +72,34 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		}
 		
 		switch (AdType.getByCode(shopAd.getType())) {
-		case DISCOUNT:
+		case DISCOUNT:		//打折促销
+			if(shopAd.getStartTime() == null || shopAd.getEndTime() == null){
+				return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
+			}
+			break;
+		case NEW:			//新品上新
 			
 			break;
-		case NEW:
+		case OPEN:			//新店开业
 			
 			break;
-		case OPEN:
-			
+		case ADVANCE:		//预告预售
+			if(shopAd.getStartTime() == null || shopAd.getEndTime() == null){
+				return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
+			}
 			break;
-		case ADVANCE:
-			
-			break;
-		case OTHER:
-			
+		case OTHER:			//其他
+			if(shopAd.getStartTime() == null || shopAd.getEndTime() == null){
+				return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
+			}			
 			break;
 
 		default:
-			break;
+			return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
 		}
+		
+		shopAd.setGeohash(localShop.getGeohash());
+		shopAd.setShopName(localShop.getName());
 		
 		int ret = this.baseMapper.insert(shopAd);
 		if(ret > 0){
