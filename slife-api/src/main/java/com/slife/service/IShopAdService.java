@@ -91,5 +91,13 @@ public interface IShopAdService extends IBaseService<ShopAd> {
      * @return
      */
     public ReturnDTO listForShop(Long shopId, int index);
+    
+
+    /**
+     * 商家广告(9元上头条)
+     * @param adId
+     * @return
+     */
+    public ReturnDTO upShopAd(Long adId);
 
 }

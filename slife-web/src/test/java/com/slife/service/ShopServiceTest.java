@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -117,6 +118,12 @@ public class ShopServiceTest extends WebApplicationTests{
     @Test
     public void listForShop(){
     	ReturnDTO retDto = shopAdService.listForShop(955727017696542738l, 0);
+    	System.out.println(JSON.toJSONString(retDto));
+    }
+    
+    @Test
+    public void upShopAd(){
+    	ReturnDTO retDto = shopAdService.upShopAd(956714007690412033l);
     	System.out.println(JSON.toJSONString(retDto));
     }
 }

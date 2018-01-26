@@ -123,11 +123,25 @@ public class ShopController {
     	return shopAdService.delShopAd(adId);
     }
     
-    
     @ApiOperation(value = "D-10 商家活动列表接口（商家自查）", notes = "商家活动列表接口（商家自查）",httpMethod = "POST")
     @PostMapping(value = "/ad/list_for_shop")
     @ResponseBody
     public ReturnDTO listForShop(@Param("index") int index, @Param("shopId") Long shopId, HttpServletRequest request) {
     	return shopAdService.listForShop(shopId, index);
+    }
+    
+    
+    /**
+     * todo 整理应该有惩罚恶意刷单现象：需要对价格有阶梯式涨价机制
+     * @param adId
+     * @param request
+     * @return
+     */
+    @ApiOperation(value = "D-11 9元上头条", notes = "9元上头条",httpMethod = "POST")
+    @PostMapping(value = "/ad/up9")
+    @ResponseBody
+    public ReturnDTO upAd(@Param("adId") Long adId, HttpServletRequest request) {
+    	logger.debug("[ShopController]-[upAd] : adId = " + adId);
+    	return shopAdService.upShopAd(adId);
     }
 }

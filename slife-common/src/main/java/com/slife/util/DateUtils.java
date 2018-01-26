@@ -24,4 +24,15 @@ public class DateUtils {
         String outDate = formatter.format(date);
         return outDate;
     }
+    
+    /**
+     * 判断是否是同一天
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static boolean isSameDay(Date date1, Date date2){
+    	return date1.getYear()==date2.getYear() && date1.getMonth()==date2.getMonth() && date1.getDay()==date2.getDay();
+    }
+    
 }

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.impl.BaseService;
 import com.slife.dao.ShopAdDao;
+import com.slife.dao.ShopAdSpreadDao;
 import com.slife.dao.ShopDao;
 import com.slife.entity.Shop;
 import com.slife.entity.ShopAd;
+import com.slife.entity.ShopAdSpread;
 import com.slife.entity.enums.AdStatus;
 import com.slife.entity.enums.AdType;
+import com.slife.entity.enums.SpreadType;
 import com.slife.enums.HttpCodeEnum;
+import com.slife.exception.SlifeException;
 import com.slife.service.IShopAdService;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
@@ -36,11 +41,16 @@ import com.slife.vo.AdUpdateVO;
 @Service
 @Transactional(readOnly = true, rollbackFor = Exception.class)
 public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements IShopAdService {
+	
+	private final static int MAX_COUNT_FREE_PUBLISH_OF_PER_DAY = 3;		//商家每天免费发布的活动条数
 
     protected Logger logger= LoggerFactory.getLogger(getClass());
 	
 	@Autowired
 	ShopDao shopDao;
+
+	@Autowired
+	ShopAdSpreadDao shopAdSpreadDao;
 
     @Override
     public List<ShopAd> selectAdsByGeohash(Integer index,String geohash) {
@@ -164,6 +174,17 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			return ReturnDTOUtil.custom(HttpCodeEnum.AD_NOT_PERIOD);
 		}
 		
+		//判断当天是否达到免费发布的上线
+		int currentTimes = 0;
+		for (ShopAd shopAd : publishedAds) {
+			if (DateUtils.isSameDay(shopAd.getPublishTime(), publishTime)) {
+				currentTimes++;
+			}
+		}
+		if (currentTimes >= MAX_COUNT_FREE_PUBLISH_OF_PER_DAY) {
+			return ReturnDTOUtil.custom(HttpCodeEnum.AD_OVER_LIMIT);
+		}
+		
 		ShopAd shopAd = new ShopAd();
 		shopAd.setId(adId);
 		shopAd.setPublishTime(publishTime);
@@ -203,5 +224,28 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		List<Integer> statuses = Arrays.asList(AdStatus.INIT.getStatus(), AdStatus.OFF.getStatus(), AdStatus.ON.getStatus());
 		List<ShopAd> ads = baseMapper.listForShop(shopId, statuses, index);
 		return ReturnDTOUtil.success(ads);
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public ReturnDTO upShopAd(Long adId) {
+		//只有已发布(或当日没费次数超限)的活动，才会有必用“上头条”，前端业务流程需更改：隐藏9元上头条的逻辑，待用户超过限制之后再弹出
+		Date publishTime = new Date();
+		
+		ShopAd shopAd = new ShopAd();
+		shopAd.setId(adId);
+		shopAd.setPublishTime(publishTime);
+		shopAd.setStatus((byte)AdStatus.ON.getStatus());
+		int updateAd = baseMapper.updateById(shopAd);
+		
+		ShopAdSpread adSpread = new ShopAdSpread();
+		adSpread.setAdId(adId);
+		adSpread.setType((byte)SpreadType.TOP.getType());
+		int addSpread = shopAdSpreadDao.insert(adSpread);
+		
+		if(updateAd == 0 || addSpread == 0){
+			throw new SlifeException(HttpCodeEnum.UN_KNOW_ERROR);
+		}
+		return ReturnDTOUtil.success();
 	}
 }
