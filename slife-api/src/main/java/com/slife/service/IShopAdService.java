@@ -48,17 +48,48 @@ public interface IShopAdService extends IBaseService<ShopAd> {
 
     /**
      * 新增商家广告
-     * @param shopAd
+     * @param adAddVO
      * @return
      */
     public ReturnDTO addShopAd(AdAddVO adAddVO);
 
     /**
      * 修改商家广告
-     * @param shopAd
+     * @param adUpdateVO
      * @return
      */
     public ReturnDTO updateShopAd(AdUpdateVO adUpdateVO);
+    
 
+    /**
+     * 上架商家广告
+     * @param adId
+     * @return
+     */
+    public ReturnDTO publishShopAd(Long adId);
+
+
+    /**
+     * 下架商家广告
+     * @param adId
+     * @return
+     */
+    public ReturnDTO offShopAd(Long adId);
+    
+
+    /**
+     * 删除商家广告
+     * @param adId
+     * @return
+     */
+    public ReturnDTO delShopAd(Long adId);
+    
+    /**
+     * 商家活动列表接口（商家自查）
+     * @param shopId
+     * @param index
+     * @return
+     */
+    public ReturnDTO listForShop(Long shopId, int index);
 
 }

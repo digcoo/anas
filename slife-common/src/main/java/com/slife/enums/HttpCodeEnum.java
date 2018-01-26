@@ -59,6 +59,8 @@ public enum HttpCodeEnum {
 
     //活动相关错误统一使用3000开头错误码
     AD_NOT_EXISTS(3000,"活动不存在！"),
+    AD_NOT_PERMIT(3001,"活动已发布，未允许进行此操作！"),
+    AD_NOT_PERIOD(3002,"距离上一个活动小于10分钟，请稍后再来试试吧！"),
 
     ;
     private final int code;

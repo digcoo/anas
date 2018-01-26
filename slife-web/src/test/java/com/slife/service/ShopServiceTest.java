@@ -95,5 +95,28 @@ public class ShopServiceTest extends WebApplicationTests{
         //assertThat(retDto);
     }
 
+    @Test
+    public void publicShopAd(){
+    	ReturnDTO retDto = shopAdService.publishShopAd(956714007690412033l);
+    	System.out.println(JSON.toJSONString(retDto));
+    }
+    
 
+    @Test
+    public void offShopAd(){
+    	ReturnDTO retDto = shopAdService.offShopAd(956714007690412033l);
+    	System.out.println(JSON.toJSONString(retDto));
+    }
+
+    @Test
+    public void delShopAd(){
+    	ReturnDTO retDto = shopAdService.delShopAd(956714007690412033l);
+    	System.out.println(JSON.toJSONString(retDto));
+    }
+
+    @Test
+    public void listForShop(){
+    	ReturnDTO retDto = shopAdService.listForShop(955727017696542738l, 0);
+    	System.out.println(JSON.toJSONString(retDto));
+    }
 }

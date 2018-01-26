@@ -1,14 +1,12 @@
 package com.slife.dao;
 
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.slife.base.dao.CrudDao;
 import com.slife.entity.ShopAd;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.executor.keygen.KeyGenerator;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
-
-import java.util.List;
 
 /**
  * @author tod
@@ -47,5 +45,21 @@ public interface ShopAdDao extends CrudDao<ShopAd> {
     public List<ShopAd> selectAdsByShopId(@Param("index") Integer index,@Param("shopId") Long shopId);
 
 
+    /**
+     * 修改活动状态:上架、下架、过期、删除
+     * @param adId
+     * @param status
+     * @return
+     */
+    public int updateStatus(@Param("adId") Long adId, @Param("status") int status);
+    
+
+    /**
+     * 商家活动列表接口（商家自查）
+     * @param shopId
+     * @param statuses
+     * @return
+     */
+    public List<ShopAd> listForShop(@Param("shopId") Long shopId, @Param("statuses")List<Integer> statuses, @Param("index") int index);
 
 }
