@@ -5,8 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +19,8 @@ import com.slife.enums.HttpCodeEnum;
 import com.slife.service.IShopAdService;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
+import com.slife.vo.AdAddVO;
+import com.slife.vo.AdUpdateVO;
 
 /**
  * @author tod
@@ -61,19 +61,19 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 
 	@Override
 	@Transactional(readOnly = false)
-	public ReturnDTO addShopAd(ShopAd shopAd) {
-		Shop localShop = shopDao.selectById(shopAd.getShopId());
+	public ReturnDTO addShopAd(AdAddVO adAddVO) {
+		Shop localShop = shopDao.selectById(adAddVO.getShopId());
 		if(localShop == null) {
 			return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_NOT_EXISTS);
 		}
 		
-		if(shopAd.getType() == 0 || StringUtils.isEmpty(shopAd.getTitle())){
+		if(adAddVO.getType() == 0 || StringUtils.isEmpty(adAddVO.getTitle())){
 			return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
 		}
 		
-		switch (AdType.getByCode(shopAd.getType())) {
+		switch (AdType.getByCode(adAddVO.getType())) {
 		case DISCOUNT:		//打折促销
-			if(shopAd.getStartTime() == null || shopAd.getEndTime() == null){
+			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
 				return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
 			}
 			break;
@@ -84,12 +84,12 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			
 			break;
 		case ADVANCE:		//预告预售
-			if(shopAd.getStartTime() == null || shopAd.getEndTime() == null){
+			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
 				return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
 			}
 			break;
 		case OTHER:			//其他
-			if(shopAd.getStartTime() == null || shopAd.getEndTime() == null){
+			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
 				return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
 			}			
 			break;
@@ -98,6 +98,15 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
 		}
 		
+		ShopAd shopAd = new ShopAd();
+		shopAd.setShopId(adAddVO.getShopId());
+		shopAd.setType((byte)adAddVO.getType());
+		shopAd.setTitle(adAddVO.getTitle());
+		shopAd.setItems(adAddVO.getItems());
+		shopAd.setStartTime(adAddVO.getStartTime());
+		shopAd.setEndTime(adAddVO.getEndTime());
+		
+		//冗余字段
 		shopAd.setGeohash(localShop.getGeohash());
 		shopAd.setShopName(localShop.getName());
 		
@@ -109,14 +118,22 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	}
 	
 	@Override
-	public ReturnDTO updateShopAd(ShopAd shopAd) {
-		ShopAd localShopAd = baseMapper.selectById(shopAd.getId());
+	@Transactional(readOnly = false)
+	public ReturnDTO updateShopAd(AdUpdateVO updateVO) {
+		ShopAd localShopAd = baseMapper.selectById(updateVO.getAdId());
 		if(localShopAd == null) {
 			return ReturnDTOUtil.custom(HttpCodeEnum.AD_NOT_EXISTS);
 		}
-		int ret = this.baseMapper.updateById(shopAd);
+		
+		localShopAd.setType(updateVO.getType());
+		localShopAd.setTitle(updateVO.getTitle());
+		localShopAd.setStartTime(updateVO.getStartTime());
+		localShopAd.setEndTime(updateVO.getEndTime());
+		localShopAd.setItems(updateVO.getItems());
+		
+		int ret = this.baseMapper.updateById(localShopAd);
 		if(ret > 0){
-			return ReturnDTOUtil.success(shopAd);
+			return ReturnDTOUtil.success(localShopAd);
 		}
 		return ReturnDTOUtil.fail(); 
 	}

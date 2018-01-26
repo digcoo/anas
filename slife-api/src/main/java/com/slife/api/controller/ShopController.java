@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.slife.base.entity.ReturnDTO;
-import com.slife.entity.ShopAd;
 import com.slife.service.impl.ShopAdService;
 import com.slife.service.impl.ShopService;
-import com.slife.util.ReturnDTOUtil;
+import com.slife.vo.AdAddVO;
+import com.slife.vo.AdUpdateVO;
 import com.slife.vo.ShopBaseVO;
 import com.slife.vo.ShopMallVO;
 import com.slife.vo.ShopVO;
@@ -82,19 +82,19 @@ public class ShopController {
         return shopService.saveShop(shopMallVO);
     }
     
-    @ApiOperation(value = "Cj-6 新建活动", notes = "新建活动",httpMethod = "POST")
+    @ApiOperation(value = "D-5 新建活动", notes = "新建活动",httpMethod = "POST")
     @PostMapping(value = "/ad/add")
     @ResponseBody
-    public ReturnDTO addAd(@RequestBody ShopAd shopAd, HttpServletRequest request) {
+    public ReturnDTO addAd(@RequestBody AdAddVO shopAd, HttpServletRequest request) {
     	logger.debug("[ShopController]-[addAd] : params = " + JSON.toJSONString(shopAd));
         return shopAdService.addShopAd(shopAd);
     }
     
     
-    @ApiOperation(value = "Cj-7 编辑活动", notes = "编辑活动",httpMethod = "POST")
+    @ApiOperation(value = "D-6 编辑活动", notes = "编辑活动",httpMethod = "POST")
     @PostMapping(value = "/ad/update")
     @ResponseBody
-    public ReturnDTO updateAd(@RequestBody ShopAd shopAd, HttpServletRequest request) {
+    public ReturnDTO updateAd(@RequestBody AdUpdateVO shopAd, HttpServletRequest request) {
     	logger.debug("[ShopController]-[updateAd] : params = " + JSON.toJSONString(shopAd));
     	return shopAdService.updateShopAd(shopAd);
     }

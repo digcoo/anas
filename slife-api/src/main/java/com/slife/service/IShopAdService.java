@@ -5,6 +5,8 @@ import java.util.List;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.IBaseService;
 import com.slife.entity.ShopAd;
+import com.slife.vo.AdAddVO;
+import com.slife.vo.AdUpdateVO;
 
 /**
  * @author tod
@@ -49,14 +51,14 @@ public interface IShopAdService extends IBaseService<ShopAd> {
      * @param shopAd
      * @return
      */
-    public ReturnDTO addShopAd(ShopAd shopAd);
+    public ReturnDTO addShopAd(AdAddVO adAddVO);
 
     /**
      * 修改商家广告
      * @param shopAd
      * @return
      */
-    public ReturnDTO updateShopAd(ShopAd shopAd);
+    public ReturnDTO updateShopAd(AdUpdateVO adUpdateVO);
 
 
 }

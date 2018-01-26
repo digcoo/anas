@@ -17,10 +17,11 @@
         <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
         <result column="shop_id" jdbcType="BIGINT" property="shopId" />
         <result column="geohash" jdbcType="VARCHAR" property="geohash" />
+        <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, type, title,items,favor_num,publish_time,shop_id,geohash
+        id, type, title,items,favor_num,publish_time,shop_id,geohash,shop_name
     </sql>
 
     <select id="selectAdsByGeohash" resultMap="BaseResultMap">
