@@ -32,7 +32,6 @@ import com.slife.util.StringUtils;
  */
 @Service
 @Transactional(readOnly = true, rollbackFor = Exception.class)
-@CacheConfig(cacheNames = "ads")
 public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements IShopAdService {
 
     protected Logger logger= LoggerFactory.getLogger(getClass());
@@ -41,7 +40,6 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	ShopDao shopDao;
 
     @Override
-    @Cacheable(key = "#geohash")
     public List<ShopAd> selectAdsByGeohash(Integer index,String geohash) {
 
         return this.baseMapper.selectAdsByGeohash(index,geohash);
@@ -62,6 +60,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
     }
 
 	@Override
+	@Transactional(readOnly = false)
 	public ReturnDTO addShopAd(ShopAd shopAd) {
 		Shop localShop = shopDao.selectById(shopAd.getShopId());
 		if(localShop == null) {

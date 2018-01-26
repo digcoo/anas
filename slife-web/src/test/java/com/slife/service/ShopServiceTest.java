@@ -59,7 +59,7 @@ public class ShopServiceTest extends WebApplicationTests{
     	shopAd.setItems(JSON.toJSONString(items));
     	
         ReturnDTO retDto = shopAdService.addShopAd(shopAd);
-        assertThat(retDto);
+        //assertThat(retDto);
     }
 
 

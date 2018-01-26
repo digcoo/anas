@@ -57,7 +57,7 @@ public class ShopAdController extends BaseController {
     @ApiResponses({@ApiResponse(code = 200,message = "成功",response = IndexVO.class)})
     @GetMapping(value = "/ads")
     @ResponseBody
-    public ReturnDTO getAds(@RequestParam("index") Integer index,@RequestParam("geohash") String geohash) {
+    public ReturnDTO<IndexVO> getAds(@RequestParam("index") Integer index,@RequestParam("geohash") String geohash) {
         if(StringUtils.isBlank(geohash)) {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
