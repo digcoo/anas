@@ -14,7 +14,7 @@ import java.io.Serializable;
  * <p>
  *
  */
-@ApiModel(value="活动详情对象",description="用于呈现商家活动内容")
+@ApiModel(value="Item",description="用于呈现商家活动内容")
 public class Item implements Serializable {
 
     private static final long serialVersionUID = 1L;

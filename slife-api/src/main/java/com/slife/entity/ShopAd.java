@@ -39,11 +39,11 @@ public class ShopAd extends ApiEntity<ShopAd> {
      * varchar(500) 活动收藏数
      */
     @TableField(value = "favor_num")
-    private String favorNum;
+    private Integer favorNum = 0;
     /**
      * varchar(15) 活动状态
      */
-    private Byte status;
+    private Byte status = Byte.valueOf("1");
 
     /**
      * varchar(50) geo编码
@@ -92,11 +92,11 @@ public class ShopAd extends ApiEntity<ShopAd> {
         this.title = title;
     }
 
-    public String getFavorNum() {
+    public Integer getFavorNum() {
         return favorNum;
     }
 
-    public void setFavorNum(String favorNum) {
+    public void setFavorNum(Integer favorNum) {
         this.favorNum = favorNum;
     }
 

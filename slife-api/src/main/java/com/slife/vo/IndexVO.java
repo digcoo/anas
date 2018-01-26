@@ -15,7 +15,7 @@ import java.util.List;
  * <p>
  *
  */
-@ApiModel(value="首页活动对象",description="用于呈现用户首页附近所有活动")
+@ApiModel(value="IndexVO",description="用于呈现用户首页附近所有活动")
 public class IndexVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
