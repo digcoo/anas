@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "修改昵称", notes = "用户重新修改昵称，默认昵称使用微信昵称")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "form", dataType = "long", required = true),
+    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "query", dataType = "long", required = true),
             @ApiImplicitParam(name = "nick", paramType = "form", dataType = "String", required = true)})
     @PostMapping("/nick/edit")
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "编辑头像", notes = "用户重新上传头像，默认使用微信头像")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "form", dataType = "long", required = true),
+    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "query", dataType = "long", required = true),
             @ApiImplicitParam(name = "headImg", paramType = "form", dataType = "String", required = true)})
     @PostMapping("/head_img/edit")
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
