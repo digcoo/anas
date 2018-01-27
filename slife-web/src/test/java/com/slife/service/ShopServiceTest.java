@@ -42,20 +42,30 @@ public class ShopServiceTest extends WebApplicationTests{
     	
     	shopAd.setEndTime(calendar.getTime());
     	
-    	shopAd.setTitle("[神秘巨星 Secret Superstar]在莘庄龙之梦海上国际影城首映式，今日晚间20点，全场所有场次均8折，附近的您快来抢票吧");
+    	shopAd.setTitle("刚进的新鲜水果，打折促销，快过来看一看，到店即7折");
     	
     	List<Map<String, String>> items = new ArrayList<Map<String, String>>();
     	Map<String, String> map1 = new HashMap<String, String>();
-    	map1.put("url", "https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2508925590.webp");
+    	map1.put("url", "https://img.alicdn.com/bao/uploaded/i2/1910146537/TB1c9k8mJrJ8KJjSspaXXXuKpXa_!!0-item_pic.jpg_160x160.jpg");
     	items.add(map1);
     	
     	Map<String, String> map2 = new HashMap<String, String>();
-    	map2.put("url", "https://img3.doubanio.com/view/celebrity/s_ratio_celebrity/public/p1494080264.12.webp");
+    	map2.put("url", "https://img.alicdn.com/bao/uploaded/i1/1910146537/TB1RUXmc8LN8KJjSZFpXXbZaVXa_!!0-item_pic.jpg_160x160.jpg");
     	items.add(map2);
     	
     	Map<String, String> map3 = new HashMap<String, String>();
-    	map3.put("url", "https://img1.doubanio.com/view/celebrity/s_ratio_celebrity/public/p13628.webp");
+    	map3.put("url", "https://img.alicdn.com/bao/uploaded/i1/1910146537/TB16EIQh_vI8KJjSspjXXcgjXXa_!!0-item_pic.jpg_160x160.jpg");
     	items.add(map3);
+    	
+    	Map<String, String> map4 = new HashMap<String, String>();
+    	map4.put("url", "https://img.alicdn.com/imgextra/i2/1910146537/TB2dYNgdAfb_uJjSsrbXXb6bVXa_!!1910146537.jpg_160x160.jpg");
+    	items.add(map4);
+    	
+    	Map<String, String> map5 = new HashMap<String, String>();
+    	map4.put("url", "https://img.alicdn.com/imgextra/i4/1910146537/TB2jRzpdBDH8KJjSszcXXbDTFXa_!!1910146537.jpg_430x430q90.jpg");
+    	items.add(map4);
+    	
+    	
     	
     	shopAd.setItems(JSON.toJSONString(items));
     	
@@ -98,7 +108,7 @@ public class ShopServiceTest extends WebApplicationTests{
 
     @Test
     public void publicShopAd(){
-    	ReturnDTO retDto = shopAdService.publishShopAd(956714007690412033l);
+    	ReturnDTO retDto = shopAdService.publishShopAd(956914448743247874l);
     	System.out.println(JSON.toJSONString(retDto));
     }
     

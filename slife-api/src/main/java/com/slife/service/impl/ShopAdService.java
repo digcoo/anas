@@ -44,6 +44,8 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	
 	private final static int MAX_COUNT_FREE_PUBLISH_OF_PER_DAY = 3;		//商家每天免费发布的活动条数
 
+	private final static int DURING_PUBLISH_BETWEEN_AD = 5;		//同一商家发布广告的时间间隔（分钟）
+
     protected Logger logger= LoggerFactory.getLogger(getClass());
 	
 	@Autowired
@@ -170,7 +172,8 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		
 		//判断上一条发布的活动时间间隔是否超过10分钟
 		List<ShopAd> publishedAds = baseMapper.selectAdsByShopId(0, localShopAd.getShopId());
-		if(publishedAds.size() > 1 && publishTime.compareTo(publishedAds.get(1).getPublishTime()) < 10 * 60 * 1000){
+		
+		if(publishedAds.size() > 1 && (publishTime.getTime() - publishedAds.get(1).getPublishTime().getTime()) < DURING_PUBLISH_BETWEEN_AD * 60 * 1000){
 			return ReturnDTOUtil.custom(HttpCodeEnum.AD_NOT_PERIOD);
 		}
 		
