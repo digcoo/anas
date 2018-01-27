@@ -3,8 +3,10 @@ package com.slife.service;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.IBaseService;
 import com.slife.entity.Shop;
+import com.slife.entity.ShopCountPerMallView;
 import com.slife.vo.ShopBaseVO;
 import com.slife.vo.ShopVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,4 +26,12 @@ public interface IShopService extends IBaseService<Shop> {
 
 
     ReturnDTO<ShopVO> getShopInfo(long userId);
+
+    /**
+     * 根据mallId获取该mall下的商家总数
+     *
+     * @param mallIdList
+     * @return
+     */
+    public List<ShopCountPerMallView> countShopByMallId(List<Long> mallIdList);
 }

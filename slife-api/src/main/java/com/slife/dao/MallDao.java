@@ -16,4 +16,7 @@ import com.slife.entity.Mall;
 public interface MallDao extends CrudDao<Mall> {
 
 	List<Mall> findPageByKey(@Param("key")String key);
+
+	List<Mall> selectMallsByGeohash(@Param("geohash")String geohash);
+
 }

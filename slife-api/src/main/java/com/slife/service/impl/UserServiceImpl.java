@@ -23,13 +23,7 @@ import java.util.function.Predicate;
 public class UserServiceImpl implements UserService {
 
     private static final Predicate<User> checkParam = (o) -> {
-        if (o == null) {
-            return false;
-        }
-        if (StringUtils.isEmpty(o.getOpenId())) {
-            return false;
-        }
-        return true;
+        return o != null && StringUtils.isNotBlank(o.getOpenId());
     };
 
     @Resource

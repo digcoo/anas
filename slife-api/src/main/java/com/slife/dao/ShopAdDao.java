@@ -3,6 +3,7 @@ package com.slife.dao;
 
 import java.util.List;
 
+import com.slife.entity.ShopCountPerMallView;
 import org.apache.ibatis.annotations.Param;
 
 import com.slife.base.dao.CrudDao;
@@ -61,5 +62,6 @@ public interface ShopAdDao extends CrudDao<ShopAd> {
      * @return
      */
     public List<ShopAd> listForShop(@Param("shopId") Long shopId, @Param("statuses")List<Integer> statuses, @Param("index") int index);
+
 
 }
