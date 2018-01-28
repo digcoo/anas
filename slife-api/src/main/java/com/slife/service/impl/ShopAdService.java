@@ -4,13 +4,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.impl.BaseService;
 import com.slife.dao.ShopAdDao;
@@ -25,6 +25,7 @@ import com.slife.entity.enums.SpreadType;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
 import com.slife.service.IShopAdService;
+import com.slife.util.DateUtils;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
 import com.slife.vo.AdAddVO;
@@ -226,6 +227,15 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	public ReturnDTO listForShop(Long shopId, int index) {
 		List<Integer> statuses = Arrays.asList(AdStatus.INIT.getStatus(), AdStatus.OFF.getStatus(), AdStatus.ON.getStatus());
 		List<ShopAd> ads = baseMapper.listForShop(shopId, statuses, index);
+		if(ads != null) {
+			for (ShopAd shopAd : ads) {
+				if(StringUtils.isNotBlank(shopAd.getItems())){
+					shopAd.setItemsArray(JSON.parseArray(shopAd.getItems()));
+					shopAd.setItems(null);
+				}
+				shopAd.setTimeDesc(DateUtils.formatTimeForShow(shopAd.getPublishTime()));
+			}
+		}
 		return ReturnDTOUtil.success(ads);
 	}
 

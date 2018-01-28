@@ -4,6 +4,7 @@ package com.slife.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.slife.base.entity.ApiEntity;
@@ -32,6 +33,8 @@ public class ShopAd extends ApiEntity<ShopAd> {
      * varchar(500) 内容
      */
     private String items;
+
+    private JSONArray itemsArray;
 
     /**
      * varchar(500) 活动收藏数
@@ -74,6 +77,8 @@ public class ShopAd extends ApiEntity<ShopAd> {
      */
     @TableField(value = "shop_name")
     private String shopName;
+
+    private String timeDesc;
 
 
     @Override
@@ -170,5 +175,25 @@ public class ShopAd extends ApiEntity<ShopAd> {
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
 	}
-    
+
+
+	public JSONArray getItemsArray() {
+		return itemsArray;
+	}
+
+
+	public void setItemsArray(JSONArray itemsArray) {
+		this.itemsArray = itemsArray;
+	}
+
+
+	public String getTimeDesc() {
+		return timeDesc;
+	}
+
+
+	public void setTimeDesc(String timeDesc) {
+		this.timeDesc = timeDesc;
+	}
+	
 }
