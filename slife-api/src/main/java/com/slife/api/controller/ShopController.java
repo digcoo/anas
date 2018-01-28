@@ -124,6 +124,8 @@ public class ShopController {
     }
     
     @ApiOperation(value = "D-10 商家活动列表接口（商家自查）", notes = "商家活动列表接口（商家自查）",httpMethod = "GET")
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
+        @ApiImplicitParam(paramType = "query", dataType = "Long", name = "shopId", value = "商家Id",required = true) })
     @GetMapping(value = "/ad/list_for_shop")
     @ResponseBody
     public ReturnDTO listForShop(@Param("index") int index, @Param("shopId") Long shopId, HttpServletRequest request) {
