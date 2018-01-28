@@ -1,14 +1,16 @@
 package com.slife.dao;
 
-import com.slife.entity.Favor;
 import com.slife.entity.Follow;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
 
 public interface FollowDao {
 
-    List<Favor> selectByPrimaryKey(Map<String,Object> param);
+    Follow selectByUserIdAndShopId(@Param("userId") long userId, @Param("shopId") long shopId);
+
+    List<Follow> selectByUserId(Map<String, Object> param);
 
     int deleteByPrimaryKey(long id);
 

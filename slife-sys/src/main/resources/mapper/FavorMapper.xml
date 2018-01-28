@@ -16,12 +16,21 @@
     <select id="selectByUserId" parameterType="java.util.Map" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from digcoo_anas_follow
+        from digcoo_anas_favor
         where user_id = #{userId,jdbcType=BIGINT}
         <if test="status!=nul and status>0">
-            status=#{status,jdbcType=INTEGER}
+            and status=#{status,jdbcType=INTEGER}
         </if>
     </select>
+
+    <select id="selectByUserIdAndAdId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from digcoo_anas_favor
+        where user_id = #{userId,jdbcType=BIGINT} and ad_id=#{adId} LIMIT 1
+
+    </select>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

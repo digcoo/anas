@@ -56,6 +56,8 @@ public enum HttpCodeEnum {
     SHOP_SMS_ERROR(2002,"短信验证码错误"),
     SHOP_USER_DUP(2003,"用户已注册"),
     SHOP_USER_NOT_FOUND(2004,"用户未注册"),
+    SHOP_NOT_FOLLOW(2005,"您还未关注该商户"),
+    SHOP_UNLINK_FOLLOW(2005,"您已取消关注"),
 
 
 
@@ -64,7 +66,8 @@ public enum HttpCodeEnum {
     AD_NOT_PERMIT(3001,"活动已发布，未允许进行此操作！"),
     AD_NOT_PERIOD(3002,"您发布活动有点频繁哦，稍微休息一下再来吧"),
     AD_OVER_LIMIT(3003,"免费次数用完了哦^_^，试一下9元上头条吧？"),
-
+    AD_NOT_FAVOR(3004,"你还没有收藏活动"),
+    AD_CANCEL_FAVOR(3005,"你已取消收藏"),
     ;
     private final int code;
     private final String message;

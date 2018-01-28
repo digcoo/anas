@@ -19,9 +19,18 @@
         from digcoo_anas_follow
         where user_id = #{userId,jdbcType=BIGINT}
         <if test="status!=nul and status>0">
-            status=#{status,jdbcType=INTEGER}
+            and status=#{status,jdbcType=INTEGER}
         </if>
     </select>
+
+    <select id="selectByUserIdAndShopId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from digcoo_anas_follow
+        where user_id = #{userId,jdbcType=BIGINT} and shop_id = #{shopId} LIMIT 1
+
+    </select>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -38,7 +47,7 @@
       update_date)
     values (#{id,jdbcType=BIGINT}, #{shopId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
       #{followTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, now(),
-      nos())
+      now())
   </insert>
     <insert id="insertSelective" parameterType="com.slife.entity.Follow">
         insert into digcoo_anas_follow
