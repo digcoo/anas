@@ -23,7 +23,7 @@ public class FavorController {
     private FavorService favorService;
     
     @ApiOperation(value = "收藏接口", notes = "用户收藏")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "query", dataType = "long", required = true),
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", paramType = "query", dataType = "long", required = true),
             @ApiImplicitParam(name = "adId", paramType = "query", dataType = "long", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
     @GetMapping("link")
@@ -33,7 +33,7 @@ public class FavorController {
     }
 
     @ApiOperation(value = "取消关注", notes = "用户取消收藏")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "query", dataType = "long", required = true),
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", paramType = "query", dataType = "long", required = true),
             @ApiImplicitParam(name = "adId", paramType = "query", dataType = "long", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
     @GetMapping("unlink")
@@ -43,7 +43,7 @@ public class FavorController {
     }
 
     @ApiOperation(value = "关注", notes = "用户关注商户接口")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "query", dataType = "long", required = true)})
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", paramType = "query", dataType = "long", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
     @GetMapping("list")
     public ReturnDTO<List<ShopAd>> shopAdList(@RequestParam("userId") long userId) {

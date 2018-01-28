@@ -22,7 +22,7 @@ public class FollowController {
     private FollowService followService;
 
     @ApiOperation(value = "关注", notes = "用户关注商户接口")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "query", dataType = "long", required = true),
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", paramType = "query", dataType = "long", required = true),
             @ApiImplicitParam(name = "shopId", paramType = "query", dataType = "long", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
     @GetMapping("link")
@@ -32,7 +32,7 @@ public class FollowController {
     }
 
     @ApiOperation(value = "取消关注", notes = "用户取消关注商户接口")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "query", dataType = "long", required = true),
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", paramType = "query", dataType = "long", required = true),
             @ApiImplicitParam(name = "shopId", paramType = "query", dataType = "long", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
     @GetMapping("unlink")
@@ -42,7 +42,7 @@ public class FollowController {
     }
 
     @ApiOperation(value = "关注", notes = "用户关注商户接口")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "query", dataType = "long", required = true)})
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", paramType = "query", dataType = "long", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
     @GetMapping("list")
     public ReturnDTO<List<Shop>> shopList(@RequestParam("userId") long userId) {
