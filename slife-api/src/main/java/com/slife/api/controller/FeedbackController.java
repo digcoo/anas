@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  */
 @Api(description = "意见反馈")
 @RestController
-@RequestMapping("/feedback/")
+@RequestMapping("/api/feedback/")
 public class FeedbackController {
 
     @Resource

@@ -58,11 +58,11 @@ public class UserController {
 
     @ApiOperation(value = "修改昵称", notes = "用户重新修改昵称，默认昵称使用微信昵称")
     @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "query", dataType = "long", required = true),
-            @ApiImplicitParam(name = "nick", paramType = "form", dataType = "String", required = true)})
+            @ApiImplicitParam(name = "nick", paramType = "query", dataType = "String", required = true)})
     @PostMapping("/nick/edit")
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
-    public ReturnDTO editNick(@RequestParam("id") long id, @RequestParam("nick") String nick) throws SlifeException{
-        return userService.editNick(id, nick)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+    public ReturnDTO editNick(@RequestParam("id") String id, @RequestParam("nick") String nick) throws SlifeException{
+        return userService.editNick(Long.parseLong(id), nick)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
     }
 
     @ApiOperation(value = "编辑头像", notes = "用户重新上传头像，默认使用微信头像")
@@ -70,8 +70,8 @@ public class UserController {
             @ApiImplicitParam(name = "headImg", paramType = "form", dataType = "String", required = true)})
     @PostMapping("/head_img/edit")
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
-    public ReturnDTO editHeadImg(@RequestParam("id") long id, @RequestParam("headImg") String headImg) throws SlifeException{
-        return userService.editHeadImg(id, headImg)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+    public ReturnDTO editHeadImg(@RequestParam("id") String id, @RequestParam("headImg") String headImg) throws SlifeException{
+        return userService.editHeadImg(Long.parseLong(id), headImg)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
     }
 
 }

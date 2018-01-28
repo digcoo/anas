@@ -50,6 +50,7 @@ public class SwaggerConfig {
     public Docket createRestApi() {
 
         return new Docket(DocumentationType.SWAGGER_2)
+//                .host("api.digcoo.com")
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.slife.api"))
