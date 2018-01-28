@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slife.dao.FavorDao">
+    <resultMap id="BaseResultMap" type="com.slife.entity.Favor">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="ad_id" jdbcType="BIGINT" property="adId"/>
+        <result column="favor" jdbcType="TIMESTAMP" property="favor"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, ad_id, favor, status, user_id, create_date, update_date
+  </sql>
+    <select id="selectByUserId" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from digcoo_anas_follow
+        where user_id = #{userId,jdbcType=BIGINT}
+        <if test="status!=nul and status>0">
+            status=#{status,jdbcType=INTEGER}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from digcoo_anas_favor
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from digcoo_anas_favor
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.slife.entity.Favor">
+    insert into digcoo_anas_favor (id, ad_id, favor, 
+      status, user_id, create_date, 
+      update_date)
+    values (#{id,jdbcType=BIGINT}, #{adId,jdbcType=BIGINT}, #{favor,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, now(),
+      now())
+  </insert>
+    <insert id="insertSelective" parameterType="com.slife.entity.Favor">
+        insert into digcoo_anas_favor
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="adId != null">
+                ad_id,
+            </if>
+            <if test="favor != null">
+                favor,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="adId != null">
+                #{adId,jdbcType=BIGINT},
+            </if>
+            <if test="favor != null">
+                #{favor,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.slife.entity.Favor">
+        update digcoo_anas_favor
+        <set>
+            <if test="adId != null">
+                ad_id = #{adId,jdbcType=BIGINT},
+            </if>
+            <if test="favor != null">
+                favor = #{favor,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.slife.entity.Favor">
+    update digcoo_anas_favor
+    set ad_id = #{adId,jdbcType=BIGINT},
+      favor = #{favor,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=BIGINT},
+      update_date = now()
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
