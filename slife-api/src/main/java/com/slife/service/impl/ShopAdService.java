@@ -233,7 +233,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 					shopAd.setItemsArray(JSON.parseArray(shopAd.getItems()));
 					shopAd.setItems(null);
 				}
-				shopAd.setTimeDesc(DateUtils.formatTimeForShow(shopAd.getPublishTime()));
+				shopAd.setTimeDesc(DateUtils.formatDate(shopAd.getPublishTime(), "yyyy-MM-dd HH:mm"));
 			}
 		}
 		return ReturnDTOUtil.success(ads);

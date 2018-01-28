@@ -16,9 +16,7 @@ import com.slife.util.DateUtils;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
 import com.slife.vo.*;
-
 import io.swagger.annotations.*;
-
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -137,7 +135,7 @@ public class ShopAdController extends BaseController {
                         ad.setType(shopAd.getType());
                         ad.setAdName(shopAd.getTitle());
                         ad.setItems(JSON.parseArray(shopAd.getItems(),Item.class));
-                        ad.setTimeDesc(DateUtils.formatTimeForShow(shopAd.getPublishTime()));
+                        ad.setTimeDesc(formatTime(shopAd.getPublishTime()));
                         ad.setLat(shop.getLat());
                         ad.setLng(shop.getLng());
                         return ad;
@@ -145,6 +143,28 @@ public class ShopAdController extends BaseController {
             ).collect(Collectors.toList());
             shopHomeVO.setAds(adList);
             return ReturnDTOUtil.success(shopHomeVO);
+        }
+    }
+
+    private String formatTime(Date date){
+        Calendar calendar = Calendar.getInstance();
+        Calendar calendar2 = Calendar.getInstance();
+        calendar.set(Calendar.DATE,-1);
+        boolean yesterday = org.apache.commons.lang3.time.DateUtils.isSameDay(calendar.getTime(),date);
+        boolean today = org.apache.commons.lang3.time.DateUtils.isSameDay(calendar2.getTime(),date);
+        String timeStr = DateUtils.formatDate(date,"HH:mm");
+        String dateStr = DateUtils.formatDate(date,"MM-DD");
+        if(yesterday){
+            return "昨天 "+timeStr;
+        }else if(today){
+            long difference=System.currentTimeMillis()-date.getTime();
+            long minute=difference/(60*1000);
+            if(minute<20){
+                return minute+"前";
+            }
+            return timeStr;
+        }else{
+            return dateStr;
         }
     }
 
@@ -162,7 +182,7 @@ public class ShopAdController extends BaseController {
         indexAdVO.setType(shopAd.getType());
         indexAdVO.setAdName(shopAd.getTitle());
         indexAdVO.setItems(JSON.parseArray(shopAd.getItems(),Item.class));
-        indexAdVO.setTimeDesc(DateUtils.formatTimeForShow(shopAd.getPublishTime()));
+        indexAdVO.setTimeDesc(formatTime(shopAd.getPublishTime()));
         indexAdVO.setType(shopAd.getType());
         indexAdVO.setLat(shop.getLat());
         indexAdVO.setLng(shop.getLng());
