@@ -33,6 +33,7 @@
     <select id="selectAdsByGeohash" resultMap="BaseResultMap">
         <![CDATA[
 
+
           select id, type, title,items,favor_num,publish_time,shop_id,geohash from `digcoo_anas_shop_ad` 
           where 
           status= 1 and 
@@ -40,11 +41,13 @@
           geohash like CONCAT(#{geohash},'%') 
           order by publish_time desc limit #{index},10
 
+
         ]]>
     </select>
 
     <select id="selectAdsByGeohashAndName" resultMap="BaseResultMap">
         <![CDATA[
+
 
           select id, type, title,items,favor_num,publish_time,shop_id,geohash from `digcoo_anas_shop_ad` 
           where 
@@ -65,11 +68,13 @@
 --                 END
                 publish_time desc limit #{index},10
 
+
         ]]>
     </select>
 
     <select id="selectAdsByShopId" resultMap="BaseResultMap">
         <![CDATA[
+
 
           select id, type, title,items,favor_num,publish_time,shop_id,geohash from `digcoo_anas_shop_ad` 
           where 
@@ -77,6 +82,7 @@
           start_time<NOW() and end_time>Now() and
           shop_id = #{shopId}
           order by publish_time desc limit #{index},10
+
 
         ]]>
     </select>
@@ -87,6 +93,18 @@
 
     <select id="listForShop" resultMap="BaseResultMap">
         select id, type, title,items,favor_num,publish_time,shop_id,geohash from `digcoo_anas_shop_ad` where
+        shop_id = #{shopId} and status in
+        <foreach collection="statuses" item="status" open="(" close=")" separator=",">
+            #{status}
+        </foreach>
+        order by create_date desc limit #{index},10
+    </select>
+    <update id="publishShopAd">
+		update `digcoo_anas_shop_ad` set status=#{status}, publish_time=#{publishTime} where id = #{adId}
+	</update>
+
+    <select id="listForShop" resultMap="BaseResultMap">
+        select id, type, title, status, items,favor_num,publish_time,shop_id,geohash from `digcoo_anas_shop_ad` where
         shop_id = #{shopId} and status in
         <foreach collection="statuses" item="status" open="(" close=")" separator=",">
             #{status}

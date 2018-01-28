@@ -22,6 +22,7 @@ package com.slife.enums;
 public enum HttpCodeEnum {
 
     OK(200,"操作成功"),
+    NO_DATA(201,"无数据"),
     INVALID_REQUEST(400,"参数错误"),
     UNAUTHORIZED(401,"没有权限"),
     FORBIDDEN(403,"禁止访问"),
@@ -33,7 +34,7 @@ public enum HttpCodeEnum {
     UN_KNOW_ERROR(500,"未知错误"),
     FAIL(501,"操作失败"),
     SEND_SMS_FAIL(502,"短信发送失败"),
-
+    
     //长传文件相关错误码800开头
     UPLOAD_FILE_NOT_FOUND(800,"上传文件不存在"),
     OVER_MAX_SIZE(801,"超过最大值"),

@@ -4,6 +4,8 @@ package com.slife.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.springframework.data.annotation.Transient;
+
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -34,8 +36,6 @@ public class ShopAd extends ApiEntity<ShopAd> {
      */
     private String items;
 
-    private JSONArray itemsArray;
-
     /**
      * varchar(500) 活动收藏数
      */
@@ -44,7 +44,7 @@ public class ShopAd extends ApiEntity<ShopAd> {
     /**
      * varchar(15) 活动状态
      */
-    private Byte status = Byte.valueOf("1");
+    private Byte status = Byte.valueOf("0");
 
     /**
      * varchar(50) geo编码
@@ -175,17 +175,6 @@ public class ShopAd extends ApiEntity<ShopAd> {
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
 	}
-
-
-	public JSONArray getItemsArray() {
-		return itemsArray;
-	}
-
-
-	public void setItemsArray(JSONArray itemsArray) {
-		this.itemsArray = itemsArray;
-	}
-
 
 	public String getTimeDesc() {
 		return timeDesc;
