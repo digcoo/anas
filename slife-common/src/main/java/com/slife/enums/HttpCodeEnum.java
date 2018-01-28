@@ -37,6 +37,8 @@ public enum HttpCodeEnum {
     //长传文件相关错误码800开头
     UPLOAD_FILE_NOT_FOUND(800,"上传文件不存在"),
     OVER_MAX_SIZE(801,"超过最大值"),
+    BUCKET_NAME_NOT_FOUND(802,"bucket name不存在"),
+    BUCKET_NAME_EXIST(803,"bucket name存在"),
 
 
 
