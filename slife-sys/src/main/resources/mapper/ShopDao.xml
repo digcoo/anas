@@ -28,7 +28,6 @@
         <result column="floor" jdbcType="VARCHAR" property="floor" />
         <result column="room" jdbcType="VARCHAR" property="room" />
         <result column="audit_state" jdbcType="INTEGER" property="auditState" />
-        <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
 
     </resultMap>
     <resultMap id="ShopCountPerMallViewMap" type="com.slife.entity.ShopCountPerMallView">
