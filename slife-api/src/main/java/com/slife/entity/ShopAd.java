@@ -78,9 +78,6 @@ public class ShopAd extends ApiEntity<ShopAd> {
     @TableField(value = "shop_name")
     private String shopName;
 
-    private String timeDesc;
-
-
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -175,14 +172,4 @@ public class ShopAd extends ApiEntity<ShopAd> {
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
 	}
-
-	public String getTimeDesc() {
-		return timeDesc;
-	}
-
-
-	public void setTimeDesc(String timeDesc) {
-		this.timeDesc = timeDesc;
-	}
-	
 }
