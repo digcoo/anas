@@ -6,6 +6,7 @@ import com.slife.base.service.impl.BaseService;
 import com.slife.dao.ShopAdDao;
 import com.slife.dao.ShopDao;
 import com.slife.entity.Shop;
+import com.slife.entity.ShopCountPerMallView;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.service.IShopService;
 import com.slife.service.ISmsService;
@@ -23,6 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -162,5 +164,10 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
         shop.setAuditState(1); //等待审核
         shopDao.updateById(shop);
         return ReturnDTOUtil.success();
+    }
+
+    @Override
+    public List<ShopCountPerMallView> countShopByMallId(List<Long> mallIdList) {
+        return this.baseMapper.countShopNumsByMallId(mallIdList);
     }
 }
