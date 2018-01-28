@@ -1,5 +1,6 @@
 package com.slife.service.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -28,8 +29,10 @@ import com.slife.service.IShopAdService;
 import com.slife.util.DateUtils;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
+import com.slife.vo.Ad;
 import com.slife.vo.AdAddVO;
 import com.slife.vo.AdUpdateVO;
+import com.slife.vo.Item;
 
 /**
  * @author tod
@@ -189,12 +192,8 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			return ReturnDTOUtil.custom(HttpCodeEnum.AD_OVER_LIMIT);
 		}
 		
-		ShopAd shopAd = new ShopAd();
-		shopAd.setId(adId);
-		shopAd.setPublishTime(publishTime);
-		shopAd.setStatus((byte)AdStatus.ON.getStatus());
+		int ret = baseMapper.publishShopAd(adId, publishTime, AdStatus.ON.getStatus());
 		
-		int ret = baseMapper.updateById(shopAd);
 		if(ret > 0){
 			return ReturnDTOUtil.success();
 		}
@@ -228,15 +227,21 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		List<Integer> statuses = Arrays.asList(AdStatus.INIT.getStatus(), AdStatus.OFF.getStatus(), AdStatus.ON.getStatus());
 		List<ShopAd> ads = baseMapper.listForShop(shopId, statuses, index);
 		if(ads != null) {
+			List<Ad> retAds = new ArrayList<Ad>(ads.size());
 			for (ShopAd shopAd : ads) {
-				if(StringUtils.isNotBlank(shopAd.getItems())){
-					shopAd.setItemsArray(JSON.parseArray(shopAd.getItems()));
-					shopAd.setItems(null);
-				}
-				shopAd.setTimeDesc(DateUtils.formatDate(shopAd.getPublishTime(), "yyyy-MM-dd HH:mm"));
+				Ad ad = new Ad();
+				ad.setAdName(shopAd.getTitle());
+				ad.setTimeDesc(DateUtils.formatDate(shopAd.getPublishTime(), "yyyy-MM-dd HH:mm"));
+				ad.setItems(JSON.parseArray(shopAd.getItems(), Item.class));
+				ad.setStatus(shopAd.getStatus());
+				ad.setType(shopAd.getType());
+				ad.setFavorNum(shopAd.getFavorNum());
+				ad.setAdId(shopAd.getId());
+				retAds.add(ad);
 			}
+			return ReturnDTOUtil.success(retAds);
 		}
-		return ReturnDTOUtil.success(ads);
+		return ReturnDTOUtil.success(HttpCodeEnum.NO_DATA);
 	}
 
 	@Override
@@ -245,11 +250,11 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		//只有已发布(或当日没费次数超限)的活动，才会有必用“上头条”，前端业务流程需更改：隐藏9元上头条的逻辑，待用户超过限制之后再弹出
 		Date publishTime = new Date();
 		
-		ShopAd shopAd = new ShopAd();
-		shopAd.setId(adId);
-		shopAd.setPublishTime(publishTime);
-		shopAd.setStatus((byte)AdStatus.ON.getStatus());
-		int updateAd = baseMapper.updateById(shopAd);
+//		ShopAd shopAd = new ShopAd();
+//		shopAd.setId(adId);
+//		shopAd.setPublishTime(publishTime);
+//		shopAd.setStatus((byte)AdStatus.ON.getStatus());
+		int updateAd = baseMapper.publishShopAd(adId, publishTime, AdStatus.ON.getStatus());
 		
 		ShopAdSpread adSpread = new ShopAdSpread();
 		adSpread.setAdId(adId);

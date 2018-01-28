@@ -39,6 +39,15 @@ public class Ad implements Serializable {
     @ApiModelProperty(value="时间说明",name="timeDesc",required = true)
     private String timeDesc;
 
+    @ApiModelProperty(value="活动状态",name="status",required = true, notes = "0-初始,1-有效,2-已下架,3-已过期")
+    private int status;
+
+    @ApiModelProperty(value="收藏量",name="favorNum",required = true)
+    private int favorNum;
+
+    @ApiModelProperty(value="活动id",name="adId",required = true)
+    private Long adId;
+
     public String getAdName() {
         return adName;
     }
@@ -86,4 +95,29 @@ public class Ad implements Serializable {
     public void setTimeDesc(String timeDesc) {
         this.timeDesc = timeDesc;
     }
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public int getFavorNum() {
+		return favorNum;
+	}
+
+	public void setFavorNum(int favorNum) {
+		this.favorNum = favorNum;
+	}
+
+	public Long getAdId() {
+		return adId;
+	}
+
+	public void setAdId(Long adId) {
+		this.adId = adId;
+	}
+	
 }

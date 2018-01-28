@@ -1,9 +1,9 @@
 package com.slife.dao;
 
 
+import java.util.Date;
 import java.util.List;
 
-import com.slife.entity.ShopCountPerMallView;
 import org.apache.ibatis.annotations.Param;
 
 import com.slife.base.dao.CrudDao;
@@ -63,5 +63,12 @@ public interface ShopAdDao extends CrudDao<ShopAd> {
      */
     public List<ShopAd> listForShop(@Param("shopId") Long shopId, @Param("statuses")List<Integer> statuses, @Param("index") int index);
 
-
+    /**
+     * 商家活动发布上线
+     * @param adId
+     * @param publishTime
+     * @param status
+     * @return
+     */
+    public int publishShopAd(@Param("adId") Long adId, @Param("publishTime") Date publishTime, @Param("status") int status);
 }
