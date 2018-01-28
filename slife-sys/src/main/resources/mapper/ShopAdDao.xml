@@ -42,19 +42,19 @@
           status=1 and 
           start_time<NOW() and end_time>Now() and 
           geohash like CONCAT(#{geohash},'%') 
-          and title like  CONCAT('%',#{name},'%')
+          and （title like  CONCAT('%',#{name},'%') or shop_name like CONCAT('%',#{name},'%'))
           order by
-                CASE
-                     WHEN  title = #{name}
-                          THEN 1
-                     WHEN  title like  CONCAT(#{name},'%')
-                          THEN 2
-                     WHEN  title like  CONCAT('%',#{name})
-                          THEN 3
-                     WHEN  title like  CONCAT('%',#{name},'%')
-                          THEN 4
-                END
-                ,publish_time desc limit #{index},10
+--                 CASE
+--                      WHEN  title = #{name}
+--                           THEN 1
+--                      WHEN  title like  CONCAT(#{name},'%')
+--                           THEN 2
+--                      WHEN  title like  CONCAT('%',#{name})
+--                           THEN 3
+--                      WHEN  title like  CONCAT('%',#{name},'%')
+--                           THEN 4
+--                 END
+                publish_time desc limit #{index},10
         ]]>
     </select>
 
@@ -81,5 +81,4 @@
 			 </foreach> 
           order by create_date desc limit #{index},10
     </select>
-
 </mapper>
