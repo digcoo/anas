@@ -52,8 +52,8 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
     @Override
     public ReturnDTO requestRegSms( String phone) {
 
-        String phoneCodekey = RedisKey.PhoneCodeKey + phone;
-        String phoneCodeCountKey = RedisKey.PhoneCodeCountKey+ dayFormat.format(new Date())+":" + phone;
+        String phoneCodekey = RedisKey.PHONE_CODE_KEY + phone;
+        String phoneCodeCountKey = RedisKey.PHONE_CODE_COUNT+ dayFormat.format(new Date())+":" + phone;
 
         long ttl = stringRedisTemplate.getExpire(phoneCodekey,TimeUnit.SECONDS);
 
@@ -76,7 +76,7 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
 
     @Override
     public ReturnDTO<ShopBaseVO> saveShopBase(ShopBaseVO shopBaseVO) {
-        String phoneCodekey = RedisKey.PhoneCodeKey + shopBaseVO.getPhone();
+        String phoneCodekey = RedisKey.PHONE_CODE_KEY + shopBaseVO.getPhone();
 
         String phoneCode = shopBaseVO.getPhoneCode();
         String  code = stringRedisTemplate.opsForValue().get(phoneCodekey);

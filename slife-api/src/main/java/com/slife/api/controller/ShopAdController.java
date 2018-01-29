@@ -15,10 +15,14 @@ import com.slife.service.IShopService;
 import com.slife.util.DateUtils;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
+import com.slife.utils.RedisKey;
+import com.slife.utils.SlifeRedisTemplate;
 import com.slife.vo.*;
 import io.swagger.annotations.*;
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,6 +48,8 @@ public class ShopAdController extends BaseController {
     private IShopService shopService;
     @Autowired
     private IMallService mallService;
+    @Autowired
+    private SlifeRedisTemplate slifeRedisTemplate;
 
     /**
      * NOTE：后台管理时删除或冻结店铺需要同步更新该商家的所有活动
@@ -83,12 +89,26 @@ public class ShopAdController extends BaseController {
         if(!CollectionUtils.isEmpty(shopAdList)){
             List<Long> shopIdList = shopAdList.stream().map(ShopAd::getShopId).distinct().collect(Collectors.toList());
             List<Shop> shopList = shopService.selectBatchIds(shopIdList);
-            Map<Long, Shop> shopMap = shopList.stream().collect(Collectors.toMap(Shop::getId,shop->shop));
+            Map<Long, Shop> shopMap = shopList.stream().filter(shop -> shop.getStatus()==1).collect(Collectors.toMap(Shop::getId,shop->shop));
             List<IndexAdVO> indexAdVOList = shopAdList.stream().map(shopAd -> shopBeanMapper(shopMap,shopAd)).filter(Objects::nonNull).collect(Collectors.toList());
             indexVO.setAds(indexAdVOList);
         }
         return ReturnDTOUtil.success(indexVO);
     }
+
+    @ApiOperation(value = "T2/T3-收藏／取消收藏活动", notes = "根据userId和adId保存或删除相应redis")
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Long", name = "userId", value = "用户id",required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Long", name = "adId", value = "活动id",required = true) })
+    @GetMapping(value = "/ads/favor")
+    @ResponseBody
+    public ReturnDTO favor(@RequestParam("userId") Long userId,@RequestParam("adId") Long adId) {
+        if(userId == null || adId==null) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+        slifeRedisTemplate.collectOrNot(userId,adId);
+        return ReturnDTOUtil.success();
+    }
+
 
     @ApiOperation(value = "T5-活动搜索", notes = "根据geohash编码以及活动名称模糊搜索活动列表数据")
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
@@ -104,14 +124,14 @@ public class ShopAdController extends BaseController {
         }else{
             List<Long> shopIdList = shopAdList.stream().map(ShopAd::getShopId).distinct().collect(Collectors.toList());
             List<Shop> shopList = shopService.selectBatchIds(shopIdList);
-            Map<Long, Shop> shopMap = shopList.stream().collect(Collectors.toMap(Shop::getId,Shop->Shop));
+            Map<Long, Shop> shopMap = shopList.stream().filter(shop -> shop.getStatus()==1).collect(Collectors.toMap(Shop::getId,Shop->Shop));
             List<IndexAdVO> indexAdVOList = shopAdList.stream().map(shopAd -> shopBeanMapper(shopMap,shopAd)).filter(Objects::nonNull).collect(Collectors.toList());
             return ReturnDTOUtil.success(indexAdVOList);
         }
     }
 
 
-    @ApiOperation(value = "T6-用户端看到的商家主页", notes = "根据shopId获取商家以及有效的活动信息")
+    @ApiOperation(value = "T6/T7-用户端看到的商家主页", notes = "根据shopId获取商家以及有效的活动信息")
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
             @ApiImplicitParam(paramType = "path", dataType = "Long", name = "shopId", value = "商家id",required = true) })
     @ApiResponses({@ApiResponse(code = 200,message = "成功",response = ShopHomeVO.class)})
@@ -144,6 +164,35 @@ public class ShopAdController extends BaseController {
             shopHomeVO.setAds(adList);
             return ReturnDTOUtil.success(shopHomeVO);
         }
+    }
+
+    @ApiOperation(value = "T8-关注／取消收关注商家", notes = "根据userId和shopId保存或删除相应redis")
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Long", name = "userId", value = "用户id",required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Long", name = "shopId", value = "店铺id",required = true) })
+    @GetMapping(value = "/shop/follow")
+    @ResponseBody
+    public ReturnDTO follow(@RequestParam("userId") Long userId,@RequestParam("shopId") Long shopId) {
+        if(userId == null || shopId==null) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+        slifeRedisTemplate.followOrNot(userId,shopId);
+        return ReturnDTOUtil.success();
+    }
+
+    @ApiOperation(value = "T10-关注商家列表", notes = "根据userId获取相应关注商家列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Long", name = "userId", value = "用户id",required = true)
+            })
+    @GetMapping(value = "/shop/follow/shops")
+    @ResponseBody
+    public ReturnDTO followShops(@RequestParam("index") Integer index,@RequestParam("userId") Long userId) {
+        if(userId == null) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+        Set<String> shopIdList = slifeRedisTemplate.getFollowShopIdsWithPage(userId,index);
+        List<Shop> shopList = shopService.selectBatchIds(shopIdList.stream().map(s -> Long.parseLong(s)).collect(Collectors.toList()));
+        return ReturnDTOUtil.success(shopList.stream().filter(shop -> shop.getStatus()==1).collect(Collectors.toList()));
     }
 
     private String formatTime(Date date){
