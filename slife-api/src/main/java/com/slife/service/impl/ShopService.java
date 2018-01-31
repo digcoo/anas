@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -87,16 +88,17 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
 
 
     @Override
+    @Transactional(readOnly = false)
     public ReturnDTO<ShopBaseVO> saveShopBase(ShopBaseVO shopBaseVO) {
     	
-    	String phoneCodekey = RedisKey.PHONE_CODE_KEY + shopBaseVO.getPhone();
-
-    	String phoneCode = shopBaseVO.getPhoneCode();
-    	String  code = stringRedisTemplate.opsForValue().get(phoneCodekey);
-
-    	if(code == null || !code .equals(phoneCode)){
-    		return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_SMS_ERROR);
-    	}
+//    	String phoneCodekey = RedisKey.PHONE_CODE_KEY + shopBaseVO.getPhone();
+//
+//    	String phoneCode = shopBaseVO.getPhoneCode();
+//    	String  code = stringRedisTemplate.opsForValue().get(phoneCodekey);
+//
+//    	if(code == null || !code .equals(phoneCode)){
+//    		return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_SMS_ERROR);
+//    	}
         
         Shop shop = shopDao.selectByUserId(shopBaseVO.getUserId());
         if(shop != null){
@@ -161,6 +163,7 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
 
     }
 
+    @Transactional(readOnly = false)
     public ReturnDTO saveShop(ShopMallVO shopMallVO) {
     	
         Shop shop = shopDao.selectByUserId(shopMallVO.getUserId());

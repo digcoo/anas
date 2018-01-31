@@ -204,6 +204,8 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	@Transactional(readOnly = false)
 	public ReturnDTO offShopAd(Long adId) {
 		// 只有上架状态的ad能下架
+		//当天发布的广告，当天不能下架 todo
+		
 		int ret = baseMapper.updateStatus(adId, AdStatus.OFF.getStatus());
 		if(ret > 0){
 			return ReturnDTOUtil.success();
