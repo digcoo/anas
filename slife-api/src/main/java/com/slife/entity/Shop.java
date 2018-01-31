@@ -131,10 +131,10 @@ public class Shop extends ApiEntity<Shop> {
      */
     private String room;
 
-    /**
-     * 审核状态
-     */
-    private int  auditState;
+//    /**
+//     * 审核状态
+//     */
+//    private int  auditState;
 
 
 
@@ -315,12 +315,12 @@ public class Shop extends ApiEntity<Shop> {
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
-
-    public int getAuditState() {
-        return auditState;
-    }
-
-    public void setAuditState(int auditState) {
-        this.auditState = auditState;
-    }
+//
+//    public int getAuditState() {
+//        return auditState;
+//    }
+//
+//    public void setAuditState(int auditState) {
+//        this.auditState = auditState;
+//    }
 }

@@ -18,5 +18,7 @@ public interface MallDao extends CrudDao<Mall> {
 	List<Mall> findPageByKey(@Param("key")String key);
 
 	List<Mall> selectMallsByGeohash(@Param("geohash")String geohash);
+	
+	List<Mall> selectAll();
 
 }

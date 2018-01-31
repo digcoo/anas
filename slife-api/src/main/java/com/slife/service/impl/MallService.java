@@ -28,6 +28,12 @@ public class MallService extends BaseService<MallDao, Mall> implements IMallServ
 		}
 		return null;
 	}
+	
+
+	@Override
+	public List<Mall> selectAll() {
+		return this.baseMapper.selectAll();
+	}
 
 	@Override
 	public List<Mall> selectMallsByGeohash(String geohash) {
