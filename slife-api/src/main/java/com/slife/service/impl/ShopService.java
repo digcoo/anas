@@ -8,10 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.slife.baidu.FaceMatchService;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.impl.BaseService;
 import com.slife.dao.ShopDao;
@@ -41,6 +46,9 @@ import com.slife.vo.ShopVO;
 @Service
 public class ShopService extends BaseService<ShopDao, Shop> implements IShopService {
 
+
+    @Value("${aliyun.oss.domain}")
+    private String ossDomain;
 
     @Autowired
     private ISmsService smsService;
@@ -83,12 +91,12 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
     	
     	String phoneCodekey = RedisKey.PHONE_CODE_KEY + shopBaseVO.getPhone();
 
-      String phoneCode = shopBaseVO.getPhoneCode();
-      String  code = stringRedisTemplate.opsForValue().get(phoneCodekey);
+    	String phoneCode = shopBaseVO.getPhoneCode();
+    	String  code = stringRedisTemplate.opsForValue().get(phoneCodekey);
 
-      if(code == null || !code .equals(phoneCode)){
-          return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_SMS_ERROR);
-      }
+    	if(code == null || !code .equals(phoneCode)){
+    		return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_SMS_ERROR);
+    	}
         
         Shop shop = shopDao.selectByUserId(shopBaseVO.getUserId());
         if(shop != null){
@@ -154,6 +162,7 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
     }
 
     public ReturnDTO saveShop(ShopMallVO shopMallVO) {
+    	
         Shop shop = shopDao.selectByUserId(shopMallVO.getUserId());
 
         if(shop == null ){
@@ -162,6 +171,7 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
         if(shop.getStatus() == ShopStatus.AUDITED.getCode()){
             return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_USER_DUP);
         }
+
         shop.setShopType(shopMallVO.getShopType());
         shop.setMallId(shopMallVO.getMallId());
         shop.setFloor(shopMallVO.getFloor());
@@ -172,7 +182,15 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
         shop.setStatus((byte)ShopStatus.RIGISTER_TWO.getCode());	//注册第二部，等待审核
         
         //todo 调用自动识别身份
-        shop.setStatus((byte)ShopStatus.AUDITED.getCode());	//直接审核通过
+//        JSONObject parseObject = JSON.parseObject(shopMallVO.getAgentIdentifyCard());
+//        String idA = ossDomain + "/" + parseObject.getString("ID_A");
+//        String agentPortrait = ossDomain + "/" + shopMallVO.getAgentPortrait();
+//        String matchStr = FaceMatchService.match(idA, agentPortrait);
+//        if (StringUtils.isNotEmpty(matchStr) && JSON.parseObject(matchStr).getJSONArray("result").getJSONObject(0).getFloat("score") > 50) {
+        	shop.setStatus((byte)ShopStatus.AUDITED.getCode());	//直接审核通过
+//		}else {
+//            return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_AUDIT_DENY);
+//		}
         
         //升级为商家用户
         userDao.updateToShop(shop.getUserId(), UserType.SHOP_USER.getCode());

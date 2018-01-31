@@ -58,7 +58,8 @@ public enum HttpCodeEnum {
     SHOP_USER_DUP(2003,"用户已注册"),
     SHOP_USER_NOT_FOUND(2004,"用户未注册"),
     SHOP_NOT_FOLLOW(2005,"您还未关注该商户"),
-    SHOP_UNLINK_FOLLOW(2005,"您已取消关注"),
+    SHOP_UNLINK_FOLLOW(2006,"您已取消关注"),
+    SHOP_AUDIT_DENY(2007,"商家审核未通过"),
 
 
 
