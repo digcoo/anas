@@ -3,7 +3,9 @@ package com.slife.entity;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.slife.base.entity.ApiEntity;
 
 /**
@@ -17,9 +19,11 @@ import com.slife.base.entity.ApiEntity;
 @TableName("digcoo_anas_mall")
 public class Mall extends ApiEntity<Mall> {
 
-    private static final long serialVersionUID = 1L;
-    
 
+    private static final long serialVersionUID = 1L;
+
+	@TableId(value = "ID", type = IdType.AUTO)
+	private Long id;
     @Override
     protected Serializable pkVal() {
         return this.id;

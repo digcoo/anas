@@ -4,6 +4,8 @@ package com.slife.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.enums.IdType;
 import org.springframework.data.annotation.Transient;
 
 import com.alibaba.fastjson.JSONArray;
@@ -22,6 +24,8 @@ import com.slife.base.entity.ApiEntity;
 @TableName("digcoo_anas_shop_ad")
 public class ShopAd extends ApiEntity<ShopAd> {
 
+    @TableId(value = "ID", type = IdType.AUTO)
+    private Long id;
     /**
      * varchar(20) 活动类型
      */

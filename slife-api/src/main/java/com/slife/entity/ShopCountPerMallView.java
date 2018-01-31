@@ -1,7 +1,9 @@
 package com.slife.entity;
 
 
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.slife.base.entity.ApiEntity;
 
 import java.io.Serializable;
@@ -17,7 +19,6 @@ import java.io.Serializable;
 public class ShopCountPerMallView{
 
     private static final long serialVersionUID = 1L;
-
 	private Long mallId;
 
 	private Integer nums;

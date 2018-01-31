@@ -1,8 +1,11 @@
 package com.slife.entity;
 
 
+import com.baomidou.mybatisplus.annotations.KeySequence;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.slife.base.entity.ApiEntity;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -21,6 +24,10 @@ import java.util.Date;
 public class Shop extends ApiEntity<Shop> {
 
     private static final long serialVersionUID = 1L;
+
+    @TableId(value = "ID", type = IdType.AUTO)
+    private Long id;
+
 
     private Long userId;
 

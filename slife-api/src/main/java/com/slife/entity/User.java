@@ -1,6 +1,8 @@
 package com.slife.entity;
 
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.toolkit.StringUtils;
 import com.slife.base.entity.ApiEntity;
 
@@ -13,6 +15,9 @@ import java.util.Date;
 @TableName("digcoo_anas_user")
 public class User extends ApiEntity<User> {
     private String openId;
+
+    @TableId(value = "ID", type = IdType.AUTO)
+    private Long id;
 
     private int type;
 

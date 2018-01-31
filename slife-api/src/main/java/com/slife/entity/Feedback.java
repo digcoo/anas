@@ -1,5 +1,7 @@
 package com.slife.entity;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.slife.base.entity.ApiEntity;
 
 import java.io.Serializable;
@@ -10,6 +12,8 @@ import java.util.Date;
  */
 public class Feedback extends ApiEntity<Feedback> implements Serializable {
 
+    @TableId(value = "ID", type = IdType.AUTO)
+    private Long id;
     /**
      * 提交者用户id
      */
