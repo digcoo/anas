@@ -91,4 +91,10 @@
     set head_img = #{headImg,jdbcType=VARCHAR}, update_date = now()
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <update id="updateToShop">
+    update digcoo_anas_user
+    set type = #{type,jdbcType=TINYINT}, update_date = now()
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 </mapper>

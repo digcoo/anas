@@ -150,7 +150,7 @@ public class ShopServiceTest extends WebApplicationTests{
     	shop.setLng(121.123);
     	shop.setGeohash("ttt");
     	shop.setFollowNum(0);
-    	shop.setAuditState(0);
+//    	shop.setAuditState(0);
     	shop.setAgentPosition("14");
     	shop.setStatus((byte)1);
     	shopService.insert(shop);

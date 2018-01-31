@@ -27,7 +27,7 @@
         <result column="mall_id" jdbcType="BIGINT" property="mallId" />
         <result column="floor" jdbcType="VARCHAR" property="floor" />
         <result column="room" jdbcType="VARCHAR" property="room" />
-        <result column="audit_state" jdbcType="INTEGER" property="auditState" />
+<!--         <result column="audit_state" jdbcType="INTEGER" property="auditState" /> -->
 
     </resultMap>
     <resultMap id="ShopCountPerMallViewMap" type="com.slife.entity.ShopCountPerMallView">
@@ -36,16 +36,16 @@
     </resultMap>
     <sql id="Base_Column_List">
         id,user_id,`name`,picture,tel,addr,open_mobile,business_id,lat,lng,geohash,follow_num,business_license,agent_identify_card,
-        agent_position,agent_portrait,status,logo,create_date,update_date,shop_type,mall_id,floor,room,audit_state
+        agent_position,agent_portrait,status,logo,create_date,update_date,shop_type,mall_id,floor,room
     </sql>
 
     <insert id="insert" parameterType="com.slife.entity.Shop">
         insert into digcoo_anas_shop (
              id,user_id,`name`,picture,tel,addr,open_mobile,business_id,lat,lng,geohash,follow_num,business_license,agent_identify_card,
-             agent_position,agent_portrait,status,logo,create_date,update_date,shop_type,mall_id,floor,room,audit_state
+             agent_position,agent_portrait,status,logo,create_date,update_date,shop_type,mall_id,floor,room
         )
         values (#{id},#{userId},#{name},#{picture},#{tel},#{addr},#{openMobile},#{businessId},#{lat},#{lng},#{geohash},#{followNum},#{businessLicense},#{agentIdentifyCard},
-                #{agentPosition}, #{agentPortrait}, #{status}, #{logo}, now(),  now() ,#{shopType}, #{mallId}, #{floor}, #{room}, #{auditState}
+                #{agentPosition}, #{agentPortrait}, #{status}, #{logo}, now(),  now() ,#{shopType}, #{mallId}, #{floor}, #{room}
         )
     </insert>
 
