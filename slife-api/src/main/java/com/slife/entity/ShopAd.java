@@ -82,6 +82,12 @@ public class ShopAd extends ApiEntity<ShopAd> {
     @TableField(value = "shop_name")
     private String shopName;
 
+    /**
+     * 行业id：冗余字段
+     */
+    @TableField(value = "business_id")
+    private Long businessId;
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -176,4 +182,13 @@ public class ShopAd extends ApiEntity<ShopAd> {
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
 	}
+
+	public Long getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(Long businessId) {
+		this.businessId = businessId;
+	}
+	
 }

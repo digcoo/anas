@@ -43,7 +43,8 @@ public class UserServiceImpl implements UserService {
         SessionKeyWX sessionKey = requestWechatApi.getSessionKey(code);
         SessionKeyVO sessionKeyVO = new SessionKeyVO();
         if (sessionKey == null || StringUtils.isEmpty(sessionKey.getOpenId())) {
-            return null;
+        	sessionKeyVO.setErrCode(sessionKey.getErrcode());
+        	sessionKeyVO.setErrMsg(sessionKey.getErrmsg());
         }else{
             sessionKeyVO.setOpenId(sessionKey.getOpenId());
             sessionKeyVO.setSessionKey(sessionKey.getSessionKey());

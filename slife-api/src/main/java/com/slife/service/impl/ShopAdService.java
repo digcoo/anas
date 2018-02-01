@@ -140,6 +140,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		//冗余字段
 		shopAd.setGeohash(localShop.getGeohash());
 		shopAd.setShopName(localShop.getName());
+		shopAd.setBusinessId(localShop.getBusinessId());
 		
 		int ret = this.baseMapper.insert(shopAd);
 		if(ret > 0){
