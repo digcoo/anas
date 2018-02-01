@@ -228,7 +228,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	@Transactional(readOnly = false)
 	public ReturnDTO delShopAd(Long adId) {
 		// 只有下架、初始、过期状态的ad能下架
-		int ret = baseMapper.updateStatus(adId, AdStatus.EXPIRED.getStatus());
+		int ret = baseMapper.updateStatus(adId, AdStatus.DEL.getStatus());
 		if(ret > 0){
 			return ReturnDTOUtil.success();
 		}

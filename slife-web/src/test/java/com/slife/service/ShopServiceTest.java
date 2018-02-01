@@ -84,7 +84,7 @@ public class ShopServiceTest extends WebApplicationTests{
     public void addShopAd(){
     	Calendar calendar = Calendar.getInstance();
     	AdAddVO shopAd = new AdAddVO();
-    	shopAd.setShopId(1l);
+    	shopAd.setShopId(2l);
     	shopAd.setType((byte)AdType.DISCOUNT.getType());	//打折促销
     	shopAd.setStartTime(calendar.getTime());
     	
@@ -157,27 +157,27 @@ public class ShopServiceTest extends WebApplicationTests{
     }
 
     @Test
-    public void publicShopAd(){
-    	ReturnDTO retDto = shopAdService.publishShopAd(956914448743247874l);
+    public void publishShopAd(){
+    	ReturnDTO retDto = shopAdService.publishShopAd(1l);
     	System.out.println(JSON.toJSONString(retDto));
     }
     
 
     @Test
     public void offShopAd(){
-    	ReturnDTO retDto = shopAdService.offShopAd(956714007690412033l);
+    	ReturnDTO retDto = shopAdService.offShopAd(1l);
     	System.out.println(JSON.toJSONString(retDto));
     }
 
     @Test
     public void delShopAd(){
-    	ReturnDTO retDto = shopAdService.delShopAd(956714007690412033l);
+    	ReturnDTO retDto = shopAdService.delShopAd(1l);
     	System.out.println(JSON.toJSONString(retDto));
     }
 
     @Test
-    public void listForShop(){
-    	ReturnDTO retDto = shopAdService.listForShop(955727017696542738l, 0);
+    public void listAdsForShop(){
+    	ReturnDTO retDto = shopAdService.listForShop(2l, 0);
     	System.out.println(JSON.toJSONString(retDto));
     }
     
@@ -185,25 +185,6 @@ public class ShopServiceTest extends WebApplicationTests{
     public void upShopAd(){
     	ReturnDTO retDto = shopAdService.upShopAd(956714007690412033l);
     	System.out.println(JSON.toJSONString(retDto));
-    }
-    
-    @Test
-    public void shopAdd(){
-    	Shop shop = new Shop();
-    	shop.setName("dyp-test");
-    	shop.setUserId(99l);
-    	shop.setTel("111");
-    	shop.setAddr("111");
-    	shop.setOpenMobile((byte)1);
-    	shop.setBusinessId(1l);
-    	shop.setLat(31.123);
-    	shop.setLng(121.123);
-    	shop.setGeohash("ttt");
-    	shop.setFollowNum(0);
-//    	shop.setAuditState(0);
-    	shop.setAgentPosition("14");
-    	shop.setStatus((byte)1);
-    	shopService.insert(shop);
     }
 
 }
