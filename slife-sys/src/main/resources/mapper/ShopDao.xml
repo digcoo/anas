@@ -64,4 +64,14 @@
         </foreach>
         group by mall_id
     </select>
+    
+    
+    <update id="updateLogo">
+    	update digcoo_anas_shop set logo = #{logo} where user_id = #{userId}
+    </update>
+    
+        
+    <update id="updatePicture">
+    	update digcoo_anas_shop set picture = #{picture} where id = #{shopId}
+    </update>
 </mapper>

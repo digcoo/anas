@@ -8,22 +8,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.slife.baidu.FaceMatchService;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.impl.BaseService;
 import com.slife.dao.ShopDao;
 import com.slife.dao.UserDao;
 import com.slife.entity.Shop;
 import com.slife.entity.ShopCountPerMallView;
+import com.slife.entity.User;
 import com.slife.entity.enums.ShopStatus;
 import com.slife.entity.enums.UserType;
 import com.slife.enums.HttpCodeEnum;
@@ -73,7 +70,7 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
         if(ttl > 9*60){
             return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_SMS_FRE);
         }
-
+    	
         String phoneCode = CodeGenUtils.generateVerifyCode();
         Map<String,String> params = new HashMap<String,String>();
         params.put("code",phoneCode);
@@ -99,6 +96,8 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
 //    	if(code == null || !code .equals(phoneCode)){
 //    		return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_SMS_ERROR);
 //    	}
+    	
+    	User user = userDao.selectByPrimaryKey(shopBaseVO.getUserId());
         
         Shop shop = shopDao.selectByUserId(shopBaseVO.getUserId());
         if(shop != null){
@@ -109,6 +108,7 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
         	shop = new Shop();
 		}
 
+        shop.setLogo(user.getHeadImg());
         shop.setUserId(shopBaseVO.getUserId());
         shop.setName(shopBaseVO.getShopName());
         shop.setAgentPosition(shopBaseVO.getPosition());
@@ -127,39 +127,6 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
             shopDao.updateById(shop);
         }
         return ReturnDTOUtil.success(shopBaseVO);
-
-    }
-
-    @Override
-    public ReturnDTO<ShopVO> getShopInfo(long userId) {
-        Shop shop = shopDao.selectByUserId(userId);
-        if(shop == null ){
-            return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_USER_NOT_FOUND);
-        }
-        ShopVO shopVO  = new ShopVO();
-        shopVO.setId(shop.getId());
-        shopVO.setUserId(shop.getUserId());
-        shopVO.setAddr(shop.getAddr());
-        shopVO.setAgentIdentifyCard(shop.getAgentIdentifyCard());
-        shopVO.setAgentPortrait(shop.getAgentPortrait());
-//        shopVO.setAuditState(shop.getAuditState());
-        shopVO.setBusinessId(shop.getBusinessId());
-        shopVO.setBusinessLicense(shop.getBusinessLicense());
-        shopVO.setFloor(shop.getFloor());
-        shopVO.setFollowum(shop.getFollowNum());
-        shopVO.setGeohash(shop.getGeohash());
-        shopVO.setLat(shop.getLat());
-        shopVO.setLng(shop.getLng());
-        shopVO.setLogo(shop.getLogo());
-        shopVO.setMallId(shop.getMallId());
-        shopVO.setOpenMobile(shop.getOpenMobile().equals(Byte.valueOf("1"))?true:false);
-        shopVO.setPhone(shop.getTel());
-        shopVO.setPicture(shop.getPicture());
-        shopVO.setPosition(shop.getAgentPosition());
-        shopVO.setRoom(shop.getRoom());
-        shopVO.setShopName(shop.getName());
-        shopVO.setShopType(shop.getShopType());
-        return ReturnDTOUtil.success(shopVO);
 
     }
 
@@ -201,9 +168,49 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
         shopDao.updateById(shop);
         return ReturnDTOUtil.success();
     }
+    
+    @Override
+    public ReturnDTO<ShopVO> getShopInfo(long userId) {
+        Shop shop = shopDao.selectByUserId(userId);
+        if(shop == null ){
+            return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_USER_NOT_FOUND);
+        }
+        ShopVO shopVO  = new ShopVO();
+        shopVO.setId(shop.getId());
+        shopVO.setUserId(shop.getUserId());
+        shopVO.setAddr(shop.getAddr());
+        shopVO.setAgentIdentifyCard(shop.getAgentIdentifyCard());
+        shopVO.setAgentPortrait(shop.getAgentPortrait());
+        shopVO.setBusinessId(shop.getBusinessId());
+        shopVO.setBusinessLicense(shop.getBusinessLicense());
+        shopVO.setFloor(shop.getFloor());
+        shopVO.setFollowum(shop.getFollowNum());
+        shopVO.setGeohash(shop.getGeohash());
+        shopVO.setLat(shop.getLat());
+        shopVO.setLng(shop.getLng());
+        shopVO.setLogo(shop.getLogo());
+        shopVO.setMallId(shop.getMallId());
+        shopVO.setOpenMobile(shop.getOpenMobile().equals(Byte.valueOf("1"))?true:false);
+        shopVO.setPhone(shop.getTel());
+        shopVO.setPicture(shop.getPicture());
+        shopVO.setPosition(shop.getAgentPosition());
+        shopVO.setRoom(shop.getRoom());
+        shopVO.setShopName(shop.getName());
+        shopVO.setShopType(shop.getShopType());
+        return ReturnDTOUtil.success(shopVO);
+
+    }
 
     @Override
     public List<ShopCountPerMallView> countShopByMallId(List<Long> mallIdList) {
         return this.baseMapper.countShopNumsByMallId(mallIdList);
     }
+
+
+	@Override
+	public int updatePicture(long shopId, String picture) {
+		return this.baseMapper.updatePicture(shopId, picture);
+	}
+    
+    
 }

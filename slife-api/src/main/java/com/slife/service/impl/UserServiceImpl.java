@@ -1,20 +1,22 @@
 package com.slife.service.impl;
 
-import com.slife.base.entity.ReturnDTO;
+import java.util.function.Predicate;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Component;
+
+import com.slife.dao.ShopDao;
 import com.slife.dao.UserDao;
 import com.slife.entity.User;
+import com.slife.entity.enums.UserType;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
 import com.slife.service.UserService;
-import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
 import com.slife.vo.SessionKeyVO;
 import com.slife.wxapi.request.RequestWechatApi;
 import com.slife.wxapi.response.SessionKeyWX;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.function.Predicate;
 
 /**
  * Created by cq on 18-1-19.
@@ -31,6 +33,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserDao userDao;
+    
+    @Resource
+    private ShopDao shopDao;
 
 
     @Override
@@ -64,11 +69,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Integer editUser(User user) {
-        return userDao.updateByPrimaryKey(user);
-    }
-
-    @Override
     public Integer editNick(long id, String nick) throws SlifeException{
         User original = userDao.selectByPrimaryKey(id);
         if (original == null) {
@@ -83,10 +83,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Integer editHeadImg(long id, String path) throws SlifeException{
-        User original = userDao.selectByPrimaryKey(id);
-        if (original == null) {
+        User user = userDao.selectByPrimaryKey(id);
+        if (user == null) {
             throw new SlifeException(HttpCodeEnum.USER_NOT_FOUND_ERR);
         }
+        
+        if (UserType.SHOP_USER.getCode() == user.getType()) {
+        	shopDao.updateLogo(id, path);
+		}
+
         return userDao.updateHeadImg(id, path);
     }
 }

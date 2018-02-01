@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
+import java.text.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
+import com.aliyun.oss.common.utils.DateUtil;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.impl.BaseService;
 import com.slife.dao.ShopAdDao;
@@ -110,11 +111,21 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		case OTHER:			//其他
 			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
 				return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
-			}			
+			}
 			break;
 
 		default:
 			return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
+		}
+		
+		Date endTime= null;
+		if (adAddVO.getEndTime() != null) {
+			try {
+				String dateTimeStr = DateUtils.formatDate(adAddVO.getEndTime(), "yyyy-MM-dd") + " 23:59:59";
+				endTime = DateUtils.parseDate(dateTimeStr, "yyyy-MM-dd HH:mm:ss");
+			} catch (ParseException e) {
+				logger.error("addShopAd exception...", e);
+			}
 		}
 		
 		ShopAd shopAd = new ShopAd();
@@ -123,7 +134,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		shopAd.setTitle(adAddVO.getTitle());
 		shopAd.setItems(adAddVO.getItems());
 		shopAd.setStartTime(adAddVO.getStartTime());
-		shopAd.setEndTime(adAddVO.getEndTime());
+		shopAd.setEndTime(endTime);
 		shopAd.setStatus((byte)AdStatus.INIT.getStatus());
 		
 		//冗余字段
@@ -181,7 +192,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			return ReturnDTOUtil.custom(HttpCodeEnum.AD_NOT_PERIOD);
 		}
 		
-		//判断当天是否达到免费发布的上线
+		//判断当天是否达到免费发布的上限
 		int currentTimes = 0;
 		for (ShopAd shopAd : publishedAds) {
 			if (DateUtils.isSameDay(shopAd.getPublishTime(), publishTime)) {

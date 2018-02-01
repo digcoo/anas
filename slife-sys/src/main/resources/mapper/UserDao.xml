@@ -4,12 +4,10 @@
   <resultMap id="BaseResultMap" type="com.slife.entity.User">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="open_id" jdbcType="VARCHAR" property="openId" />
-    <result column="wx_head_img" jdbcType="VARCHAR" property="wxHeadImg" />
     <result column="head_img" jdbcType="VARCHAR" property="headImg" />
     <result column="gender" jdbcType="TINYINT" property="gender" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
     <result column="nick" jdbcType="VARCHAR" property="nick" />
-    <result column="wx_nick" jdbcType="VARCHAR" property="wxNick" />
     <result column="country" jdbcType="VARCHAR" property="country" />
     <result column="province" jdbcType="VARCHAR" property="province" />
     <result column="follow_time" jdbcType="TIMESTAMP" property="followTime" />
@@ -20,7 +18,7 @@
     <result column="type" jdbcType="TINYINT" property="type" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, open_id, wx_head_img, head_img, gender, mobile, nick, wx_nick, country, province, 
+    id, open_id, head_img, gender, mobile, nick, country, province, 
     follow_time, city, qr_ticket, create_date, update_date, `type`
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -47,15 +45,15 @@
   </select>
 
   <insert id="insert" parameterType="com.slife.entity.User">
-    insert into digcoo_anas_user (open_id, wx_head_img,
+    insert into digcoo_anas_user (open_id, 
       gender, mobile,
-      wx_nick, country,
+      country,
       province, follow_time, city, 
       qr_ticket, create_date, update_date, 
       type)
-    values (#{openId,jdbcType=VARCHAR}, #{wxHeadImg,jdbcType=VARCHAR},
+    values (#{openId,jdbcType=VARCHAR},
       #{gender,jdbcType=TINYINT}, #{mobile,jdbcType=VARCHAR},
-      #{wxNick,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR},
+      #{country,jdbcType=VARCHAR},
       #{province,jdbcType=VARCHAR}, #{followTime,jdbcType=TIMESTAMP}, #{city,jdbcType=VARCHAR}, 
       #{qrTicket,jdbcType=VARCHAR}, now(), now(),
       #{type,jdbcType=TINYINT})
@@ -64,12 +62,10 @@
   <update id="updateByPrimaryKey" parameterType="com.slife.entity.User">
     update digcoo_anas_user
     set open_id = #{openId,jdbcType=VARCHAR},
-      wx_head_img = #{wxHeadImg,jdbcType=VARCHAR},
       head_img = #{headImg,jdbcType=VARCHAR},
       gender = #{gender,jdbcType=TINYINT},
       mobile = #{mobile,jdbcType=VARCHAR},
       nick = #{nick,jdbcType=VARCHAR},
-      wx_nick = #{wxNick,jdbcType=VARCHAR},
       country = #{country,jdbcType=VARCHAR},
       province = #{province,jdbcType=VARCHAR},
       follow_time = #{followTime,jdbcType=TIMESTAMP},

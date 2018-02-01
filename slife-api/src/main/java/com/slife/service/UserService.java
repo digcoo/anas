@@ -11,12 +11,9 @@ public interface UserService {
 
     SessionKeyVO getSessionKeyWx(String code);
 
-
     User getUserByOpenId(String openId);
 
     Integer addUser(User user);
-
-    Integer editUser(User user);
 
     Integer editNick(long id, String nick) throws SlifeException;
 
