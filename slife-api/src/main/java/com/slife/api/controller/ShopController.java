@@ -144,4 +144,13 @@ public class ShopController {
     	logger.debug("[ShopController]-[upAd] : adId = " + adId);
     	return shopAdService.upShopAd(adId);
     }
+
+
+    @ApiOperation(value = "D-12 发起支付广告费用", notes = "支付广告费用",httpMethod = "POST")
+    @PostMapping(value = "/ad/pay")
+    @ResponseBody
+    public ReturnDTO payAd(long userId, HttpServletRequest request) {
+        logger.debug("[ShopController]-[payAd] : userId = " + userId);
+        return shopAdService.payAd(userId);
+    }
 }

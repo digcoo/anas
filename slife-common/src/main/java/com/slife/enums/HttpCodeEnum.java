@@ -33,6 +33,8 @@ public enum HttpCodeEnum {
     UN_KNOW_ERROR(500,"未知错误"),
     FAIL(501,"操作失败"),
     SEND_SMS_FAIL(502,"短信发送失败"),
+    PAY_ERROR(503,"支付失败"),
+
 
     //长传文件相关错误码800开头
     UPLOAD_FILE_NOT_FOUND(800,"上传文件不存在"),

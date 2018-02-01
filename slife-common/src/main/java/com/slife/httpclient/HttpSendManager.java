@@ -7,6 +7,8 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -40,6 +42,23 @@ public class HttpSendManager {
             }
             String returnMsg = closeableHttpClient.execute(httpPost, httpHandleResponse);
             return JSON.parseObject(returnMsg, clazz);
+        } catch (IOException e) {
+            _LOG.error("doPost error ." + e);
+        }
+        return null;
+    }
+
+    public  String  doPost(String path, String body) {
+        if (StringUtils.isEmpty(path)) {
+            return null;
+        }
+        HttpPost httpPost = new HttpPost(path);
+        try {
+            if (com.slife.util.StringUtils.isNotEmpty(body)) {
+                httpPost.setEntity(new ByteArrayEntity(body.getBytes("UTF-8"))); //设置参数
+            }
+            String returnMsg = closeableHttpClient.execute(httpPost, httpHandleResponse);
+            return returnMsg;
         } catch (IOException e) {
             _LOG.error("doPost error ." + e);
         }

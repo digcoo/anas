@@ -1,9 +1,18 @@
 package com.slife.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.slife.dao.*;
+import com.slife.entity.*;
+import com.slife.entity.enums.PayStatus;
+import com.slife.vo.PrepayVO;
+import com.slife.wxapi.request.WxPayApi;
+import com.slife.wxapi.request.WxPayReq;
+import com.slife.wxapi.response.WxPayRsp;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,12 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.impl.BaseService;
-import com.slife.dao.ShopAdDao;
-import com.slife.dao.ShopAdSpreadDao;
-import com.slife.dao.ShopDao;
-import com.slife.entity.Shop;
-import com.slife.entity.ShopAd;
-import com.slife.entity.ShopAdSpread;
 import com.slife.entity.enums.AdStatus;
 import com.slife.entity.enums.AdType;
 import com.slife.entity.enums.SpreadType;
@@ -39,20 +42,34 @@ import com.slife.vo.AdUpdateVO;
  * Describe: merchant service
  */
 @Service
-@Transactional(readOnly = true, rollbackFor = Exception.class)
+//@Transactional(readOnly = true, rollbackFor = Exception.class)
 public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements IShopAdService {
 	
 	private final static int MAX_COUNT_FREE_PUBLISH_OF_PER_DAY = 3;		//商家每天免费发布的活动条数
 
 	private final static int DURING_PUBLISH_BETWEEN_AD = 5;		//同一商家发布广告的时间间隔（分钟）
 
-    protected Logger logger= LoggerFactory.getLogger(getClass());
+	private static final SimpleDateFormat YMDHMD_TIME_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
+
+
+	protected Logger logger= LoggerFactory.getLogger(getClass());
 	
 	@Autowired
 	ShopDao shopDao;
 
 	@Autowired
+	UserDao userDao;
+
+	@Autowired
+	PayOrderDao payOrderDao;
+
+
+	@Autowired
 	ShopAdSpreadDao shopAdSpreadDao;
+
+
+	@Autowired
+	WxPayApi wxPayApi;
 
     @Override
     public List<ShopAd> selectAdsByGeohash(Integer index,String geohash) {
@@ -250,5 +267,47 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			throw new SlifeException(HttpCodeEnum.UN_KNOW_ERROR);
 		}
 		return ReturnDTOUtil.success();
+	}
+
+	public ReturnDTO<PrepayVO> payAd(long userId) {
+		User original = userDao.selectByPrimaryKey(userId);
+		PayOrder payOrder = new PayOrder();
+		payOrder.setItemName("大喇叭-广告费");
+		payOrder.setPrice(300);
+		payOrder.setQuantity(1);
+		payOrder.setTotal(300);
+		payOrder.setOpenId(original.getOpenId());
+		payOrder.setUserId(original.getId());
+		payOrder.setPayStatus(PayStatus.PRE_PAY.getIndex());
+		Calendar expireDate = Calendar.getInstance();
+		expireDate.add(Calendar.HOUR, 2);
+		payOrder.setExpireDate(expireDate.getTime());
+		payOrderDao.insert(payOrder);
+
+		WxPayReq wxPayReq = new WxPayReq();
+
+		wxPayReq.setBody(payOrder.getItemName());
+		wxPayReq.setOpenid(payOrder.getOpenId());
+		wxPayReq.setOut_trade_no(String.valueOf(payOrder.getId()));
+		wxPayReq.setTotal_fee(String.valueOf(payOrder.getTotal()));
+		wxPayReq.setTime_start(YMDHMD_TIME_FORMAT.format(new Date()));
+		wxPayReq.setTime_expire(YMDHMD_TIME_FORMAT.format(payOrder.getExpireDate()));
+
+		WxPayRsp wxPayRsp = wxPayApi.preparePay(wxPayReq);
+		if(wxPayRsp == null || !"SUCCESS".equals(wxPayRsp.getResult_code()) ){
+			throw new SlifeException(HttpCodeEnum.PAY_ERROR);
+		}
+		payOrder.setPrepayId(wxPayRsp.getPrepay_id());
+		payOrder.setAttach(wxPayRsp.getResponseBody());
+		payOrderDao.updateById(payOrder);
+
+		PrepayVO prepayVO = new PrepayVO();
+		prepayVO.setPrepareId(wxPayRsp.getPrepay_id());
+		prepayVO.setPayOrderId(payOrder.getId());
+
+		return ReturnDTOUtil.success(prepayVO);
+
+
+
 	}
 }
