@@ -19,6 +19,7 @@
         <result column="geohash" jdbcType="VARCHAR" property="geohash"/>
         <result column="shop_name" jdbcType="VARCHAR" property="shopName"/>
         <result column="business_id" jdbcType="BIGINT" property="businessId"/>
+        <result column="flag" jdbcType="TINYINT" property="flag"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -33,7 +34,7 @@
 
     <select id="selectAdsByGeohash" resultMap="BaseResultMap">
         <![CDATA[
-          select id, type, title,items,favor_num,publish_time,shop_id,geohash, shop_name, business_id from `digcoo_anas_shop_ad` 
+          select id, type, title,items,favor_num,publish_time,shop_id,geohash, shop_name, business_id from `digcoo_anas_shop_ad`
           where 
           status= 1 and 
           start_time<NOW() and end_time>Now() and 
@@ -46,31 +47,30 @@
 
     <select id="selectAdsByGeohashAndName" resultMap="BaseResultMap">
         <![CDATA[
-          select id, type, title,items,favor_num,publish_time,shop_id,geohash, shop_name, business_id from `digcoo_anas_shop_ad` 
-          where 
+          select id, type, title,items,favor_num,publish_time,shop_id,geohash, shop_name, business_id from `digcoo_anas_shop_ad`
+          where
           status=1 and 
-          start_time<NOW() and end_time>Now() and 
+          start_time<NOW() and end_time>=Now() and
           geohash like CONCAT(#{geohash},'%') 
           and (title like  CONCAT('%',#{name},'%') or shop_name like CONCAT('%',#{name},'%'))
-          order by
-                publish_time desc limit #{index},10
-
-
         ]]>
     </select>
 
     <select id="selectAdsByShopId" resultMap="BaseResultMap">
         <![CDATA[
-
-
-          select id, type, title,items,favor_num,publish_time,shop_id,geohash, shop_name, business_id from `digcoo_anas_shop_ad` 
+          select id, type, title,items,favor_num,publish_time,shop_id,geohash,
+              CASE
+                 WHEN  start_time<NOW() and end_time>Now()
+                      THEN 1
+                 WHEN  end_time<NOW()
+                      THEN 2
+            END flag from `digcoo_anas_shop_ad`
           where 
           status=1 and 
-          start_time<NOW() and end_time>Now() and
+          start_time<NOW() and
           shop_id = #{shopId}
-          order by publish_time desc limit #{index},10
-
-
+          order by
+          flag,publish_time desc limit #{index},10
         ]]>
     </select>
 

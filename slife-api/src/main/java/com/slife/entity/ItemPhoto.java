@@ -10,9 +10,6 @@ import com.slife.base.entity.ApiEntity;
 @TableName("digcoo_anas_item_photo")
 public class ItemPhoto extends ApiEntity<ItemPhoto> {
 
-	@TableId(value = "ID", type = IdType.AUTO)
-	private Long id;
-
     @Override
     protected Serializable pkVal() {
         return this.id;

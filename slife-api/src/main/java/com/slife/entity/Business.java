@@ -13,9 +13,6 @@ import java.io.Serializable;
 @TableName("digcoo_anas_business")
 public class Business extends ApiEntity<Business> {
 
-    @TableId(value = "ID", type = IdType.AUTO)
-    private Long id;
-
     @Override
     protected Serializable pkVal() {
         return this.id;

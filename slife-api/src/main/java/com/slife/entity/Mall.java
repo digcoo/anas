@@ -22,8 +22,6 @@ public class Mall extends ApiEntity<Mall> {
 
     private static final long serialVersionUID = 1L;
 
-	@TableId(value = "ID", type = IdType.AUTO)
-	private Long id;
     @Override
     protected Serializable pkVal() {
         return this.id;
