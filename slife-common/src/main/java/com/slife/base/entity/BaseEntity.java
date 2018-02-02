@@ -24,7 +24,6 @@ public abstract class BaseEntity<T extends Model> extends Model<T>  {
     /**
      * 实体编号（唯一标识）
      */
-    @TableId(value = "ID", type = IdType.AUTO)
     protected Long id;
 
 
