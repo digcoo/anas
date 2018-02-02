@@ -128,6 +128,16 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			}
 		}
 		
+		//items
+		if(StringUtils.isNotEmpty(adAddVO.getItems())){
+			List<Item> items = JSON.parseArray(adAddVO.getItems(), Item.class);
+			for (Item item : items) {
+				item.setLabel("¥" + item.getLabel());
+				item.setLabel(item.getLabel());
+			}
+			adAddVO.setItems(JSON.toJSONString(items));
+		}
+		
 		ShopAd shopAd = new ShopAd();
 		shopAd.setShopId(adAddVO.getShopId());
 		shopAd.setType((byte)adAddVO.getType());

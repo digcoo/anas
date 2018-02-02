@@ -17,7 +17,7 @@ public class AdAddVO {
 	@ApiModelProperty(value="活动标题",name="title",required = true)
     private String title;
 
-	@ApiModelProperty(value="活动内容",name="items",required = true,example="[{\"url\":\"***.jpg\", \"price\":\"32.9\"}, {\"url\":\"***.jpg\", \"price\":\"22.9\"}]")
+	@ApiModelProperty(value="活动内容",name="items",required = true,example="[{\"url\":\"***.jpg\", \"label\":\"32.9\"}, {\"url\":\"***.jpg\", \"label\":\"22.9\"}]")
     private String items;
 
 	@ApiModelProperty(value="活动开始日期",name="startTime",required = false)
