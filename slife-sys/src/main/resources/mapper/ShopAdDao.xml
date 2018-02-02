@@ -48,7 +48,6 @@
     <select id="selectAdsByGeohashAndName" resultMap="BaseResultMap">
         <![CDATA[
           select id, type, title,items,favor_num,publish_time,shop_id,geohash, shop_name, business_id from `digcoo_anas_shop_ad`
-          select id, type, title,items,favor_num,publish_time,shop_id,geohash from `digcoo_anas_shop_ad`
           where
           status=1 and 
           start_time<NOW() and end_time>=Now() and
