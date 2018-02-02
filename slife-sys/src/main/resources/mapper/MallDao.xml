@@ -13,7 +13,7 @@
         <result column="status" jdbcType="TINYINT" property="status" />
         <result column="logo" jdbcType="VARCHAR" property="logo" />
         <result column="total" jdbcType="INTEGER" property="total" />
-        <result column="hotShop" jdbcType="VARCHAR" property="hotShop" />
+        <result column="hot_shop" jdbcType="VARCHAR" property="hotShop" />
         <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
         <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     </resultMap>
