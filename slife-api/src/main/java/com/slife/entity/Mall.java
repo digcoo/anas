@@ -67,6 +67,15 @@ public class Mall extends ApiEntity<Mall> {
      */
     private byte status;
 
+	/**
+	 * 商家数
+	 */
+	private Integer total=0;
+
+	/**
+	 * 热门商家
+	 */
+	private String hotShop;
 
 	public String getName() {
 		return name;
@@ -131,5 +140,21 @@ public class Mall extends ApiEntity<Mall> {
 	public void setStatus(byte status) {
 		this.status = status;
 	}
-    
+
+
+	public Integer getTotal() {
+		return total;
+	}
+
+	public void setTotal(Integer total) {
+		this.total = total;
+	}
+
+	public String getHotShop() {
+		return hotShop;
+	}
+
+	public void setHotShop(String hotShop) {
+		this.hotShop = hotShop;
+	}
 }
