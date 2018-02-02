@@ -79,6 +79,12 @@ public class ShopAd extends ApiEntity<ShopAd> {
     @TableField(value = "shop_name")
     private String shopName;
 
+    /**
+     * 行业id：冗余字段
+     */
+    @TableField(value = "business_id")
+    private Long businessId;
+
     @Transient
     private Byte flag;
 
@@ -184,4 +190,13 @@ public class ShopAd extends ApiEntity<ShopAd> {
     public void setFlag(Byte flag) {
         this.flag = flag;
     }
+
+	public Long getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(Long businessId) {
+		this.businessId = businessId;
+	}
+
 }

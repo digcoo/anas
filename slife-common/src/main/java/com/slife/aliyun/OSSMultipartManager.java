@@ -1,5 +1,15 @@
 package com.slife.aliyun;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.Date;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.Bucket;
 import com.aliyun.oss.model.CannedAccessControlList;
@@ -7,16 +17,9 @@ import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectResult;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
+import com.slife.util.DateUtils;
 import com.slife.util.MD5Tool;
 import com.slife.util.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -30,12 +33,12 @@ public class OSSMultipartManager {
 
     @Value("${aliyun.oss.bucket}")
     private String bucketName;
-
-
+    
     public String uploadImages(MultipartFile uploadFile, String bucketName) throws Exception {
         String fileName;
         InputStream inputStream = uploadFile.getInputStream();
-        String remoteFileName = getObjectName(uploadFile.getOriginalFilename());
+        String date = DateUtils.formatDate(new Date(), "yyyyMMddHH");
+        String remoteFileName = date + File.separator + getObjectName(uploadFile.getOriginalFilename());
         fileName = uploadSmallFile(inputStream, uploadFile.getSize(), remoteFileName, bucketName);
         return fileName;
     }

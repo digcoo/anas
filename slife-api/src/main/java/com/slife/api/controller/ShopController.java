@@ -33,7 +33,7 @@ import com.slife.vo.ShopVO;
 
 @Controller
 @RequestMapping(value = "/api/shop")
-@Api(description = "店铺注册相关接口")
+@Api(description = "店铺模块功能接口")
 public class ShopController {
 
     protected Logger logger= LoggerFactory.getLogger(getClass());

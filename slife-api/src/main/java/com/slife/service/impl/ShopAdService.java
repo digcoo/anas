@@ -124,6 +124,16 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			}
 		}
 		
+		//items
+		if(StringUtils.isNotEmpty(adAddVO.getItems())){
+			List<Item> items = JSON.parseArray(adAddVO.getItems(), Item.class);
+			for (Item item : items) {
+				item.setLabel("¥" + item.getLabel());
+				item.setLabel(item.getLabel());
+			}
+			adAddVO.setItems(JSON.toJSONString(items));
+		}
+		
 		ShopAd shopAd = new ShopAd();
 		shopAd.setShopId(adAddVO.getShopId());
 		shopAd.setType((byte)adAddVO.getType());
@@ -136,6 +146,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		//冗余字段
 		shopAd.setGeohash(localShop.getGeohash());
 		shopAd.setShopName(localShop.getName());
+		shopAd.setBusinessId(localShop.getBusinessId());
 		
 		int ret = this.baseMapper.insert(shopAd);
 		if(ret > 0){

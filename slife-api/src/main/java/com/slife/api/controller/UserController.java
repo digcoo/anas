@@ -2,11 +2,15 @@ package com.slife.api.controller;
 
 import com.slife.base.entity.ReturnDTO;
 import com.slife.entity.User;
+import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
 import com.slife.service.UserService;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.vo.SessionKeyVO;
+
 import io.swagger.annotations.*;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +33,11 @@ public class UserController {
     @ApiResponses({@ApiResponse(code = 200, message = "成功", response = SessionKeyVO.class)})
     public ReturnDTO<SessionKeyVO> getSessionKeyWx(@RequestParam("code") String code) {
         SessionKeyVO sessionKeyVO = userService.getSessionKeyWx(code);
-        return sessionKeyVO!=null?ReturnDTOUtil.success(sessionKeyVO):ReturnDTOUtil.fail();
+        if (StringUtils.isEmpty(sessionKeyVO.getErrCode())) {
+			return ReturnDTOUtil.success(sessionKeyVO);
+		}else{
+			return ReturnDTOUtil.custom(Integer.parseInt(sessionKeyVO.getErrCode()), sessionKeyVO.getErrMsg());
+		}
     }
 
 

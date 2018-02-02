@@ -47,7 +47,8 @@ public enum HttpCodeEnum {
     USERNAME_OR_PASSWORD_ERR(1000,"用户名或密码错误"),
     DELETE_DEFAULT_PHOTO_ERR(1001,"默认头像不可删除"),
     USER_NOT_FOUND_ERR(1002,"用户不存在"),
-    USER_NICK_DUPLICATE(1002,"用户昵称重复"),
+    USER_NICK_DUPLICATE(1003,"用户昵称重复"),
+    USER_SESSION_KEY_NO_FOUND(1004,"sessionKey获取失败"),
 
 
 
