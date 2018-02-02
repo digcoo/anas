@@ -37,8 +37,8 @@ public class ShopAdServiceTest extends WebApplicationTests{
 
     @Test
     public void selectAdsByShopId() throws Exception {
-        Shop shop = shopService.selectById(1l);
-        assertThat(shop).isNotNull();
+        List<ShopAd> shopAdList = shopAdService.selectAdsByShopId(0,2l);
+        assertThat(shopAdList).isNotEmpty();
     }
 
 }

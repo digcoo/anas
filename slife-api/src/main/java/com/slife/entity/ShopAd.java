@@ -40,7 +40,6 @@ public class ShopAd extends ApiEntity<ShopAd> {
     /**
      * varchar(500) 活动收藏数
      */
-    @TableField(value = "favor_num")
     private Integer favorNum = 0;
     /**
      * varchar(15) 活动状态
@@ -52,40 +51,34 @@ public class ShopAd extends ApiEntity<ShopAd> {
      */
     private String geohash;
 
-    @TableField(value = "shop_id")
     private Long shopId;
     /**
      * 创建日期
      */
-    @TableField(value = "start_time")
     private Date startTime;
 
 
     /**
      * 更新日期
      */
-    @TableField(value = "end_time")
     private Date endTime;
 
     /**
      * 更新日期
      */
-    @TableField(value = "publish_time")
     private Date publishTime;
 
     /**
      * 商铺名称：冗余字段
      */
-    @TableField(value = "shop_name")
     private String shopName;
 
     /**
      * 行业id：冗余字段
      */
-    @TableField(value = "business_id")
     private Long businessId;
 
-    @Transient
+    @TableField(exist=false)
     private Byte flag;
 
     @Override
