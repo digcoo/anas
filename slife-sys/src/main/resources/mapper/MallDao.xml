@@ -12,12 +12,14 @@
         <result column="geohash" jdbcType="VARCHAR" property="geohash" />
         <result column="status" jdbcType="TINYINT" property="status" />
         <result column="logo" jdbcType="VARCHAR" property="logo" />
+        <result column="total" jdbcType="INTEGER" property="total" />
+        <result column="hot_shop" jdbcType="VARCHAR" property="hotShop" />
         <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
         <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,picture,addr,lat,lng,geohash,status,logo,create_date,update_date
+        id,name,picture,addr,lat,lng,geohash,status,logo,total,hot_shop,create_date,update_date
     </sql>
 
     <select id="findPageByKey"  resultMap="BaseResultMap">

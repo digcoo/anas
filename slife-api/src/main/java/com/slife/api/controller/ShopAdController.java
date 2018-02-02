@@ -74,18 +74,31 @@ public class ShopAdController extends BaseController {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
         IndexVO indexVO = new IndexVO();
-        List<Mall> mallList = mallService.selectMallsByGeohash(geohash.substring(0,4));
+        List<Mall> mallList = mallService.selectMallsByGeohash(geohash.substring(0,5));
         if(!CollectionUtils.isEmpty(mallList)) {
-            List<Long> mallIdList = mallList.stream().map(Mall::getId).collect(Collectors.toList());
-            Map<Long, Integer> shopNumMap = shopService.countShopByMallId(mallIdList).stream().collect(Collectors.toMap(ShopCountPerMallView::getMallId, ShopCountPerMallView::getNums));
+            //List<Long> mallIdList = mallList.stream().map(Mall::getId).collect(Collectors.toList());
+            //Map<Long, Integer> shopNumMap = shopService.countShopByMallId(mallIdList).stream().collect(Collectors.toMap(ShopCountPerMallView::getMallId, ShopCountPerMallView::getNums));
             List<IndexMallVO> indexMallVOList = mallList.stream().map(mall -> {
+                Point agentPoint = GeohashUtils.decode(geohash,geo);
+                double distance1 = geo.calcDistance(geo.makePoint(mall.getLng(), mall.getLat()), agentPoint) * DistanceUtils.DEG_TO_KM;
+                String distanceDesc;
+                if(distance1<1){
+                    int smallDistance = (int)(distance1*1000);
+                    distanceDesc = String.valueOf(smallDistance<=100?"100m以内":smallDistance+"m");
+                }else{
+                    BigDecimal bigDecimal = new BigDecimal(distance1);
+                    distanceDesc =  String.valueOf(bigDecimal.setScale(1,BigDecimal.ROUND_HALF_UP).doubleValue()+"km");
+                }
                 IndexMallVO indexMallVO = new IndexMallVO();
                 indexMallVO.setMallId(mall.getId());
-                indexMallVO.setNums(shopNumMap.get(mall.getId()));
+                indexMallVO.setTotal(mall.getTotal());
+                indexMallVO.setHotShop(mall.getHotShop());
                 indexMallVO.setName(mall.getName());
                 indexMallVO.setLogo(mall.getLogo());
                 indexMallVO.setLat(mall.getLat());
                 indexMallVO.setLng(mall.getLng());
+                indexMallVO.setDistance(distance1);
+                indexMallVO.setDistanceDesc(distanceDesc);
                 return indexMallVO;
             }).collect(Collectors.toList());
             indexVO.setMalls(indexMallVOList);
@@ -256,6 +269,7 @@ public class ShopAdController extends BaseController {
         indexAdVO.setLng(shop.getLng());
         indexAdVO.setDistance(distance1);
         indexAdVO.setDistanceDesc(distanceDesc);
+        indexAdVO.setAdId(shopAd.getId());
         return indexAdVO;
     }
 }
