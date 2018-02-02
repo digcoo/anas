@@ -12,8 +12,6 @@ import java.util.Date;
  */
 public class Feedback extends ApiEntity<Feedback> implements Serializable {
 
-    @TableId(value = "ID", type = IdType.AUTO)
-    private Long id;
     /**
      * 提交者用户id
      */

@@ -16,10 +16,6 @@ import com.slife.base.entity.ApiEntity;
  */
 @TableName("digcoo_anas_shop_ad_spread")
 public class ShopAdSpread extends ApiEntity<ShopAdSpread> {
-
-	@TableId(value = "ID", type = IdType.AUTO)
-	private Long id;
-
     @TableField(value = "ad_id")
     private Long adId;
     

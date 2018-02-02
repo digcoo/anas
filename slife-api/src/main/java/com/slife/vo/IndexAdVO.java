@@ -67,6 +67,13 @@ public class IndexAdVO implements Serializable {
     @ApiModelProperty(value="经度",name="longitude")
     private Double lng;
 
+    @ApiModelProperty(value="距离",name="distance")
+    private double distance;
+
+    @ApiModelProperty(value="距离描述",name="distanceDesc")
+    private String distanceDesc;
+
+
     public String getName() {
         return name;
     }
@@ -153,5 +160,21 @@ public class IndexAdVO implements Serializable {
 
     public void setLng(Double lng) {
         this.lng = lng;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public String getDistanceDesc() {
+        return distanceDesc;
+    }
+
+    public void setDistanceDesc(String distanceDesc) {
+        this.distanceDesc = distanceDesc;
     }
 }

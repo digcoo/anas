@@ -31,7 +31,7 @@ public class ShopAdServiceTest extends WebApplicationTests{
 
     @Test
     public void selectAdsByGeohashAndName() throws Exception {
-        List<ShopAd> shopAdList = shopAdService.selectAdsByGeohashAndName(0,"wtw2","明");
+        List<ShopAd> shopAdList = shopAdService.selectAdsByGeohashAndName("wtw2","明");
         assertThat(shopAdList).isNotEmpty();
 }
 

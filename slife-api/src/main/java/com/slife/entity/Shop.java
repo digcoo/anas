@@ -25,10 +25,6 @@ public class Shop extends ApiEntity<Shop> {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "ID", type = IdType.AUTO)
-    private Long id;
-
-
     private Long userId;
 
     /**

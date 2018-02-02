@@ -16,9 +16,6 @@ import com.slife.base.entity.ApiEntity;
 public class User extends ApiEntity<User> {
     private String openId;
 
-    @TableId(value = "ID", type = IdType.AUTO)
-    private Long id;
-
     private int type;
 
 //    private String wxHeadImg = StringUtils.EMPTY;

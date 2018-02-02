@@ -18,6 +18,10 @@ import com.slife.util.StringUtils;
 import com.slife.utils.RedisKey;
 import com.slife.utils.SlifeRedisTemplate;
 import com.slife.vo.*;
+import com.spatial4j.core.context.SpatialContext;
+import com.spatial4j.core.distance.DistanceUtils;
+import com.spatial4j.core.io.GeohashUtils;
+import com.spatial4j.core.shape.Point;
 import io.swagger.annotations.*;
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,6 +56,7 @@ public class ShopAdController extends BaseController {
     @Autowired
     private SlifeRedisTemplate slifeRedisTemplate;
 
+    private final static SpatialContext geo = SpatialContext.GEO;
     /**
      * NOTE：后台管理时删除或冻结店铺需要同步更新该商家的所有活动
      * @param index
@@ -64,11 +70,11 @@ public class ShopAdController extends BaseController {
     @GetMapping(value = "/ads")
     @ResponseBody
     public ReturnDTO<IndexVO> getAds(@RequestParam("index") Integer index, @RequestParam("geohash") String geohash) {
-        if(StringUtils.isBlank(geohash)) {
+        if(StringUtils.isBlank(geohash) || geohash.length()<=5) {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
         IndexVO indexVO = new IndexVO();
-        List<Mall> mallList = mallService.selectMallsByGeohash(geohash);
+        List<Mall> mallList = mallService.selectMallsByGeohash(geohash.substring(0,4));
         if(!CollectionUtils.isEmpty(mallList)) {
             List<Long> mallIdList = mallList.stream().map(Mall::getId).collect(Collectors.toList());
             Map<Long, Integer> shopNumMap = shopService.countShopByMallId(mallIdList).stream().collect(Collectors.toMap(ShopCountPerMallView::getMallId, ShopCountPerMallView::getNums));
@@ -89,8 +95,8 @@ public class ShopAdController extends BaseController {
         if(!CollectionUtils.isEmpty(shopAdList)){
             List<Long> shopIdList = shopAdList.stream().map(ShopAd::getShopId).distinct().collect(Collectors.toList());
             List<Shop> shopList = shopService.selectBatchIds(shopIdList);
-            Map<Long, Shop> shopMap = shopList.stream().filter(shop -> shop.getStatus()==1).collect(Collectors.toMap(Shop::getId,shop->shop));
-            List<IndexAdVO> indexAdVOList = shopAdList.stream().map(shopAd -> shopBeanMapper(shopMap,shopAd)).filter(Objects::nonNull).collect(Collectors.toList());
+            Map<Long, Shop> shopMap = shopList.stream().filter(shop -> shop.getStatus()==3).collect(Collectors.toMap(Shop::getId,shop->shop));
+            List<IndexAdVO> indexAdVOList = shopAdList.stream().map(shopAd -> shopBeanMapper(shopMap,shopAd,geohash)).filter(Objects::nonNull).collect(Collectors.toList());
             indexVO.setAds(indexAdVOList);
         }
         return ReturnDTOUtil.success(indexVO);
@@ -118,14 +124,17 @@ public class ShopAdController extends BaseController {
     @GetMapping(value = "/ads/q")
     @ResponseBody
     public ReturnDTO searchAds(@RequestParam("index") Integer index,@RequestParam("geohash") String geohash,@RequestParam(value = "name",required=false) String name ) {
-        List<ShopAd> shopAdList = shopAdService.selectAdsByGeohashAndName(index==null?0:index,geohash,name);
+        if(StringUtils.isBlank(geohash) || geohash.length()<=5) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+        List<ShopAd> shopAdList = shopAdService.selectAdsByGeohashAndName(geohash.substring(0,5),name);
         if(CollectionUtils.isEmpty(shopAdList)){
             return ReturnDTOUtil.success(shopAdList);
         }else{
             List<Long> shopIdList = shopAdList.stream().map(ShopAd::getShopId).distinct().collect(Collectors.toList());
             List<Shop> shopList = shopService.selectBatchIds(shopIdList);
-            Map<Long, Shop> shopMap = shopList.stream().filter(shop -> shop.getStatus()==1).collect(Collectors.toMap(Shop::getId,Shop->Shop));
-            List<IndexAdVO> indexAdVOList = shopAdList.stream().map(shopAd -> shopBeanMapper(shopMap,shopAd)).filter(Objects::nonNull).collect(Collectors.toList());
+            Map<Long, Shop> shopMap = shopList.stream().filter(shop -> shop.getStatus()==3).collect(Collectors.toMap(Shop::getId,Shop->Shop));
+            List<IndexAdVO> indexAdVOList = shopAdList.stream().map(shopAd -> shopBeanMapper(shopMap,shopAd,geohash)).filter(Objects::nonNull).sorted(Comparator.comparing(IndexAdVO::getDistance)).skip(index).limit(10).collect(Collectors.toList());
             return ReturnDTOUtil.success(indexAdVOList);
         }
     }
@@ -217,10 +226,20 @@ public class ShopAdController extends BaseController {
         }
     }
 
-    private IndexAdVO shopBeanMapper(Map<Long, Shop> shopMap,ShopAd shopAd){
+    private IndexAdVO shopBeanMapper(Map<Long, Shop> shopMap,ShopAd shopAd,String geohash){
         Shop shop = shopMap.get(shopAd.getShopId());
         if (shop == null){
             return null;
+        }
+        Point agentPoint = GeohashUtils.decode(geohash,geo);
+        double distance1 = geo.calcDistance(geo.makePoint(shop.getLng(), shop.getLat()), agentPoint) * DistanceUtils.DEG_TO_KM;
+        String distanceDesc;
+        if(distance1<1){
+            int smallDistance = (int)(distance1*1000);
+            distanceDesc = String.valueOf(smallDistance<=100?"100m以内":smallDistance+"m");
+        }else{
+            BigDecimal bigDecimal = new BigDecimal(distance1);
+            distanceDesc =  String.valueOf(bigDecimal.setScale(1,BigDecimal.ROUND_HALF_UP).doubleValue()+"km");
         }
         IndexAdVO indexAdVO = new IndexAdVO();
         indexAdVO.setShopId(shopAd.getShopId());
@@ -235,6 +254,8 @@ public class ShopAdController extends BaseController {
         indexAdVO.setType(shopAd.getType());
         indexAdVO.setLat(shop.getLat());
         indexAdVO.setLng(shop.getLng());
+        indexAdVO.setDistance(distance1);
+        indexAdVO.setDistanceDesc(distanceDesc);
         return indexAdVO;
     }
 }

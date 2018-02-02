@@ -23,9 +23,6 @@ import com.slife.base.entity.ApiEntity;
  */
 @TableName("digcoo_anas_shop_ad")
 public class ShopAd extends ApiEntity<ShopAd> {
-
-    @TableId(value = "ID", type = IdType.AUTO)
-    private Long id;
     /**
      * varchar(20) 活动类型
      */
@@ -81,6 +78,9 @@ public class ShopAd extends ApiEntity<ShopAd> {
      */
     @TableField(value = "shop_name")
     private String shopName;
+
+    @Transient
+    private Byte flag;
 
     @Override
     protected Serializable pkVal() {
@@ -176,4 +176,12 @@ public class ShopAd extends ApiEntity<ShopAd> {
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
 	}
+
+    public Byte getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Byte flag) {
+        this.flag = flag;
+    }
 }
