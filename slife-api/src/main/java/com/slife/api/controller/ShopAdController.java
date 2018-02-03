@@ -74,7 +74,7 @@ public class ShopAdController extends BaseController {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
         IndexVO indexVO = new IndexVO();
-        List<Mall> mallList = mallService.selectMallsByGeohash(geohash.substring(0,5));
+        List<Mall> mallList = mallService.selectMallsByGeohash(geohash.substring(0,3));
         if(!CollectionUtils.isEmpty(mallList)) {
             //List<Long> mallIdList = mallList.stream().map(Mall::getId).collect(Collectors.toList());
             //Map<Long, Integer> shopNumMap = shopService.countShopByMallId(mallIdList).stream().collect(Collectors.toMap(ShopCountPerMallView::getMallId, ShopCountPerMallView::getNums));
@@ -104,7 +104,7 @@ public class ShopAdController extends BaseController {
             indexVO.setMalls(indexMallVOList);
         }
 
-        List<ShopAd> shopAdList = shopAdService.selectAdsByGeohash(index==null?0:index,geohash);
+        List<ShopAd> shopAdList = shopAdService.selectAdsByGeohash(index==null?0:index,geohash.substring(0,3));
         if(!CollectionUtils.isEmpty(shopAdList)){
             List<Long> shopIdList = shopAdList.stream().map(ShopAd::getShopId).distinct().collect(Collectors.toList());
             List<Shop> shopList = shopService.selectBatchIds(shopIdList);
@@ -140,7 +140,7 @@ public class ShopAdController extends BaseController {
         if(StringUtils.isBlank(geohash) || geohash.length()<=5) {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
-        List<ShopAd> shopAdList = shopAdService.selectAdsByGeohashAndName(geohash.substring(0,5),name);
+        List<ShopAd> shopAdList = shopAdService.selectAdsByGeohashAndName(geohash.substring(0,3),name);
         if(CollectionUtils.isEmpty(shopAdList)){
             return ReturnDTOUtil.success(shopAdList);
         }else{
@@ -218,13 +218,14 @@ public class ShopAdController extends BaseController {
     }
 
     private String formatTime(Date date){
-        Calendar calendar = Calendar.getInstance();
-        Calendar calendar2 = Calendar.getInstance();
-        calendar.set(Calendar.DATE,-1);
-        boolean yesterday = org.apache.commons.lang3.time.DateUtils.isSameDay(calendar.getTime(),date);
-        boolean today = org.apache.commons.lang3.time.DateUtils.isSameDay(calendar2.getTime(),date);
+        Date date2=new Date();
+        Calendar cal=Calendar.getInstance();
+        cal.setTime(date2);
+        cal.set(Calendar.DATE,-1);
+        boolean yesterday = org.apache.commons.lang3.time.DateUtils.isSameDay(cal.getTime(),date);
+        boolean today = org.apache.commons.lang3.time.DateUtils.isSameDay(date2,date);
         String timeStr = DateUtils.formatDate(date,"HH:mm");
-        String dateStr = DateUtils.formatDate(date,"MM-DD");
+        String dateStr = DateUtils.formatDate(date,"MM-dd");
         if(yesterday){
             return "昨天 "+timeStr;
         }else if(today){
