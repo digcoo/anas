@@ -2,9 +2,12 @@ package com.slife.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.text.ParseException;
+
+import org.hibernate.validator.internal.util.privilegedactions.NewSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +53,10 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	private final static int MAX_COUNT_FREE_PUBLISH_OF_PER_DAY = 3;		//商家每天免费发布的活动条数
 
 	private final static int DURING_PUBLISH_BETWEEN_AD = 5;		//同一商家发布广告的时间间隔（分钟）
+	
+	private final static int NEW_SHOP_REMAIN_DAYS = 30;		//新店开业呈现时间
+	
+	private final static int NEW_PRODUCT_REMAIN_DAYS = 15;		//新店开业呈现时间
 
     protected Logger logger= LoggerFactory.getLogger(getClass());
 	
@@ -86,7 +93,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		if(adAddVO.getType() == 0 || StringUtils.isEmpty(adAddVO.getTitle())){
 			return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
 		}
-		
+		Calendar calendar = Calendar.getInstance();
 		switch (AdType.getByCode(adAddVO.getType())) {
 		case DISCOUNT:		//打折促销
 			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
@@ -94,9 +101,14 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			}
 			break;
 		case NEW:			//新品上新
-			
+			adAddVO.setStartTime(calendar.getTime());
+			calendar.add(Calendar.DAY_OF_YEAR, NEW_PRODUCT_REMAIN_DAYS);
+			adAddVO.setEndTime(calendar.getTime());
 			break;
 		case OPEN:			//新店开业
+			adAddVO.setStartTime(calendar.getTime());
+			calendar.add(Calendar.DAY_OF_YEAR, NEW_SHOP_REMAIN_DAYS);
+			adAddVO.setEndTime(calendar.getTime());
 			
 			break;
 		case ADVANCE:		//预告预售
