@@ -1,11 +1,14 @@
 package com.slife.service.impl;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import javax.annotation.Resource;
 
+import ch.qos.logback.core.util.TimeUtil;
 import com.slife.vo.AnasTicketVO;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.slife.dao.ShopDao;
@@ -32,6 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private RequestWechatApi requestWechatApi;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Resource
     private UserDao userDao;
@@ -99,7 +105,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AnasTicketVO login(String code) {
+    public AnasTicketVO ticket(String code) {
         SessionKeyWX sessionKey = requestWechatApi.getSessionKey(code);
         AnasTicketVO ticketVO = new AnasTicketVO();
         if (sessionKey != null && StringUtils.isEmpty(sessionKey.getOpenId())) {
@@ -114,9 +120,10 @@ public class UserServiceImpl implements UserService {
 
 
     String cacheSessionKey(String sessionKey, String openId) {
+        long timeout = 30 * 60 * 1000;  //半个小时
         String key = UUID.randomUUID().toString();
         String value = openId.join("#", sessionKey);
-
+        stringRedisTemplate.opsForValue().set(key, value, timeout, TimeUnit.MICROSECONDS);
         return key;
     }
 }
