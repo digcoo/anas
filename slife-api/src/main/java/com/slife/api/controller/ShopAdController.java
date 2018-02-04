@@ -166,6 +166,7 @@ public class ShopAdController extends BaseController {
         }else{
             ShopHomeVO shopHomeVO = new ShopHomeVO();
             shopHomeVO.setShopId(shopId);
+            shopHomeVO.setTel(shop.getTel());
             shopHomeVO.setAddr(shop.getAddr());
             shopHomeVO.setFollowNum(shop.getFollowNum());
             shopHomeVO.setName(shop.getName());
@@ -175,6 +176,7 @@ public class ShopAdController extends BaseController {
                     shopAd -> {
                         Ad ad = new Ad();
                         ad.setType(shopAd.getType());
+                        ad.setAdId(shopAd.getId());
                         ad.setAdName(shopAd.getTitle());
                         ad.setItems(JSON.parseArray(shopAd.getItems(),Item.class));
                         ad.setTimeDesc(formatTime(shopAd.getPublishTime()));
@@ -213,8 +215,22 @@ public class ShopAdController extends BaseController {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
         Set<String> shopIdList = slifeRedisTemplate.getFollowShopIdsWithPage(userId,index);
-        List<Shop> shopList = shopService.selectBatchIds(shopIdList.stream().map(s -> Long.parseLong(s)).collect(Collectors.toList()));
-        return ReturnDTOUtil.success(shopList.stream().filter(shop -> shop.getStatus()==1).collect(Collectors.toList()));
+        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(shopIdList)) {
+            List<Long> shopIdList2 = shopIdList.stream().map(s -> Long.parseLong(s)).collect(Collectors.toList());
+            List<Shop> shopList = shopService.selectBatchIds(shopIdList2);
+            return ReturnDTOUtil.success(shopList.stream().filter(shop -> shop.getStatus() == 3).map(shop -> {
+                ShopVO shopHomeVO = new ShopVO();
+                shopHomeVO.setId(shop.getId());
+                shopHomeVO.setAddr(shop.getAddr());
+                shopHomeVO.setLat(shop.getLat());
+                shopHomeVO.setLng(shop.getLng());
+                shopHomeVO.setShopName(shop.getName());
+                shopHomeVO.setLogo(shop.getLogo());
+                return shopHomeVO;
+            }).collect(Collectors.toList()));
+        }else{
+            return ReturnDTOUtil.custom(HttpCodeEnum.NO_DATA);
+        }
     }
 
     private String formatTime(Date date){
