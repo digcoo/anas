@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import javax.annotation.Resource;
 
 import ch.qos.logback.core.util.TimeUtil;
+import com.slife.utils.RedisKeysImpl;
 import com.slife.vo.AnasTicketVO;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -121,9 +122,9 @@ public class UserServiceImpl implements UserService {
 
     String cacheSessionKey(String sessionKey, String openId) {
         long timeout = 30 * 60 * 1000;  //半个小时
-        String key = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString();
         String value = openId.join("#", sessionKey);
-        stringRedisTemplate.opsForValue().set(key, value, timeout, TimeUnit.MICROSECONDS);
-        return key;
+        stringRedisTemplate.opsForValue().set(RedisKeysImpl.getUserTicket(uuid), value, timeout, TimeUnit.MICROSECONDS);
+        return uuid;
     }
 }

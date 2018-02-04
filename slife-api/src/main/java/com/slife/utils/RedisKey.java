@@ -1,5 +1,6 @@
 package com.slife.utils;
 
+
 public interface RedisKey {
 
     String PHONE_CODE_KEY = "shop:phonecode:";
@@ -15,4 +16,6 @@ public interface RedisKey {
     String USER_FOLLOW_SHOPS = "follow:userid:";
 
     String SHOP_FOLLOW_NUM = "shop:id:";
+
+    String USER_TICKET = "ticket:uuid:";
 }
