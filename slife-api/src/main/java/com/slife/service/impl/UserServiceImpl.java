@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
         return uuid;
     }
     public String getSessionTicket(String uuid){
-        String value = stringRedisTemplate.opsForValue().get(uuid);
+        String value = stringRedisTemplate.opsForValue().get(RedisKeysImpl.getUserTicket(uuid));
         if(StringUtils.isNotEmpty(value)){
             stringRedisTemplate.opsForValue().set(RedisKeysImpl.getUserTicket(uuid), value, TIMEOUT, TimeUnit.MICROSECONDS);
         }
