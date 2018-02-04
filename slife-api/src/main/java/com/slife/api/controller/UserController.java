@@ -85,8 +85,8 @@ public class UserController {
 
     @ApiOperation(value = "获取登录token", notes = "根据wx.login获取的code得到token")
     @ApiImplicitParam(name = "code", paramType = "query", dataType = "String", required = true)
-    @GetMapping("/login")
-    public ReturnDTO login(@RequestParam("code") String code){
+    @GetMapping("/ticket")
+    public ReturnDTO ticket(@RequestParam("code") String code){
         AnasTicketVO ticketVO = userService.login(code);
         return ReturnDTOUtil.success(ticketVO);
     }
