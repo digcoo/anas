@@ -1,11 +1,14 @@
 package com.slife.entity;
 
+import com.baomidou.mybatisplus.annotations.TableName;
+
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author 
  */
+@TableName("digcoo_anas_favor")
 public class Favor implements Serializable {
     /**
      * 用户关注
