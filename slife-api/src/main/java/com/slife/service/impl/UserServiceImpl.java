@@ -1,9 +1,11 @@
 package com.slife.service.impl;
 
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import javax.annotation.Resource;
 
+import com.slife.vo.AnasTicketVO;
 import org.springframework.stereotype.Component;
 
 import com.slife.dao.ShopDao;
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserDao userDao;
-    
+
     @Resource
     private ShopDao shopDao;
 
@@ -43,9 +45,9 @@ public class UserServiceImpl implements UserService {
         SessionKeyWX sessionKey = requestWechatApi.getSessionKey(code);
         SessionKeyVO sessionKeyVO = new SessionKeyVO();
         if (sessionKey == null || StringUtils.isEmpty(sessionKey.getOpenId())) {
-        	sessionKeyVO.setErrCode(sessionKey.getErrcode());
-        	sessionKeyVO.setErrMsg(sessionKey.getErrmsg());
-        }else{
+            sessionKeyVO.setErrCode(sessionKey.getErrcode());
+            sessionKeyVO.setErrMsg(sessionKey.getErrmsg());
+        } else {
             sessionKeyVO.setOpenId(sessionKey.getOpenId());
             sessionKeyVO.setSessionKey(sessionKey.getSessionKey());
             sessionKeyVO.setUnionId(sessionKey.getUnionid());
@@ -58,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByOpenId(String openId) {
         User user = userDao.selectByOpenId(openId);
-        if (user ==null){
+        if (user == null) {
             throw new SlifeException(HttpCodeEnum.USER_NOT_FOUND_ERR);
         }
         return user;
@@ -70,12 +72,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Integer editNick(long id, String nick) throws SlifeException{
+    public Integer editNick(long id, String nick) throws SlifeException {
         User original = userDao.selectByPrimaryKey(id);
         if (original == null) {
             throw new SlifeException(HttpCodeEnum.USER_NOT_FOUND_ERR);
         }
-        User userOther = userDao.selectByIdAndNickname(id,nick);
+        User userOther = userDao.selectByIdAndNickname(id, nick);
         if (userOther != null) {
             throw new SlifeException(HttpCodeEnum.USER_NICK_DUPLICATE);
         }
@@ -83,16 +85,38 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Integer editHeadImg(long id, String path) throws SlifeException{
+    public Integer editHeadImg(long id, String path) throws SlifeException {
         User user = userDao.selectByPrimaryKey(id);
         if (user == null) {
             throw new SlifeException(HttpCodeEnum.USER_NOT_FOUND_ERR);
         }
-        
+
         if (UserType.SHOP_USER.getCode() == user.getType()) {
-        	shopDao.updateLogo(id, path);
-		}
+            shopDao.updateLogo(id, path);
+        }
 
         return userDao.updateHeadImg(id, path);
+    }
+
+    @Override
+    public AnasTicketVO login(String code) {
+        SessionKeyWX sessionKey = requestWechatApi.getSessionKey(code);
+        AnasTicketVO ticketVO = new AnasTicketVO();
+        if (sessionKey != null && StringUtils.isEmpty(sessionKey.getOpenId())) {
+            return ticketVO.buildError(sessionKey.getErrcode(), sessionKey.getErrmsg());
+        }
+        String token = cacheSessionKey(sessionKey.getSessionKey(), sessionKey.getOpenId());
+        User user = userDao.selectByOpenId(sessionKey.getOpenId());
+        ticketVO.setToken(token);
+        ticketVO.setUserId(user == null ? 0 : user.getId());
+        return ticketVO;
+    }
+
+
+    String cacheSessionKey(String sessionKey, String openId) {
+        String key = UUID.randomUUID().toString();
+        String value = openId.join("#", sessionKey);
+
+        return key;
     }
 }

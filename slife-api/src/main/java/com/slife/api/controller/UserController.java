@@ -6,6 +6,7 @@ import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
 import com.slife.service.UserService;
 import com.slife.util.ReturnDTOUtil;
+import com.slife.vo.AnasTicketVO;
 import com.slife.vo.SessionKeyVO;
 
 import io.swagger.annotations.*;
@@ -80,6 +81,14 @@ public class UserController {
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
     public ReturnDTO editHeadImg(@RequestParam("id") String id, @RequestParam("headImg") String headImg) throws SlifeException{
         return userService.editHeadImg(Long.parseLong(id), headImg)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+    }
+
+    @ApiOperation(value = "获取登录token", notes = "根据wx.login获取的code得到token")
+    @ApiImplicitParam(name = "code", paramType = "query", dataType = "String", required = true)
+    @GetMapping("/login")
+    public ReturnDTO login(@RequestParam("code") String code){
+        AnasTicketVO ticketVO = userService.login(code);
+        return ReturnDTOUtil.success(ticketVO);
     }
 
 }
