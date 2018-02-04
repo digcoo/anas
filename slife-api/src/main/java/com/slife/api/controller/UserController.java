@@ -87,7 +87,7 @@ public class UserController {
     @ApiImplicitParam(name = "code", paramType = "query", dataType = "String", required = true)
     @GetMapping("/ticket")
     public ReturnDTO ticket(@RequestParam("code") String code){
-        AnasTicketVO ticketVO = userService.login(code);
+        AnasTicketVO ticketVO = userService.ticket(code);
         return ReturnDTOUtil.success(ticketVO);
     }
 
