@@ -44,8 +44,17 @@ public class IndexMallVO implements Serializable {
     @ApiModelProperty(value="经度",name="longitude")
     private Double lng;
 
-    @ApiModelProperty(value="商家数",name="nums",required = false)
-    private Integer nums = 0;
+    @ApiModelProperty(value="商家数",name="total",required = false)
+    private Integer total = 0;
+
+    @ApiModelProperty(value="热门商家",name="hotShop",required = false)
+    private String hotShop;
+
+    @ApiModelProperty(value="距离",name="distance")
+    private double distance;
+
+    @ApiModelProperty(value="距离描述",name="distanceDesc")
+    private String distanceDesc;
 
     public Long getMallId() {
         return mallId;
@@ -87,11 +96,35 @@ public class IndexMallVO implements Serializable {
         this.lng = lng;
     }
 
-    public Integer getNums() {
-        return nums;
+    public Integer getTotal() {
+        return total;
     }
 
-    public void setNums(Integer nums) {
-        this.nums = nums;
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
+
+    public String getHotShop() {
+        return hotShop;
+    }
+
+    public void setHotShop(String hotShop) {
+        this.hotShop = hotShop;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public String getDistanceDesc() {
+        return distanceDesc;
+    }
+
+    public void setDistanceDesc(String distanceDesc) {
+        this.distanceDesc = distanceDesc;
     }
 }

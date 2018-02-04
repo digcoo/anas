@@ -24,6 +24,7 @@ import com.alibaba.fastjson.JSON;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.service.impl.ShopAdService;
 import com.slife.service.impl.ShopService;
+import com.slife.util.ReturnDTOUtil;
 import com.slife.vo.AdAddVO;
 import com.slife.vo.AdUpdateVO;
 import com.slife.vo.ShopBaseVO;
@@ -32,7 +33,7 @@ import com.slife.vo.ShopVO;
 
 @Controller
 @RequestMapping(value = "/api/shop")
-@Api(description = "店铺注册相关接口")
+@Api(description = "店铺模块功能接口")
 public class ShopController {
 
     protected Logger logger= LoggerFactory.getLogger(getClass());
@@ -145,5 +146,20 @@ public class ShopController {
     public ReturnDTO upAd(@Param("adId") Long adId, HttpServletRequest request) {
     	logger.debug("[ShopController]-[upAd] : adId = " + adId);
     	return shopAdService.upShopAd(adId);
+    }
+    
+    /**
+     * todo 这里应该有惩罚恶意刷单现象：需要对价格有阶梯式涨价机制
+     * @param shopId
+     * @param request
+     * @return
+     */
+    @ApiOperation(value = "D-12 商家修改背景墙图片", notes = "商家修改背景墙图片",httpMethod = "POST")
+    @PostMapping(value = "/update/picture")
+    @ResponseBody
+    public ReturnDTO updatePicture(@Param("shopId") Long shopId, @Param("shopId, picture") String picture, HttpServletRequest request) {
+    	logger.debug("[ShopController]-[updatePictures] : shopId = " + shopId);
+    	int ret = shopService.updatePicture(shopId, picture);
+    	return ret>0?ReturnDTOUtil.success():ReturnDTOUtil.fail();
     }
 }

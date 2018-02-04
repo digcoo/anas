@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.slife.base.entity.ReturnDTO;
+import com.slife.entity.Mall;
 import com.slife.service.impl.MallService;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
@@ -36,6 +37,14 @@ public class MallController {
         }
         
     	List<MallVO> retList = mallService.findListBykey(key);
+    	return ReturnDTOUtil.success(retList);
+    }
+
+    @ApiOperation(value = "D-12 商业中心列表查询接口", notes = "商业中心列表查询接口")
+    @GetMapping("/list")
+    @ApiResponses({@ApiResponse(code = 200, message = "成功", response = MallVO.class)})
+    public ReturnDTO<List<Mall>> list() {
+    	List<Mall> retList = mallService.selectAll();
     	return ReturnDTOUtil.success(retList);
     }
     

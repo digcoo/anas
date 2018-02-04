@@ -3,7 +3,9 @@ package com.slife.entity;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.slife.base.entity.ApiEntity;
 
 /**
@@ -17,8 +19,8 @@ import com.slife.base.entity.ApiEntity;
 @TableName("digcoo_anas_mall")
 public class Mall extends ApiEntity<Mall> {
 
+
     private static final long serialVersionUID = 1L;
-    
 
     @Override
     protected Serializable pkVal() {
@@ -65,6 +67,15 @@ public class Mall extends ApiEntity<Mall> {
      */
     private byte status;
 
+	/**
+	 * 商家数
+	 */
+	private Integer total=0;
+
+	/**
+	 * 热门商家
+	 */
+	private String hotShop;
 
 	public String getName() {
 		return name;
@@ -129,5 +140,21 @@ public class Mall extends ApiEntity<Mall> {
 	public void setStatus(byte status) {
 		this.status = status;
 	}
-    
+
+
+	public Integer getTotal() {
+		return total;
+	}
+
+	public void setTotal(Integer total) {
+		this.total = total;
+	}
+
+	public String getHotShop() {
+		return hotShop;
+	}
+
+	public void setHotShop(String hotShop) {
+		this.hotShop = hotShop;
+	}
 }

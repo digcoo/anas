@@ -95,8 +95,8 @@ http:
       connection: 50
       perRoute: 100
 wechat:
-    appId: wxb866ce80c22239ba
-    appSecret: 49cb0d268ba09be29e431de348c23763
+    appId: wx70ce7ab503f9c688
+    appSecret: 297df810dc7bcbe7eaa2ac0470d05eb7
     encodingAESKey:
 
 aliyun:

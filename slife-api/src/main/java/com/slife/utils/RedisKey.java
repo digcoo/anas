@@ -1,12 +1,18 @@
 package com.slife.utils;
 
-public class RedisKey {
+public interface RedisKey {
 
-    public static String PhoneCodeKey = "shop:phonecode:";
+    String PHONE_CODE_KEY = "shop:phonecode:";
 
-    public static String PhoneCodeCountKey = "shop:phonecode:count:";
+    String PHONE_CODE_COUNT = "shop:phonecode:count:";
 
-    public static String shopBaseKey = "shop:shopBase:";
+    String SHOP_BASE = "shop:shopBase:";
 
+    String USER_FAVOR_ADS = "favor:userid:";
 
+    String ADS_FAVOR_NUM = "ad:id:";
+
+    String USER_FOLLOW_SHOPS = "follow:userid:";
+
+    String SHOP_FOLLOW_NUM = "shop:id:";
 }

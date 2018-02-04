@@ -18,10 +18,12 @@
         <result column="shop_id" jdbcType="BIGINT" property="shopId"/>
         <result column="geohash" jdbcType="VARCHAR" property="geohash"/>
         <result column="shop_name" jdbcType="VARCHAR" property="shopName"/>
+        <result column="business_id" jdbcType="BIGINT" property="businessId"/>
+        <result column="flag" jdbcType="TINYINT" property="flag"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, type, title,items,favor_num,publish_time,shop_id,geohash,shop_name
+        id, type, title,items,favor_num,publish_time,shop_id,geohash,shop_name,business_id
     </sql>
 
     <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -32,9 +34,7 @@
 
     <select id="selectAdsByGeohash" resultMap="BaseResultMap">
         <![CDATA[
-
-
-          select id, type, title,items,favor_num,publish_time,shop_id,geohash from `digcoo_anas_shop_ad` 
+          select id, type, title,items,favor_num,publish_time,shop_id,geohash, shop_name, business_id from `digcoo_anas_shop_ad`
           where 
           status= 1 and 
           start_time<NOW() and end_time>Now() and 
@@ -47,43 +47,30 @@
 
     <select id="selectAdsByGeohashAndName" resultMap="BaseResultMap">
         <![CDATA[
-
-
-          select id, type, title,items,favor_num,publish_time,shop_id,geohash from `digcoo_anas_shop_ad` 
-          where 
+          select id, type, title,items,favor_num,publish_time,shop_id,geohash, shop_name, business_id from `digcoo_anas_shop_ad`
+          where
           status=1 and 
-          start_time<NOW() and end_time>Now() and 
+          start_time<NOW() and end_time>=Now() and
           geohash like CONCAT(#{geohash},'%') 
-          and （title like  CONCAT('%',#{name},'%') or shop_name like CONCAT('%',#{name},'%'))
-          order by
---                 CASE
---                      WHEN  title = #{name}
---                           THEN 1
---                      WHEN  title like  CONCAT(#{name},'%')
---                           THEN 2
---                      WHEN  title like  CONCAT('%',#{name})
---                           THEN 3
---                      WHEN  title like  CONCAT('%',#{name},'%')
---                           THEN 4
---                 END
-                publish_time desc limit #{index},10
-
-
+          and (title like  CONCAT('%',#{name},'%') or shop_name like CONCAT('%',#{name},'%'))
         ]]>
     </select>
 
     <select id="selectAdsByShopId" resultMap="BaseResultMap">
         <![CDATA[
-
-
-          select id, type, title,items,favor_num,publish_time,shop_id,geohash from `digcoo_anas_shop_ad` 
+          select id, type, title,items,favor_num,publish_time,shop_id,geohash,
+              CASE
+                 WHEN  start_time<NOW() and end_time>Now()
+                      THEN 1
+                 WHEN  end_time<NOW()
+                      THEN 2
+            END flag from `digcoo_anas_shop_ad`
           where 
           status=1 and 
-          start_time<NOW() and end_time>Now() and
+          start_time<NOW() and
           shop_id = #{shopId}
-          order by publish_time desc limit #{index},10
-
-
+          order by
+          flag,publish_time desc limit #{index},10
         ]]>
     </select>
 
@@ -92,7 +79,7 @@
 	</update>
 
     <select id="listForShop" resultMap="BaseResultMap">
-        select id, type, title,items,favor_num,publish_time,shop_id,geohash from `digcoo_anas_shop_ad` where
+        select id, type, title,items,favor_num,publish_time,shop_id,geohash, shop_name, business_id from `digcoo_anas_shop_ad` where
         shop_id = #{shopId} and status in
         <foreach collection="statuses" item="status" open="(" close=")" separator=",">
             #{status}
@@ -104,7 +91,7 @@
 	</update>
 
     <select id="listForShop" resultMap="BaseResultMap">
-        select id, type, title, status, items,favor_num,publish_time,shop_id,geohash from `digcoo_anas_shop_ad` where
+        select id, type, title, status, items,favor_num,publish_time,shop_id,geohash, shop_name, business_id from `digcoo_anas_shop_ad` where
         shop_id = #{shopId} and status in
         <foreach collection="statuses" item="status" open="(" close=")" separator=",">
             #{status}

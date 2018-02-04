@@ -2,9 +2,12 @@ package com.slife.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.text.ParseException;
 
+import org.hibernate.validator.internal.util.privilegedactions.NewSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
+import com.aliyun.oss.common.utils.DateUtil;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.impl.BaseService;
 import com.slife.dao.ShopAdDao;
@@ -49,6 +53,10 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	private final static int MAX_COUNT_FREE_PUBLISH_OF_PER_DAY = 3;		//商家每天免费发布的活动条数
 
 	private final static int DURING_PUBLISH_BETWEEN_AD = 5;		//同一商家发布广告的时间间隔（分钟）
+	
+	private final static int NEW_SHOP_REMAIN_DAYS = 30;		//新店开业呈现时间
+	
+	private final static int NEW_PRODUCT_REMAIN_DAYS = 15;		//新店开业呈现时间
 
     protected Logger logger= LoggerFactory.getLogger(getClass());
 	
@@ -65,12 +73,8 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
     }
 
     @Override
-    public List<ShopAd> selectAdsByGeohashAndName(Integer index,String geohash,String name) {
-        if(StringUtils.isBlank(name)){
-            return selectAdsByGeohash(index,geohash);
-        }else{
-            return this.baseMapper.selectAdsByGeohashAndName(index,geohash,name);
-        }
+    public List<ShopAd> selectAdsByGeohashAndName(String geohash,String name) {
+            return this.baseMapper.selectAdsByGeohashAndName(geohash,name);
     }
 
     @Override
@@ -89,7 +93,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		if(adAddVO.getType() == 0 || StringUtils.isEmpty(adAddVO.getTitle())){
 			return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
 		}
-		
+		Calendar calendar = Calendar.getInstance();
 		switch (AdType.getByCode(adAddVO.getType())) {
 		case DISCOUNT:		//打折促销
 			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
@@ -97,9 +101,14 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			}
 			break;
 		case NEW:			//新品上新
-			
+			adAddVO.setStartTime(calendar.getTime());
+			calendar.add(Calendar.DAY_OF_YEAR, NEW_PRODUCT_REMAIN_DAYS);
+			adAddVO.setEndTime(calendar.getTime());
 			break;
 		case OPEN:			//新店开业
+			adAddVO.setStartTime(calendar.getTime());
+			calendar.add(Calendar.DAY_OF_YEAR, NEW_SHOP_REMAIN_DAYS);
+			adAddVO.setEndTime(calendar.getTime());
 			
 			break;
 		case ADVANCE:		//预告预售
@@ -110,11 +119,33 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		case OTHER:			//其他
 			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
 				return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
-			}			
+			}
 			break;
 
 		default:
 			return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
+		}
+		
+		Date endTime= null;
+		if (adAddVO.getEndTime() != null) {
+			try {
+				String dateTimeStr = DateUtils.formatDate(adAddVO.getEndTime(), "yyyy-MM-dd") + " 23:59:59";
+				endTime = DateUtils.parseDate(dateTimeStr, "yyyy-MM-dd HH:mm:ss");
+			} catch (ParseException e) {
+				logger.error("addShopAd exception...", e);
+			}
+		}
+		
+		//items
+		if(StringUtils.isNotEmpty(adAddVO.getItems())){
+			List<Item> items = JSON.parseArray(adAddVO.getItems(), Item.class);
+			for (Item item : items) {
+				if(StringUtils.isNotEmpty(item.getLabel())){
+					item.setLabel("¥" + item.getLabel());
+					item.setLabel(item.getLabel());
+				}
+			}
+			adAddVO.setItems(JSON.toJSONString(items));
 		}
 		
 		ShopAd shopAd = new ShopAd();
@@ -123,12 +154,13 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		shopAd.setTitle(adAddVO.getTitle());
 		shopAd.setItems(adAddVO.getItems());
 		shopAd.setStartTime(adAddVO.getStartTime());
-		shopAd.setEndTime(adAddVO.getEndTime());
+		shopAd.setEndTime(endTime);
 		shopAd.setStatus((byte)AdStatus.INIT.getStatus());
 		
 		//冗余字段
 		shopAd.setGeohash(localShop.getGeohash());
 		shopAd.setShopName(localShop.getName());
+		shopAd.setBusinessId(localShop.getBusinessId());
 		
 		int ret = this.baseMapper.insert(shopAd);
 		if(ret > 0){
@@ -181,7 +213,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			return ReturnDTOUtil.custom(HttpCodeEnum.AD_NOT_PERIOD);
 		}
 		
-		//判断当天是否达到免费发布的上线
+		//判断当天是否达到免费发布的上限
 		int currentTimes = 0;
 		for (ShopAd shopAd : publishedAds) {
 			if (DateUtils.isSameDay(shopAd.getPublishTime(), publishTime)) {
@@ -204,6 +236,8 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	@Transactional(readOnly = false)
 	public ReturnDTO offShopAd(Long adId) {
 		// 只有上架状态的ad能下架
+		//当天发布的广告，当天不能下架 todo
+		
 		int ret = baseMapper.updateStatus(adId, AdStatus.OFF.getStatus());
 		if(ret > 0){
 			return ReturnDTOUtil.success();
@@ -215,7 +249,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	@Transactional(readOnly = false)
 	public ReturnDTO delShopAd(Long adId) {
 		// 只有下架、初始、过期状态的ad能下架
-		int ret = baseMapper.updateStatus(adId, AdStatus.EXPIRED.getStatus());
+		int ret = baseMapper.updateStatus(adId, AdStatus.DEL.getStatus());
 		if(ret > 0){
 			return ReturnDTOUtil.success();
 		}

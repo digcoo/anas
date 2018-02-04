@@ -1,5 +1,6 @@
 package com.slife.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -33,6 +34,20 @@ public class DateUtils {
      */
     public static boolean isSameDay(Date date1, Date date2){
     	return date1.getYear()==date2.getYear() && date1.getMonth()==date2.getMonth() && date1.getDay()==date2.getDay();
+    }
+    
+    /**
+     * 根据传入的日期格式化输出
+     * yyyy-MM-dd 的字符串时间
+     *
+     * @param date      时间
+     * @param formatStr yyyy-MM-dd等时间串
+     * @return
+     * @throws ParseException 
+     */
+    public static Date parseDate(String dateStr, String formatStr) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat(formatStr);
+        return formatter.parse(dateStr);
     }
     
 }

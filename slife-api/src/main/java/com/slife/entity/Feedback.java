@@ -1,5 +1,7 @@
 package com.slife.entity;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.slife.base.entity.ApiEntity;
 
 import java.io.Serializable;

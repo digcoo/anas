@@ -25,20 +25,20 @@ public class ShopAdServiceTest extends WebApplicationTests{
     private CacheManager cacheManager;
     @Test
     public void selectAdsByGeohash() throws Exception {
-        List<ShopAd> shopAdList = shopAdService.selectAdsByGeohash(0,"wtw2");
+        List<ShopAd> shopAdList = shopAdService.selectAdsByGeohash(0,"wtw3");
         assertThat(shopAdList).isNotEmpty();
     }
 
     @Test
     public void selectAdsByGeohashAndName() throws Exception {
-        List<ShopAd> shopAdList = shopAdService.selectAdsByGeohashAndName(0,"wtw2","奶茶");
+        List<ShopAd> shopAdList = shopAdService.selectAdsByGeohashAndName("wtw2","明");
         assertThat(shopAdList).isNotEmpty();
 }
 
     @Test
     public void selectAdsByShopId() throws Exception {
-        Shop shop = shopService.selectById(1l);
-        assertThat(shop).isNotNull();
+        List<ShopAd> shopAdList = shopAdService.selectAdsByShopId(0,2l);
+        assertThat(shopAdList).isNotEmpty();
     }
 
 }

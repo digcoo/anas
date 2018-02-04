@@ -2,7 +2,9 @@ package com.slife.entity;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.slife.base.entity.ApiEntity;
 
 @TableName("digcoo_anas_item_photo")

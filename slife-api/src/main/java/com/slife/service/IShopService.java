@@ -34,4 +34,12 @@ public interface IShopService extends IBaseService<Shop> {
      * @return
      */
     public List<ShopCountPerMallView> countShopByMallId(List<Long> mallIdList);
+    
+    /**
+     * 商家修改背景图片
+     * @param shopId
+     * @param picture
+     * @return
+     */
+    public int updatePicture(long shopId, String picture);
 }

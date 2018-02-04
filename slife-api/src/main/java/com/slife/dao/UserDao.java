@@ -22,6 +22,6 @@ public interface UserDao {
 
     int updateHeadImg(@Param("id") long id ,@Param("headImg") String headImg);
 
-
+    int updateToShop(@Param("id") long id, @Param("type") int type);
 
 }

@@ -13,4 +13,6 @@ public interface IMallService {
     List<MallVO> findListBykey(String key);
 
     List<Mall> selectMallsByGeohash(String geohash);
+    
+    List<Mall> selectAll();
 }
