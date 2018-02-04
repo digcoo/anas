@@ -46,6 +46,8 @@ public class UserServiceImpl implements UserService {
     @Resource
     private ShopDao shopDao;
 
+    private static final long TIMEOUT = 30*60*1000;
+
 
     @Override
     public SessionKeyVO getSessionKeyWx(String code) {
@@ -112,7 +114,7 @@ public class UserServiceImpl implements UserService {
         if (sessionKey != null && StringUtils.isEmpty(sessionKey.getOpenId())) {
             return ticketVO.buildError(sessionKey.getErrcode(), sessionKey.getErrmsg());
         }
-        String token = cacheSessionKey(sessionKey.getSessionKey(), sessionKey.getOpenId());
+        String token = cacheSessionTicket(sessionKey.getSessionKey(), sessionKey.getOpenId());
         User user = userDao.selectByOpenId(sessionKey.getOpenId());
         ticketVO.setToken(token);
         ticketVO.setUserId(user == null ? 0 : user.getId());
@@ -120,11 +122,17 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    String cacheSessionKey(String sessionKey, String openId) {
-        long timeout = 30 * 60 * 1000;  //半个小时
+    String cacheSessionTicket(String sessionKey, String openId) {
         String uuid = UUID.randomUUID().toString();
         String value = openId.join("#", sessionKey);
-        stringRedisTemplate.opsForValue().set(RedisKeysImpl.getUserTicket(uuid), value, timeout, TimeUnit.MICROSECONDS);
+        stringRedisTemplate.opsForValue().set(RedisKeysImpl.getUserTicket(uuid), value, TIMEOUT, TimeUnit.MICROSECONDS);
         return uuid;
+    }
+    public String getSessionTicket(String uuid){
+        String value = stringRedisTemplate.opsForValue().get(uuid);
+        if(StringUtils.isEmpty(value)){
+            stringRedisTemplate.opsForValue().set(RedisKeysImpl.getUserTicket(uuid), value, TIMEOUT, TimeUnit.MICROSECONDS);
+        }
+        return value;
     }
 }
