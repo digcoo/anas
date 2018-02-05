@@ -1,15 +1,14 @@
 package com.slife.api.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.mapper.Condition;
 import com.slife.base.controller.BaseController;
 import com.slife.base.entity.ReturnDTO;
-import com.slife.entity.Mall;
-import com.slife.entity.Shop;
-import com.slife.entity.ShopAd;
-import com.slife.entity.ShopCountPerMallView;
+import com.slife.entity.*;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
 import com.slife.service.IMallService;
+import com.slife.service.IReportService;
 import com.slife.service.IShopAdService;
 import com.slife.service.IShopService;
 import com.slife.util.DateUtils;
@@ -33,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author tod
@@ -54,6 +54,8 @@ public class ShopAdController extends BaseController {
     @Autowired
     private IMallService mallService;
     @Autowired
+    private IReportService reportService;
+    @Autowired
     private SlifeRedisTemplate slifeRedisTemplate;
 
     private final static SpatialContext geo = SpatialContext.GEO;
@@ -65,11 +67,13 @@ public class ShopAdController extends BaseController {
      */
     @ApiOperation(value = "T1-首页-获取附近的活动列表", notes = "根据geohash编码获取活动列表数据")
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "String", name = "geohash", value = "geo编码",required = true) })
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "geohash", value = "geo编码",required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "business_ids", value = "逗号分隔的行业id",required = false)
+    })
     @ApiResponses({@ApiResponse(code = 200,message = "成功",response = IndexAdVO.class)})
     @GetMapping(value = "/ads")
     @ResponseBody
-    public ReturnDTO<IndexVO> getAds(@RequestParam("index") Integer index, @RequestParam("geohash") String geohash) {
+    public ReturnDTO<IndexVO> getAds(@RequestParam("index") Integer index, @RequestParam("geohash") String geohash, @RequestParam(value = "business_ids",required = false) String businessIds) {
         if(StringUtils.isBlank(geohash) || geohash.length()<=5) {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
@@ -103,8 +107,13 @@ public class ShopAdController extends BaseController {
             }).collect(Collectors.toList());
             indexVO.setMalls(indexMallVOList);
         }
-
-        List<ShopAd> shopAdList = shopAdService.selectAdsByGeohash(index==null?0:index,geohash.substring(0,3));
+        List<ShopAd> shopAdList;
+        if(StringUtils.isBlank(businessIds)){
+            shopAdList = shopAdService.selectAdsByGeohash(index==null?0:index,geohash.substring(0,3),null);
+        }else{
+            List<Long> businessIdList = Arrays.asList(businessIds.split(",")).stream().map(s -> Long.valueOf(s.trim())).distinct().collect(Collectors.toList());
+            shopAdList = shopAdService.selectAdsByGeohash(index==null?0:index,geohash.substring(0,3),businessIdList);
+        }
         if(!CollectionUtils.isEmpty(shopAdList)){
             List<Long> shopIdList = shopAdList.stream().map(ShopAd::getShopId).distinct().collect(Collectors.toList());
             List<Shop> shopList = shopService.selectBatchIds(shopIdList);
@@ -203,6 +212,26 @@ public class ShopAdController extends BaseController {
         return ReturnDTOUtil.success();
     }
 
+    @ApiOperation(value = "T9-举报商家", notes = "举报商家")
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Long", name = "userId", value = "用户id",required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Long", name = "shopId", value = "店铺id",required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Byte", name = "type", value = "类型",required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "content", value = "举报内容",required = true)})
+    @GetMapping(value = "/shop/report")
+    @ResponseBody
+    public ReturnDTO report(@RequestParam("userId") Long userId,@RequestParam("shopId") Long shopId,@RequestParam("type") Byte type,@RequestParam("content") String content) {
+        if(userId == null || shopId==null) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+        Report report = new Report();
+        report.setShopId(shopId);
+        report.setUserId(userId);
+        report.setType(type);
+        report.setContent(content);
+        return reportService.insert(report)?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+    }
+
+
     @ApiOperation(value = "T10-关注商家列表", notes = "根据userId获取相应关注商家列表")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
@@ -214,20 +243,30 @@ public class ShopAdController extends BaseController {
         if(userId == null) {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
-        Set<String> shopIdList = slifeRedisTemplate.getFollowShopIdsWithPage(userId,index);
+        Set<String> shopIdList = slifeRedisTemplate.getAllFollowShopIds(userId);
         if(org.apache.commons.collections.CollectionUtils.isNotEmpty(shopIdList)) {
             List<Long> shopIdList2 = shopIdList.stream().map(s -> Long.parseLong(s)).collect(Collectors.toList());
             List<Shop> shopList = shopService.selectBatchIds(shopIdList2);
+            List<ShopAd> shopAdList = shopAdService.selectList(Condition.create().in("shop_id", shopIdList2).orderBy("publish_time",false));
+            Map<Long, List<ShopAd>> shopMap = shopAdList.stream().filter(Objects::nonNull).collect(Collectors.groupingBy(ShopAd::getShopId));
             return ReturnDTOUtil.success(shopList.stream().filter(shop -> shop.getStatus() == 3).map(shop -> {
-                ShopVO shopHomeVO = new ShopVO();
-                shopHomeVO.setId(shop.getId());
-                shopHomeVO.setAddr(shop.getAddr());
-                shopHomeVO.setLat(shop.getLat());
-                shopHomeVO.setLng(shop.getLng());
-                shopHomeVO.setShopName(shop.getName());
-                shopHomeVO.setLogo(shop.getLogo());
-                return shopHomeVO;
-            }).collect(Collectors.toList()));
+                ShopAd shopAd = shopMap.get(shop.getId()).get(0);
+                if(shopAd == null){
+                    return null;
+                }else{
+                    FollowShopVO followShopVO = new FollowShopVO();
+                    followShopVO.setShopId(shop.getId());
+                    followShopVO.setAddr(shop.getAddr());
+                    followShopVO.setLat(shop.getLat());
+                    followShopVO.setLng(shop.getLng());
+                    followShopVO.setShopName(shop.getName());
+                    followShopVO.setLogo(shop.getLogo());
+                    followShopVO.setAdId(shopAd.getId());
+                    followShopVO.setTimeDesc(formatTime(shopAd.getPublishTime()));
+                    followShopVO.setAdName(shopAd.getTitle());
+                    return followShopVO;
+                }
+            }).filter(Objects::nonNull).skip(index).limit(10).collect(Collectors.toList()));
         }else{
             return ReturnDTOUtil.custom(HttpCodeEnum.NO_DATA);
         }
@@ -237,23 +276,24 @@ public class ShopAdController extends BaseController {
         Date date2=new Date();
         Calendar cal=Calendar.getInstance();
         cal.setTime(date2);
-        cal.set(Calendar.DATE,-1);
-        boolean yesterday = org.apache.commons.lang3.time.DateUtils.isSameDay(cal.getTime(),date);
-        boolean today = org.apache.commons.lang3.time.DateUtils.isSameDay(date2,date);
+        cal.add(Calendar.DATE,-1);
         String timeStr = DateUtils.formatDate(date,"HH:mm");
         String dateStr = DateUtils.formatDate(date,"MM-dd");
+        boolean yesterday = org.apache.commons.lang3.time.DateUtils.isSameDay(cal.getTime(),date);
         if(yesterday){
             return "昨天 "+timeStr;
-        }else if(today){
+        }
+        boolean today = org.apache.commons.lang3.time.DateUtils.isSameDay(date2,date);
+        if(today){
             long difference=System.currentTimeMillis()-date.getTime();
             long minute=difference/(60*1000);
             if(minute<20){
                 return minute+"前";
             }
             return timeStr;
-        }else{
-            return dateStr;
         }
+        return dateStr;
+
     }
 
     private IndexAdVO shopBeanMapper(Map<Long, Shop> shopMap,ShopAd shopAd,String geohash){

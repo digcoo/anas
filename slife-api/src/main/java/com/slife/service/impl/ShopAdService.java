@@ -58,8 +58,6 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	
 	private final static int NEW_PRODUCT_REMAIN_DAYS = 15;		//新店开业呈现时间
 
-    protected Logger logger= LoggerFactory.getLogger(getClass());
-	
 	@Autowired
 	ShopDao shopDao;
 
@@ -67,9 +65,9 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	ShopAdSpreadDao shopAdSpreadDao;
 
     @Override
-    public List<ShopAd> selectAdsByGeohash(Integer index,String geohash) {
+    public List<ShopAd> selectAdsByGeohash(Integer index,String geohash,List<Long> businessList) {
 
-        return this.baseMapper.selectAdsByGeohash(index,geohash);
+        return this.baseMapper.selectAdsByGeohash(index,geohash,businessList);
     }
 
     @Override

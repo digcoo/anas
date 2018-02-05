@@ -33,16 +33,19 @@
     </select>
 
     <select id="selectAdsByGeohash" resultMap="BaseResultMap">
-        <![CDATA[
+
           select id, type, title,items,favor_num,publish_time,shop_id,geohash, shop_name, business_id from `digcoo_anas_shop_ad`
           where 
           status= 1 and 
-          start_time<NOW() and end_time>Now() and 
-          geohash like CONCAT(#{geohash},'%') 
+           <![CDATA[ start_time<NOW() and end_time>Now() and ]]>
+          geohash like CONCAT(#{geohash},'%')
+           <if test="businessList != null">
+               and business_id in
+                <foreach collection="businessList" item="businessId" open="(" close=")" separator=",">
+                    #{businessId}
+                </foreach>
+           </if>
           order by publish_time desc limit #{index},10
-
-
-        ]]>
     </select>
 
     <select id="selectAdsByGeohashAndName" resultMap="BaseResultMap">

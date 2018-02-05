@@ -27,7 +27,7 @@ public interface IShopAdService extends IBaseService<ShopAd> {
      * @return
      */
 
-    public List<ShopAd> selectAdsByGeohash(Integer index,String geohash);
+    public List<ShopAd> selectAdsByGeohash(Integer index,String geohash,List<Long> businessList);
 
     /**
      * 根据geohash以及活动名称模糊搜索获取附近的活动
