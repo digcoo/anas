@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -14,11 +13,16 @@ import org.springframework.cache.CacheManager;
 import com.alibaba.fastjson.JSON;
 import com.slife.WebApplicationTests;
 import com.slife.base.entity.ReturnDTO;
+import com.slife.entity.Shop;
 import com.slife.entity.enums.AdType;
+import com.slife.entity.enums.ShopType;
 import com.slife.service.impl.ShopAdService;
 import com.slife.service.impl.ShopService;
 import com.slife.vo.AdAddVO;
 import com.slife.vo.AdUpdateVO;
+import com.slife.vo.ShopBaseVO;
+import com.slife.vo.ShopMallVO;
+import com.slife.vo.ShopVO;
 
 /**
  * Created by duyp on 2018/1/25.
@@ -30,11 +34,57 @@ public class ShopServiceTest extends WebApplicationTests{
     private ShopService shopService;
     @Autowired
     private CacheManager cacheManager;
+    
+    @Test
+    public void saveShopBase(){
+    	ShopBaseVO shopBaseVO = new ShopBaseVO();
+    	shopBaseVO.setAddr("沪闵路6888号");
+    	shopBaseVO.setBusinessId(63l);
+    	shopBaseVO.setGeohash("wtw31234");
+    	shopBaseVO.setLat(31.0101);
+    	shopBaseVO.setLng(121.2121);
+    	shopBaseVO.setOpenMobile(true);
+    	shopBaseVO.setPhone("13764611339");
+    	shopBaseVO.setPhoneCode("phoneCode");
+    	shopBaseVO.setPosition("店长");
+    	shopBaseVO.setShopName("一点点(莘庄龙之梦店)");
+    	shopBaseVO.setUserId(1l);
+    	ReturnDTO<ShopBaseVO> saveShopBase = shopService.saveShopBase(shopBaseVO);
+    	System.out.println(JSON.toJSONString(saveShopBase));
+    }
+    
+    @Test
+    public void saveShop(){
+    	ShopMallVO shopMallVO = new ShopMallVO();
+    	shopMallVO.setUserId(1l);
+    	shopMallVO.setAgentIdentifyCard("{\"ID_A\":\"d1ba576e3f9dcd331c703338ab87803b.jpeg\", \"ID_B\":\"26a98d9660c3bb6cc7272a7f2d6e9728.jpeg\"}");
+    	shopMallVO.setAgentPortrait("d1ba576e3f9dcd331c703338ab87803b.jpeg");
+    	shopMallVO.setShopType("" + ShopType.MALL.getCode());
+    	shopMallVO.setMallId(1l);
+    	shopMallVO.setFloor("B3F");
+    	shopMallVO.setRoom("302");
+    	ReturnDTO saveShop = shopService.saveShop(shopMallVO);
+    	System.out.println(JSON.toJSONString(saveShop));
+    }
+    
+    @Test
+    public void getShopInfo(){
+    	ReturnDTO<ShopVO> shopInfo = shopService.getShopInfo(2l);
+    	System.out.println(JSON.toJSONString(shopInfo));
+    }
+    
+    @Test
+    public void updatePicture(){
+    	int updatePicture = shopService.updatePicture(2l, "[\"d1ba576e3f9dcd331c703338ab87803b.jpeg\", \"26a98d9660c3bb6cc7272a7f2d6e9728.jpeg\"]");
+    	System.out.println(updatePicture);
+    }
+    
+    
     @Test
     public void addShopAd(){
     	Calendar calendar = Calendar.getInstance();
     	AdAddVO shopAd = new AdAddVO();
-    	shopAd.setShopId(955727017696542738l);
+    	shopAd.setShopId(2l);
     	shopAd.setType((byte)AdType.DISCOUNT.getType());	//打折促销
     	shopAd.setStartTime(calendar.getTime());
     	
@@ -107,27 +157,27 @@ public class ShopServiceTest extends WebApplicationTests{
     }
 
     @Test
-    public void publicShopAd(){
-    	ReturnDTO retDto = shopAdService.publishShopAd(956914448743247874l);
+    public void publishShopAd(){
+    	ReturnDTO retDto = shopAdService.publishShopAd(1l);
     	System.out.println(JSON.toJSONString(retDto));
     }
     
 
     @Test
     public void offShopAd(){
-    	ReturnDTO retDto = shopAdService.offShopAd(956714007690412033l);
+    	ReturnDTO retDto = shopAdService.offShopAd(1l);
     	System.out.println(JSON.toJSONString(retDto));
     }
 
     @Test
     public void delShopAd(){
-    	ReturnDTO retDto = shopAdService.delShopAd(956714007690412033l);
+    	ReturnDTO retDto = shopAdService.delShopAd(1l);
     	System.out.println(JSON.toJSONString(retDto));
     }
 
     @Test
-    public void listForShop(){
-    	ReturnDTO retDto = shopAdService.listForShop(955727017696542738l, 0);
+    public void listAdsForShop(){
+    	ReturnDTO retDto = shopAdService.listForShop(2l, 0);
     	System.out.println(JSON.toJSONString(retDto));
     }
     
@@ -136,4 +186,5 @@ public class ShopServiceTest extends WebApplicationTests{
     	ReturnDTO retDto = shopAdService.upShopAd(956714007690412033l);
     	System.out.println(JSON.toJSONString(retDto));
     }
+
 }

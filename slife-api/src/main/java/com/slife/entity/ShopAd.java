@@ -4,6 +4,11 @@ package com.slife.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.enums.IdType;
+import org.springframework.data.annotation.Transient;
+
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.slife.base.entity.ApiEntity;
@@ -18,7 +23,6 @@ import com.slife.base.entity.ApiEntity;
  */
 @TableName("digcoo_anas_shop_ad")
 public class ShopAd extends ApiEntity<ShopAd> {
-
     /**
      * varchar(20) 活动类型
      */
@@ -36,45 +40,46 @@ public class ShopAd extends ApiEntity<ShopAd> {
     /**
      * varchar(500) 活动收藏数
      */
-    @TableField(value = "favor_num")
     private Integer favorNum = 0;
     /**
      * varchar(15) 活动状态
      */
-    private Byte status = Byte.valueOf("1");
+    private Byte status = Byte.valueOf("0");
 
     /**
      * varchar(50) geo编码
      */
     private String geohash;
 
-    @TableField(value = "shop_id")
     private Long shopId;
     /**
      * 创建日期
      */
-    @TableField(value = "start_time")
     private Date startTime;
 
 
     /**
      * 更新日期
      */
-    @TableField(value = "end_time")
     private Date endTime;
 
     /**
      * 更新日期
      */
-    @TableField(value = "publish_time")
     private Date publishTime;
 
     /**
      * 商铺名称：冗余字段
      */
-    @TableField(value = "shop_name")
     private String shopName;
 
+    /**
+     * 行业id：冗余字段
+     */
+    private Long businessId;
+
+    @TableField(exist=false)
+    private Byte flag;
 
     @Override
     protected Serializable pkVal() {
@@ -170,5 +175,21 @@ public class ShopAd extends ApiEntity<ShopAd> {
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
 	}
-    
+
+    public Byte getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Byte flag) {
+        this.flag = flag;
+    }
+
+	public Long getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(Long businessId) {
+		this.businessId = businessId;
+	}
+
 }

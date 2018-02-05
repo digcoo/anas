@@ -22,13 +22,13 @@ public class ShopMallVO {
     @ApiModelProperty(value = "门牌号",required = true)
     private String room;
 
-    @ApiModelProperty(value = "身份图片正反面",required = true)
+    @ApiModelProperty(value = "身份图片正反面",required = true, example="{\"ID_A\":\"123.png\", \"ID_B\":\"234.png\"}")
     private String agentIdentifyCard;
 
     @ApiModelProperty(value = "正面照片",required = true)
     private String agentPortrait;
 
-    @ApiModelProperty(value = "营业执照",required = true)
+    @ApiModelProperty(value = "营业执照",required = false)
     private String businessLicense;
 
     public long getUserId() {

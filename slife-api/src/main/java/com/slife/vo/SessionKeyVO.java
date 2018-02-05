@@ -23,6 +23,10 @@ public class SessionKeyVO implements Serializable{
      * 微信unionid
      */
     private String unionId;
+    
+    private String errCode;
+    
+    private String errMsg;
 
     /**
      * 判断使用是否已经再系统中
@@ -60,4 +64,21 @@ public class SessionKeyVO implements Serializable{
     public void setNewUser(boolean newUser) {
         this.newUser = newUser;
     }
+
+	public String getErrMsg() {
+		return errMsg;
+	}
+
+	public void setErrMsg(String errMsg) {
+		this.errMsg = errMsg;
+	}
+
+	public String getErrCode() {
+		return errCode;
+	}
+
+	public void setErrCode(String errCode) {
+		this.errCode = errCode;
+	}
+	
 }

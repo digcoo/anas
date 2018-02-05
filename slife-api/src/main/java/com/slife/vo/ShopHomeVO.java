@@ -27,6 +27,12 @@ public class ShopHomeVO implements Serializable {
     private String name;
 
     /**
+     * 商家电话
+     */
+    @ApiModelProperty(value="商家电话",name="tel",required = true)
+    private String tel;
+
+    /**
      * 商家ID
      */
     @ApiModelProperty(value="商家ID",name="shopId",required = true)
@@ -72,6 +78,14 @@ public class ShopHomeVO implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
     }
 
     public Long getShopId() {

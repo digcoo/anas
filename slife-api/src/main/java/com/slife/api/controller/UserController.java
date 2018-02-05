@@ -2,11 +2,16 @@ package com.slife.api.controller;
 
 import com.slife.base.entity.ReturnDTO;
 import com.slife.entity.User;
+import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
 import com.slife.service.UserService;
 import com.slife.util.ReturnDTOUtil;
+import com.slife.vo.AnasTicketVO;
 import com.slife.vo.SessionKeyVO;
+
 import io.swagger.annotations.*;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +34,11 @@ public class UserController {
     @ApiResponses({@ApiResponse(code = 200, message = "成功", response = SessionKeyVO.class)})
     public ReturnDTO<SessionKeyVO> getSessionKeyWx(@RequestParam("code") String code) {
         SessionKeyVO sessionKeyVO = userService.getSessionKeyWx(code);
-        return sessionKeyVO!=null?ReturnDTOUtil.success(sessionKeyVO):ReturnDTOUtil.fail();
+        if (StringUtils.isEmpty(sessionKeyVO.getErrCode())) {
+			return ReturnDTOUtil.success(sessionKeyVO);
+		}else{
+			return ReturnDTOUtil.custom(Integer.parseInt(sessionKeyVO.getErrCode()), sessionKeyVO.getErrMsg());
+		}
     }
 
 
@@ -49,29 +58,37 @@ public class UserController {
         return userService.addUser(user)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
     }
 
-    @ApiOperation(value = "更新用户信息", notes = "当用户进入个人资料页，根据updateTime判断，更新用户微信账号信息")
-    @PostMapping("/edit")
-    @ApiResponses({@ApiResponse(code = 200, message = "成功")})
-    public ReturnDTO editUser(@RequestBody User user)  throws SlifeException{
-        return userService.editUser(user)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
-    }
+//    @ApiOperation(value = "更新用户信息", notes = "当用户进入个人资料页，根据updateTime判断，更新用户微信账号信息")
+//    @PostMapping("/edit")
+//    @ApiResponses({@ApiResponse(code = 200, message = "成功")})
+//    public ReturnDTO editUser(@RequestBody User user)  throws SlifeException{
+//        return userService.editUser(user)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+//    }
 
     @ApiOperation(value = "修改昵称", notes = "用户重新修改昵称，默认昵称使用微信昵称")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "form", dataType = "long", required = true),
-            @ApiImplicitParam(name = "nick", paramType = "form", dataType = "String", required = true)})
+    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "query", dataType = "long", required = true),
+            @ApiImplicitParam(name = "nick", paramType = "query", dataType = "String", required = true)})
     @PostMapping("/nick/edit")
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
-    public ReturnDTO editNick(@RequestParam("id") long id, @RequestParam("nick") String nick) throws SlifeException{
-        return userService.editNick(id, nick)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+    public ReturnDTO editNick(@RequestParam("id") String id, @RequestParam("nick") String nick) throws SlifeException{
+        return userService.editNick(Long.parseLong(id), nick)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
     }
 
     @ApiOperation(value = "编辑头像", notes = "用户重新上传头像，默认使用微信头像")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "form", dataType = "long", required = true),
+    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "query", dataType = "long", required = true),
             @ApiImplicitParam(name = "headImg", paramType = "form", dataType = "String", required = true)})
     @PostMapping("/head_img/edit")
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
-    public ReturnDTO editHeadImg(@RequestParam("id") long id, @RequestParam("headImg") String headImg) throws SlifeException{
-        return userService.editHeadImg(id, headImg)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+    public ReturnDTO editHeadImg(@RequestParam("id") String id, @RequestParam("headImg") String headImg) throws SlifeException{
+        return userService.editHeadImg(Long.parseLong(id), headImg)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+    }
+
+    @ApiOperation(value = "获取登录token", notes = "根据wx.login获取的code得到token")
+    @ApiImplicitParam(name = "code", paramType = "query", dataType = "String", required = true)
+    @GetMapping("/ticket")
+    public ReturnDTO ticket(@RequestParam("code") String code){
+        AnasTicketVO ticketVO = userService.ticket(code);
+        return ReturnDTOUtil.success(ticketVO);
     }
 
 }

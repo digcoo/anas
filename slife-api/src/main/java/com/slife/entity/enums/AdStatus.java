@@ -3,7 +3,7 @@ package com.slife.entity.enums;
 public enum AdStatus {
 
     INIT(0, "初始"),
-    ON(1, "有效"),
+    ON(1, "已上架"),
     OFF(2, "已下架"),
     EXPIRED(3, "已过期"),
     DEL(-1, "已删除"),

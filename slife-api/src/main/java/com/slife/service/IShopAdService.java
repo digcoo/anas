@@ -35,7 +35,7 @@ public interface IShopAdService extends IBaseService<ShopAd> {
      * @param geohash
      * @return
      */
-    public List<ShopAd> selectAdsByGeohashAndName(Integer index,String geohash,String name);
+    public List<ShopAd> selectAdsByGeohashAndName(String geohash,String name);
 
 
     /**

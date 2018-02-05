@@ -1,8 +1,11 @@
 package com.slife.entity;
 
 
+import com.baomidou.mybatisplus.annotations.KeySequence;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.slife.base.entity.ApiEntity;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -124,10 +127,10 @@ public class Shop extends ApiEntity<Shop> {
      */
     private String room;
 
-    /**
-     * 审核状态
-     */
-    private int  auditState;
+//    /**
+//     * 审核状态
+//     */
+//    private int  auditState;
 
 
 
@@ -308,12 +311,12 @@ public class Shop extends ApiEntity<Shop> {
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
-
-    public int getAuditState() {
-        return auditState;
-    }
-
-    public void setAuditState(int auditState) {
-        this.auditState = auditState;
-    }
+//
+//    public int getAuditState() {
+//        return auditState;
+//    }
+//
+//    public void setAuditState(int auditState) {
+//        this.auditState = auditState;
+//    }
 }

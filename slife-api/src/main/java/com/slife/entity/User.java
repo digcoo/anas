@@ -1,11 +1,13 @@
 package com.slife.entity;
 
-import com.baomidou.mybatisplus.annotations.TableName;
-import com.baomidou.mybatisplus.toolkit.StringUtils;
-import com.slife.base.entity.ApiEntity;
-
 import java.io.Serializable;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+import com.baomidou.mybatisplus.toolkit.StringUtils;
+import com.slife.base.entity.ApiEntity;
 
 /**
  * Created by cq on 18-1-20.
@@ -16,7 +18,7 @@ public class User extends ApiEntity<User> {
 
     private int type;
 
-    private String wxHeadImg = StringUtils.EMPTY;
+//    private String wxHeadImg = StringUtils.EMPTY;
 
     private String headImg = StringUtils.EMPTY;
 
@@ -26,7 +28,7 @@ public class User extends ApiEntity<User> {
 
     private String nick = StringUtils.EMPTY;
 
-    private String wxNick = StringUtils.EMPTY;
+//    private String wxNick = StringUtils.EMPTY;
 
     private String country = StringUtils.EMPTY;
 
@@ -60,14 +62,6 @@ public class User extends ApiEntity<User> {
         this.type = type;
     }
 
-    public String getWxHeadImg() {
-        return wxHeadImg;
-    }
-
-    public void setWxHeadImg(String wxHeadImg) {
-        this.wxHeadImg = wxHeadImg;
-    }
-
     public String getHeadImg() {
         return headImg;
     }
@@ -98,14 +92,6 @@ public class User extends ApiEntity<User> {
 
     public void setNick(String nick) {
         this.nick = nick;
-    }
-
-    public String getWxNick() {
-        return wxNick;
-    }
-
-    public void setWxNick(String wxNick) {
-        this.wxNick = wxNick;
     }
 
     public String getCountry() {

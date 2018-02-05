@@ -5,6 +5,8 @@ package com.slife.base.entity;
 
 
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
@@ -22,7 +24,6 @@ public abstract class BaseEntity<T extends Model> extends Model<T>  {
     /**
      * 实体编号（唯一标识）
      */
-
     protected Long id;
 
 
