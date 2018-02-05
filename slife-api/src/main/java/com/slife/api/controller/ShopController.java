@@ -120,7 +120,7 @@ public class ShopController {
     }
     
     @ApiOperation(value = "D-10 商家活动列表接口（商家自查）", notes = "商家活动列表接口（商家自查）",httpMethod = "GET")
-    @PostMapping(value = "/ad/list_for_shop")
+    @GetMapping(value = "/ad/list_for_shop")
     @ResponseBody
     public ReturnDTO listForShop(@Param("index") int index, @Param("shopId") Long shopId, HttpServletRequest request) {
     	return shopAdService.listForShop(shopId, index);
