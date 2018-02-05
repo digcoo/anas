@@ -1,6 +1,7 @@
 package com.slife.api.controller;
 
 
+import com.slife.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -24,11 +25,6 @@ import com.alibaba.fastjson.JSON;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.service.impl.ShopAdService;
 import com.slife.service.impl.ShopService;
-import com.slife.vo.AdAddVO;
-import com.slife.vo.AdUpdateVO;
-import com.slife.vo.ShopBaseVO;
-import com.slife.vo.ShopMallVO;
-import com.slife.vo.ShopVO;
 
 @Controller
 @RequestMapping(value = "/api/shop")
@@ -149,7 +145,7 @@ public class ShopController {
     @ApiOperation(value = "D-12 发起支付广告费用", notes = "支付广告费用",httpMethod = "POST")
     @PostMapping(value = "/ad/pay")
     @ResponseBody
-    public ReturnDTO payAd(long userId, HttpServletRequest request) {
+    public ReturnDTO<PrepayVO>  payAd(long userId, HttpServletRequest request) {
         logger.debug("[ShopController]-[payAd] : userId = " + userId);
         return shopAdService.payAd(userId);
     }
