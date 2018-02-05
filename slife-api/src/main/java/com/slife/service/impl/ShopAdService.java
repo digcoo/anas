@@ -87,16 +87,6 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		return this.baseMapper.selectAdsByGeohashAndName(geohash,name);
 	}
 
-	@Override
-    public List<ShopAd> selectAdsByGeohashAndName(Integer index
-			,String geohash,String name) {
-        if(StringUtils.isBlank(name)){
-            return selectAdsByGeohash(index,geohash);
-        }else{
-            return this.baseMapper.selectAdsByGeohashAndName(index,geohash,name);
-        }
-    }
-
     @Override
     public List<ShopAd> selectAdsByShopId(Integer index, Long shopId) {
         return this.baseMapper.selectAdsByShopId(index,shopId);
