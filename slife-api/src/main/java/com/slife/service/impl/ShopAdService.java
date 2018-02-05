@@ -273,9 +273,9 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		User original = userDao.selectByPrimaryKey(userId);
 		PayOrder payOrder = new PayOrder();
 		payOrder.setItemName("大喇叭-广告费");
-		payOrder.setPrice(300);
+		payOrder.setPrice(10);
 		payOrder.setQuantity(1);
-		payOrder.setTotal(300);
+		payOrder.setTotal(10);
 		payOrder.setOpenId(original.getOpenId());
 		payOrder.setUserId(original.getId());
 		payOrder.setPayStatus(PayStatus.PRE_PAY.getIndex());
