@@ -1,42 +1,37 @@
 package com.slife.service.impl;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.text.ParseException;
 
-import org.hibernate.validator.internal.util.privilegedactions.NewSchema;
+import com.slife.dao.*;
+import com.slife.entity.*;
+import com.slife.entity.enums.PayStatus;
+import com.slife.vo.PrepayVO;
+import com.slife.wxapi.request.WxPayApi;
+import com.slife.wxapi.request.WxPayReq;
+import com.slife.wxapi.response.WxPayRsp;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alibaba.fastjson.JSON;
-import com.aliyun.oss.common.utils.DateUtil;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.impl.BaseService;
-import com.slife.dao.ShopAdDao;
-import com.slife.dao.ShopAdSpreadDao;
-import com.slife.dao.ShopDao;
-import com.slife.entity.Shop;
-import com.slife.entity.ShopAd;
-import com.slife.entity.ShopAdSpread;
 import com.slife.entity.enums.AdStatus;
 import com.slife.entity.enums.AdType;
 import com.slife.entity.enums.SpreadType;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
 import com.slife.service.IShopAdService;
-import com.slife.util.DateUtils;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
-import com.slife.vo.Ad;
 import com.slife.vo.AdAddVO;
 import com.slife.vo.AdUpdateVO;
-import com.slife.vo.Item;
 
 /**
  * @author tod
@@ -47,7 +42,7 @@ import com.slife.vo.Item;
  * Describe: merchant service
  */
 @Service
-@Transactional(readOnly = true, rollbackFor = Exception.class)
+//@Transactional(readOnly = true, rollbackFor = Exception.class)
 public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements IShopAdService {
 	
 	private final static int MAX_COUNT_FREE_PUBLISH_OF_PER_DAY = 3;		//商家每天免费发布的活动条数
@@ -58,11 +53,28 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	
 	private final static int NEW_PRODUCT_REMAIN_DAYS = 15;		//新店开业呈现时间
 
+
+	private static final SimpleDateFormat YMDHMD_TIME_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
+
+
+	protected Logger logger= LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	ShopDao shopDao;
 
 	@Autowired
+	UserDao userDao;
+
+	@Autowired
+	PayOrderDao payOrderDao;
+
+
+	@Autowired
 	ShopAdSpreadDao shopAdSpreadDao;
+
+
+	@Autowired
+	WxPayApi wxPayApi;
 
     @Override
     public List<ShopAd> selectAdsByGeohash(Integer index,String geohash,List<Long> businessList) {
@@ -70,9 +82,19 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
         return this.baseMapper.selectAdsByGeohash(index,geohash,businessList);
     }
 
-    @Override
-    public List<ShopAd> selectAdsByGeohashAndName(String geohash,String name) {
-            return this.baseMapper.selectAdsByGeohashAndName(geohash,name);
+	@Override
+	public List<ShopAd> selectAdsByGeohashAndName(String geohash,String name) {
+		return this.baseMapper.selectAdsByGeohashAndName(geohash,name);
+	}
+
+	@Override
+    public List<ShopAd> selectAdsByGeohashAndName(Integer index
+			,String geohash,String name) {
+        if(StringUtils.isBlank(name)){
+            return selectAdsByGeohash(index,geohash);
+        }else{
+            return this.baseMapper.selectAdsByGeohashAndName(index,geohash,name);
+        }
     }
 
     @Override
@@ -91,7 +113,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		if(adAddVO.getType() == 0 || StringUtils.isEmpty(adAddVO.getTitle())){
 			return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
 		}
-		Calendar calendar = Calendar.getInstance();
+
 		switch (AdType.getByCode(adAddVO.getType())) {
 		case DISCOUNT:		//打折促销
 			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
@@ -99,14 +121,9 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			}
 			break;
 		case NEW:			//新品上新
-			adAddVO.setStartTime(calendar.getTime());
-			calendar.add(Calendar.DAY_OF_YEAR, NEW_PRODUCT_REMAIN_DAYS);
-			adAddVO.setEndTime(calendar.getTime());
+
 			break;
 		case OPEN:			//新店开业
-			adAddVO.setStartTime(calendar.getTime());
-			calendar.add(Calendar.DAY_OF_YEAR, NEW_SHOP_REMAIN_DAYS);
-			adAddVO.setEndTime(calendar.getTime());
 			
 			break;
 		case ADVANCE:		//预告预售
@@ -123,42 +140,19 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		default:
 			return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
 		}
-		
-		Date endTime= null;
-		if (adAddVO.getEndTime() != null) {
-			try {
-				String dateTimeStr = DateUtils.formatDate(adAddVO.getEndTime(), "yyyy-MM-dd") + " 23:59:59";
-				endTime = DateUtils.parseDate(dateTimeStr, "yyyy-MM-dd HH:mm:ss");
-			} catch (ParseException e) {
-				logger.error("addShopAd exception...", e);
-			}
-		}
-		
-		//items
-		if(StringUtils.isNotEmpty(adAddVO.getItems())){
-			List<Item> items = JSON.parseArray(adAddVO.getItems(), Item.class);
-			for (Item item : items) {
-				if(StringUtils.isNotEmpty(item.getLabel())){
-					item.setLabel("¥" + item.getLabel());
-					item.setLabel(item.getLabel());
-				}
-			}
-			adAddVO.setItems(JSON.toJSONString(items));
-		}
-		
+
 		ShopAd shopAd = new ShopAd();
 		shopAd.setShopId(adAddVO.getShopId());
 		shopAd.setType((byte)adAddVO.getType());
 		shopAd.setTitle(adAddVO.getTitle());
 		shopAd.setItems(adAddVO.getItems());
 		shopAd.setStartTime(adAddVO.getStartTime());
-		shopAd.setEndTime(endTime);
+		shopAd.setEndTime(adAddVO.getEndTime());
 		shopAd.setStatus((byte)AdStatus.INIT.getStatus());
 		
 		//冗余字段
 		shopAd.setGeohash(localShop.getGeohash());
 		shopAd.setShopName(localShop.getName());
-		shopAd.setBusinessId(localShop.getBusinessId());
 		
 		int ret = this.baseMapper.insert(shopAd);
 		if(ret > 0){
@@ -211,7 +205,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			return ReturnDTOUtil.custom(HttpCodeEnum.AD_NOT_PERIOD);
 		}
 		
-		//判断当天是否达到免费发布的上限
+		//判断当天是否达到免费发布的上线
 		int currentTimes = 0;
 		for (ShopAd shopAd : publishedAds) {
 			if (DateUtils.isSameDay(shopAd.getPublishTime(), publishTime)) {
@@ -222,8 +216,12 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			return ReturnDTOUtil.custom(HttpCodeEnum.AD_OVER_LIMIT);
 		}
 		
-		int ret = baseMapper.publishShopAd(adId, publishTime, AdStatus.ON.getStatus());
+		ShopAd shopAd = new ShopAd();
+		shopAd.setId(adId);
+		shopAd.setPublishTime(publishTime);
+		shopAd.setStatus((byte)AdStatus.ON.getStatus());
 		
+		int ret = baseMapper.updateById(shopAd);
 		if(ret > 0){
 			return ReturnDTOUtil.success();
 		}
@@ -234,8 +232,6 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	@Transactional(readOnly = false)
 	public ReturnDTO offShopAd(Long adId) {
 		// 只有上架状态的ad能下架
-		//当天发布的广告，当天不能下架 todo
-		
 		int ret = baseMapper.updateStatus(adId, AdStatus.OFF.getStatus());
 		if(ret > 0){
 			return ReturnDTOUtil.success();
@@ -247,7 +243,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	@Transactional(readOnly = false)
 	public ReturnDTO delShopAd(Long adId) {
 		// 只有下架、初始、过期状态的ad能下架
-		int ret = baseMapper.updateStatus(adId, AdStatus.DEL.getStatus());
+		int ret = baseMapper.updateStatus(adId, AdStatus.EXPIRED.getStatus());
 		if(ret > 0){
 			return ReturnDTOUtil.success();
 		}
@@ -258,22 +254,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	public ReturnDTO listForShop(Long shopId, int index) {
 		List<Integer> statuses = Arrays.asList(AdStatus.INIT.getStatus(), AdStatus.OFF.getStatus(), AdStatus.ON.getStatus());
 		List<ShopAd> ads = baseMapper.listForShop(shopId, statuses, index);
-		if(ads != null) {
-			List<Ad> retAds = new ArrayList<Ad>(ads.size());
-			for (ShopAd shopAd : ads) {
-				Ad ad = new Ad();
-				ad.setAdName(shopAd.getTitle());
-				ad.setTimeDesc(DateUtils.formatDate(shopAd.getPublishTime(), "yyyy-MM-dd HH:mm"));
-				ad.setItems(JSON.parseArray(shopAd.getItems(), Item.class));
-				ad.setStatus(shopAd.getStatus());
-				ad.setType(shopAd.getType());
-				ad.setFavorNum(shopAd.getFavorNum());
-				ad.setAdId(shopAd.getId());
-				retAds.add(ad);
-			}
-			return ReturnDTOUtil.success(retAds);
-		}
-		return ReturnDTOUtil.success(HttpCodeEnum.NO_DATA);
+		return ReturnDTOUtil.success(ads);
 	}
 
 	@Override
@@ -282,11 +263,11 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		//只有已发布(或当日没费次数超限)的活动，才会有必用“上头条”，前端业务流程需更改：隐藏9元上头条的逻辑，待用户超过限制之后再弹出
 		Date publishTime = new Date();
 		
-//		ShopAd shopAd = new ShopAd();
-//		shopAd.setId(adId);
-//		shopAd.setPublishTime(publishTime);
-//		shopAd.setStatus((byte)AdStatus.ON.getStatus());
-		int updateAd = baseMapper.publishShopAd(adId, publishTime, AdStatus.ON.getStatus());
+		ShopAd shopAd = new ShopAd();
+		shopAd.setId(adId);
+		shopAd.setPublishTime(publishTime);
+		shopAd.setStatus((byte)AdStatus.ON.getStatus());
+		int updateAd = baseMapper.updateById(shopAd);
 		
 		ShopAdSpread adSpread = new ShopAdSpread();
 		adSpread.setAdId(adId);
@@ -297,5 +278,47 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			throw new SlifeException(HttpCodeEnum.UN_KNOW_ERROR);
 		}
 		return ReturnDTOUtil.success();
+	}
+
+	public ReturnDTO<PrepayVO> payAd(long userId) {
+		User original = userDao.selectByPrimaryKey(userId);
+		PayOrder payOrder = new PayOrder();
+		payOrder.setItemName("大喇叭-广告费");
+		payOrder.setPrice(10);
+		payOrder.setQuantity(1);
+		payOrder.setTotal(10);
+		payOrder.setOpenId(original.getOpenId());
+		payOrder.setUserId(original.getId());
+		payOrder.setPayStatus(PayStatus.PRE_PAY.getIndex());
+		Calendar expireDate = Calendar.getInstance();
+		expireDate.add(Calendar.HOUR, 2);
+		payOrder.setExpireDate(expireDate.getTime());
+		payOrderDao.insert(payOrder);
+
+		WxPayReq wxPayReq = new WxPayReq();
+
+		wxPayReq.setBody(payOrder.getItemName());
+		wxPayReq.setOpenid(payOrder.getOpenId());
+		wxPayReq.setOut_trade_no(String.valueOf(payOrder.getId()));
+		wxPayReq.setTotal_fee(String.valueOf(payOrder.getTotal()));
+		wxPayReq.setTime_start(YMDHMD_TIME_FORMAT.format(new Date()));
+		wxPayReq.setTime_expire(YMDHMD_TIME_FORMAT.format(payOrder.getExpireDate()));
+
+		WxPayRsp wxPayRsp = wxPayApi.preparePay(wxPayReq);
+		if(wxPayRsp == null || !"SUCCESS".equals(wxPayRsp.getResult_code()) ){
+			throw new SlifeException(HttpCodeEnum.PAY_ERROR);
+		}
+		payOrder.setPrepayId(wxPayRsp.getPrepay_id());
+		payOrder.setAttach(wxPayRsp.getResponseBody());
+		payOrderDao.updateById(payOrder);
+
+		PrepayVO prepayVO = new PrepayVO();
+		prepayVO.setPrepareId(wxPayRsp.getPrepay_id());
+		prepayVO.setPayOrderId(payOrder.getId());
+
+		return ReturnDTOUtil.success(prepayVO);
+
+
+
 	}
 }

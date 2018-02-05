@@ -1,6 +1,7 @@
 package com.slife.api.controller;
 
 
+import com.slife.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -24,16 +25,10 @@ import com.alibaba.fastjson.JSON;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.service.impl.ShopAdService;
 import com.slife.service.impl.ShopService;
-import com.slife.util.ReturnDTOUtil;
-import com.slife.vo.AdAddVO;
-import com.slife.vo.AdUpdateVO;
-import com.slife.vo.ShopBaseVO;
-import com.slife.vo.ShopMallVO;
-import com.slife.vo.ShopVO;
 
 @Controller
 @RequestMapping(value = "/api/shop")
-@Api(description = "店铺模块功能接口")
+@Api(description = "店铺注册相关接口")
 public class ShopController {
 
     protected Logger logger= LoggerFactory.getLogger(getClass());
@@ -125,9 +120,7 @@ public class ShopController {
     }
     
     @ApiOperation(value = "D-10 商家活动列表接口（商家自查）", notes = "商家活动列表接口（商家自查）",httpMethod = "GET")
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
-        @ApiImplicitParam(paramType = "query", dataType = "Long", name = "shopId", value = "商家Id",required = true) })
-    @GetMapping(value = "/ad/list_for_shop")
+    @PostMapping(value = "/ad/list_for_shop")
     @ResponseBody
     public ReturnDTO listForShop(@Param("index") int index, @Param("shopId") Long shopId, HttpServletRequest request) {
     	return shopAdService.listForShop(shopId, index);
@@ -147,19 +140,13 @@ public class ShopController {
     	logger.debug("[ShopController]-[upAd] : adId = " + adId);
     	return shopAdService.upShopAd(adId);
     }
-    
-    /**
-     * todo 这里应该有惩罚恶意刷单现象：需要对价格有阶梯式涨价机制
-     * @param shopId
-     * @param request
-     * @return
-     */
-    @ApiOperation(value = "D-12 商家修改背景墙图片", notes = "商家修改背景墙图片",httpMethod = "POST")
-    @PostMapping(value = "/update/picture")
+
+
+    @ApiOperation(value = "D-12 发起支付广告费用", notes = "支付广告费用",httpMethod = "POST")
+    @PostMapping(value = "/ad/pay")
     @ResponseBody
-    public ReturnDTO updatePicture(@Param("shopId") Long shopId, @Param("shopId, picture") String picture, HttpServletRequest request) {
-    	logger.debug("[ShopController]-[updatePictures] : shopId = " + shopId);
-    	int ret = shopService.updatePicture(shopId, picture);
-    	return ret>0?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+    public ReturnDTO<PrepayVO>  payAd(long userId, HttpServletRequest request) {
+        logger.debug("[ShopController]-[payAd] : userId = " + userId);
+        return shopAdService.payAd(userId);
     }
 }
