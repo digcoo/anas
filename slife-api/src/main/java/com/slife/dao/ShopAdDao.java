@@ -38,6 +38,14 @@ public interface ShopAdDao extends CrudDao<ShopAd> {
      */
     public List<ShopAd> selectAdsByGeohashAndName(@Param("geohash") String geohash, @Param("name") String name);
 
+    /**
+     * 根据mallid,floor获取有效的活动列表
+     *
+     * @param mallId
+     * @param floor
+     * @return
+     */
+    public List<ShopAd> selectAdsByMallIdAndFloor(@Param("index") Integer index,@Param("mallId") Long mallId, @Param("floor") String floor);
 
     /**
      * 根据shopId获取该商家的所有活动

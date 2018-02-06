@@ -39,7 +39,7 @@ public class Ad implements Serializable {
     @ApiModelProperty(value="时间说明",name="timeDesc",required = true)
     private String timeDesc;
 
-    @ApiModelProperty(value="活动状态",name="flag",required = true, notes = "1-正常,2-过期")
+    @ApiModelProperty(value="活动状态1-正常,2-过期",name="flag",required = true, notes = "1-正常,2-过期")
     private Byte flag;
 
     @ApiModelProperty(value="收藏量",name="favorNum",required = true)

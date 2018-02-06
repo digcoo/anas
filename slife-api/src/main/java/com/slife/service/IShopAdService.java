@@ -47,6 +47,16 @@ public interface IShopAdService extends IBaseService<ShopAd> {
     public List<ShopAd> selectAdsByShopId(Integer index,Long shopId);
 
     /**
+     * 根据mallId和楼层获取有效的活动
+     *
+     * @param index
+     * @param mallId
+     * @param floor
+     * @return
+     */
+    public List<ShopAd> selectAdsByMallIdAndFloor(Integer index,Long mallId,String floor);
+
+    /**
      * 新增商家广告
      * @param adAddVO
      * @return

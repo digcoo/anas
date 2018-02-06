@@ -59,6 +59,19 @@
         ]]>
     </select>
 
+
+    <select id="selectAdsByMallIdAndFloor" resultMap="BaseResultMap">
+          select id, type, title,items,favor_num,publish_time,shop_id,geohash, shop_name, business_id from `digcoo_anas_shop_ad`
+          where
+          status=1 and
+          <![CDATA[ start_time<NOW() and end_time>=Now()  ]]> and mall_id = #{mallId}
+          <if test="floor!=nul">
+            and floor = #{floor}
+          </if>
+        order by publish_time desc limit #{index},10
+    </select>
+
+
     <select id="selectAdsByShopId" resultMap="BaseResultMap">
         <![CDATA[
           select id, type, title,items,favor_num,publish_time,shop_id,geohash,

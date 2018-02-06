@@ -15,8 +15,8 @@ import java.util.List;
  * <p>
  *
  */
-@ApiModel(value="商家主页",description="用于呈现用户看到的商家主页")
-public class ShopHomeVO implements Serializable {
+@ApiModel(value="FavorAdVO",description="用于呈现用户收藏的所有活动")
+public class FavorAdVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,16 +27,16 @@ public class ShopHomeVO implements Serializable {
     private String name;
 
     /**
-     * 商家电话
-     */
-    @ApiModelProperty(value="商家电话",name="tel",required = true)
-    private String tel;
-
-    /**
      * 商家ID
      */
     @ApiModelProperty(value="商家ID",name="shopId",required = true)
     private Long shopId;
+
+    /**
+     * 活动ID
+     */
+    @ApiModelProperty(value="活动ID",name="adId",required = true)
+    private Long adId;
 
     /**
      * 商家logo
@@ -45,26 +45,27 @@ public class ShopHomeVO implements Serializable {
     private String logo;
 
     /**
-     * 商家logo
-     */
-    @ApiModelProperty(value="商家背景图",name="picture")
-    private List<String> picture;
-
-    /**
      * 地址
      */
     @ApiModelProperty(value="商家地址",name="addr",required = true)
     private String addr;
 
-
+    @ApiModelProperty(value="时间说明",name="timeDesc",required = true)
+    private String timeDesc;
     /**
      * 地址
      */
     @ApiModelProperty(value="商家粉丝",name="followNum")
     private Integer followNum;
 
-    @ApiModelProperty(value="活动对象",name="adName",required = true)
-    private List<Ad> ads;
+    @ApiModelProperty(value="活动名称",name="adName",required = true)
+    private String adName;
+
+    @ApiModelProperty(value="活动类型",name="type",required = true,notes = "1-新品,2-开业,3-打折,4-预售,5-其他")
+    private Byte type;
+
+    @ApiModelProperty(value="商家活动详情",name="items")
+    private List<Item> items;
 
     @ApiModelProperty(value="纬度",name="latitudes")
     private Double lat;
@@ -72,20 +73,13 @@ public class ShopHomeVO implements Serializable {
     @ApiModelProperty(value="经度",name="longitude")
     private Double lng;
 
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getTel() {
-        return tel;
-    }
-
-    public void setTel(String tel) {
-        this.tel = tel;
     }
 
     public Long getShopId() {
@@ -104,14 +98,6 @@ public class ShopHomeVO implements Serializable {
         this.logo = logo;
     }
 
-    public List<String> getPicture() {
-        return picture;
-    }
-
-    public void setPicture(List<String> picture) {
-        this.picture = picture;
-    }
-
     public String getAddr() {
         return addr;
     }
@@ -119,7 +105,6 @@ public class ShopHomeVO implements Serializable {
     public void setAddr(String addr) {
         this.addr = addr;
     }
-
 
     public Integer getFollowNum() {
         return followNum;
@@ -129,12 +114,36 @@ public class ShopHomeVO implements Serializable {
         this.followNum = followNum;
     }
 
-    public List<Ad> getAds() {
-        return ads;
+    public List<Item> getItems() {
+        return items;
     }
 
-    public void setAds(List<Ad> ads) {
-        this.ads = ads;
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
+    public String getAdName() {
+        return adName;
+    }
+
+    public void setAdName(String adName) {
+        this.adName = adName;
+    }
+
+    public Byte getType() {
+        return type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
+    }
+
+    public String getTimeDesc() {
+        return timeDesc;
+    }
+
+    public void setTimeDesc(String timeDesc) {
+        this.timeDesc = timeDesc;
     }
 
     public Double getLat() {
@@ -151,5 +160,13 @@ public class ShopHomeVO implements Serializable {
 
     public void setLng(Double lng) {
         this.lng = lng;
+    }
+
+    public Long getAdId() {
+        return adId;
+    }
+
+    public void setAdId(Long adId) {
+        this.adId = adId;
     }
 }

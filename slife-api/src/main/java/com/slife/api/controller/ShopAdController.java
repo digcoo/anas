@@ -127,7 +127,7 @@ public class ShopAdController extends BaseController {
     @ApiOperation(value = "T2/T3-收藏／取消收藏活动", notes = "根据userId和adId保存或删除相应redis")
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Long", name = "userId", value = "用户id",required = true),
             @ApiImplicitParam(paramType = "query", dataType = "Long", name = "adId", value = "活动id",required = true) })
-    @GetMapping(value = "/ads/favor")
+    @PostMapping(value = "/ads/favor")
     @ResponseBody
     public ReturnDTO favor(@RequestParam("userId") Long userId,@RequestParam("adId") Long adId) {
         if(userId == null || adId==null) {
@@ -179,6 +179,7 @@ public class ShopAdController extends BaseController {
             shopHomeVO.setAddr(shop.getAddr());
             shopHomeVO.setFollowNum(shop.getFollowNum());
             shopHomeVO.setName(shop.getName());
+            shopHomeVO.setPicture(JSON.parseArray(shop.getPicture(),String.class));
             shopHomeVO.setLogo(shop.getLogo());
             List<ShopAd> shopAdList = shopAdService.selectAdsByShopId(index==null?0:index,shopId);
             List<Ad>  adList = shopAdList.stream().map(
@@ -203,7 +204,7 @@ public class ShopAdController extends BaseController {
     @ApiOperation(value = "T8-关注／取消收关注商家", notes = "根据userId和shopId保存或删除相应redis")
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Long", name = "userId", value = "用户id",required = true),
             @ApiImplicitParam(paramType = "query", dataType = "Long", name = "shopId", value = "店铺id",required = true) })
-    @GetMapping(value = "/shop/follow")
+    @PostMapping(value = "/shop/follow")
     @ResponseBody
     public ReturnDTO follow(@RequestParam("userId") Long userId,@RequestParam("shopId") Long shopId) {
         if(userId == null || shopId==null) {
@@ -218,7 +219,7 @@ public class ShopAdController extends BaseController {
             @ApiImplicitParam(paramType = "query", dataType = "Long", name = "shopId", value = "店铺id",required = true),
             @ApiImplicitParam(paramType = "query", dataType = "Byte", name = "type", value = "类型",required = true),
             @ApiImplicitParam(paramType = "query", dataType = "String", name = "content", value = "举报内容",required = true)})
-    @GetMapping(value = "/shop/report")
+    @PostMapping(value = "/shop/report")
     @ResponseBody
     public ReturnDTO report(@RequestParam("userId") Long userId,@RequestParam("shopId") Long shopId,@RequestParam("type") Byte type,@RequestParam("content") String content) {
         if(userId == null || shopId==null) {
@@ -271,6 +272,90 @@ public class ShopAdController extends BaseController {
         }else{
             return ReturnDTOUtil.custom(HttpCodeEnum.NO_DATA);
         }
+    }
+
+    @ApiOperation(value = "T11-商业中心活动列表", notes = "根据商业中心id获取该中心里所有的活动")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
+            @ApiImplicitParam(paramType = "path", dataType = "Long", name = "mallId", value = "商业中心id",required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "floor", value = "楼层信息",required = false)
+    })
+    @GetMapping(value = "/mall/{mallId}/shops")
+    @ResponseBody
+    public ReturnDTO getAdsByMallId(@RequestParam("index") Integer index,@PathVariable("mallId") Long mallId,@RequestParam("floor") String floor) {
+        if(mallId == null) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+        List<ShopAd> shopAdList = shopAdService.selectAdsByMallIdAndFloor(index==null?0:index,mallId,StringUtils.isBlank(floor)?null:StringUtils.upperCase(floor));
+        if(!CollectionUtils.isEmpty(shopAdList)){
+            FavorVO favorVO = new FavorVO();
+            List<Long> shopIdList = shopAdList.stream().map(ShopAd::getShopId).distinct().collect(Collectors.toList());
+            List<Shop> shopList = shopService.selectBatchIds(shopIdList);
+            Map<Long, Shop> shopMap = shopList.stream().filter(shop -> shop.getStatus()==3).collect(Collectors.toMap(Shop::getId,shop->shop));
+            List<FavorAdVO> favorAdVOList = shopAdList.stream().map(shopAd -> adBeanMapper(shopMap,shopAd)).filter(Objects::nonNull).collect(Collectors.toList());
+            favorVO.setAds(favorAdVOList);
+            return  ReturnDTOUtil.success(favorVO);
+        }else{
+            return ReturnDTOUtil.custom(HttpCodeEnum.NO_DATA);
+        }
+    }
+
+    @ApiOperation(value = "T12-我的关注", notes = "根据userId获取相应关注商家列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
+            @ApiImplicitParam(paramType = "path", dataType = "Long", name = "userId", value = "用户id",required = true)
+    })
+    @GetMapping(value = "/user/{userId}/follow/shops")
+    @ResponseBody
+    public ReturnDTO userFollowShops(@RequestParam("index") Integer index,@PathVariable("userId") Long userId) {
+        if (userId == null) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+        Set<String> shopIdList = slifeRedisTemplate.getAllFollowShopIds(userId);
+        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(shopIdList)) {
+            List<Long> shopIdList2 = shopIdList.stream().map(s -> Long.parseLong(s)).collect(Collectors.toList());
+            List<Shop> shopList = shopService.selectBatchIds(shopIdList2);
+            return ReturnDTOUtil.success(shopList.stream().filter(shop -> shop.getStatus() == 3).map(shop -> {
+                    FollowShopBaseVO followShopVO = new FollowShopBaseVO();
+                    followShopVO.setShopId(shop.getId());
+                    followShopVO.setAddr(shop.getAddr());
+                    followShopVO.setLat(shop.getLat());
+                    followShopVO.setLng(shop.getLng());
+                    followShopVO.setShopName(shop.getName());
+                    followShopVO.setLogo(shop.getLogo());
+                    return followShopVO;
+            }).skip(index).limit(10).collect(Collectors.toList()));
+        } else {
+            return ReturnDTOUtil.custom(HttpCodeEnum.NO_DATA);
+        }
+    }
+
+    @ApiOperation(value = "T13-我的收藏", notes = "根据userId获取相应收藏活动列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
+            @ApiImplicitParam(paramType = "path", dataType = "Long", name = "userId", value = "用户id",required = true)
+    })
+    @GetMapping(value = "/user/{userId}/favor/ads")
+    @ResponseBody
+    public ReturnDTO userFavorAds(@RequestParam("index") Integer index,@PathVariable("userId") Long userId) {
+        if (userId == null) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+        Set<String> adIdList = slifeRedisTemplate.getAllFavorAdIds(userId);
+        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(adIdList)) {
+            FavorVO favorVO = new FavorVO();
+            List<Long> adIdList2 = adIdList.stream().map(s -> Long.parseLong(s)).collect(Collectors.toList());
+            List<ShopAd> shopAdList = shopAdService.selectBatchIds(adIdList2);
+            if(!CollectionUtils.isEmpty(shopAdList)){
+                List<Long> shopIdList = shopAdList.stream().map(ShopAd::getShopId).distinct().collect(Collectors.toList());
+                List<Shop> shopList = shopService.selectBatchIds(shopIdList);
+                Map<Long, Shop> shopMap = shopList.stream().filter(shop -> shop.getStatus()==3).collect(Collectors.toMap(Shop::getId,shop->shop));
+                List<FavorAdVO> favorAdVOList = shopAdList.stream().map(shopAd -> adBeanMapper(shopMap,shopAd)).filter(Objects::nonNull).collect(Collectors.toList());
+                favorVO.setAds(favorAdVOList);
+                return ReturnDTOUtil.success(favorVO);
+            }
+        }
+        return ReturnDTOUtil.custom(HttpCodeEnum.NO_DATA);
     }
 
     private String formatTime(Date date){
@@ -329,5 +414,27 @@ public class ShopAdController extends BaseController {
         indexAdVO.setDistanceDesc(distanceDesc);
         indexAdVO.setAdId(shopAd.getId());
         return indexAdVO;
+    }
+
+    private FavorAdVO adBeanMapper(Map<Long, Shop> shopMap,ShopAd shopAd){
+        Shop shop = shopMap.get(shopAd.getShopId());
+        if (shop == null){
+            return null;
+        }
+        FavorAdVO favorAdVO = new FavorAdVO();
+        favorAdVO.setShopId(shopAd.getShopId());
+        favorAdVO.setAddr(shop.getAddr());
+        favorAdVO.setFollowNum(shop.getFollowNum());
+        favorAdVO.setName(shop.getName());
+        favorAdVO.setLogo(shop.getLogo());
+        favorAdVO.setType(shopAd.getType());
+        favorAdVO.setAdName(shopAd.getTitle());
+        favorAdVO.setItems(JSON.parseArray(shopAd.getItems(),Item.class));
+        favorAdVO.setTimeDesc(formatTime(shopAd.getPublishTime()));
+        favorAdVO.setType(shopAd.getType());
+        favorAdVO.setLat(shop.getLat());
+        favorAdVO.setLng(shop.getLng());
+        favorAdVO.setAdId(shopAd.getId());
+        return favorAdVO;
     }
 }

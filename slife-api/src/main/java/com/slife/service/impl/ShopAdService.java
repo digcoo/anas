@@ -95,6 +95,12 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
         return this.baseMapper.selectAdsByShopId(index,shopId);
     }
 
+
+	@Override
+	public List<ShopAd> selectAdsByMallIdAndFloor(Integer index, Long mallId, String floor) {
+		return this.baseMapper.selectAdsByMallIdAndFloor(index,mallId,floor);
+	}
+
 	@Override
 	@Transactional(readOnly = false)
 	public ReturnDTO addShopAd(AdAddVO adAddVO) {
