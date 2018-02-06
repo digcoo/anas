@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
 import com.slife.dao.*;
 import com.slife.entity.*;
 import com.slife.entity.enums.PayStatus;
@@ -13,6 +14,7 @@ import com.slife.vo.PrepayVO;
 import com.slife.wxapi.request.WxPayApi;
 import com.slife.wxapi.request.WxPayReq;
 import com.slife.wxapi.response.WxPayRsp;
+
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,7 @@ import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
 import com.slife.vo.AdAddVO;
 import com.slife.vo.AdUpdateVO;
+import com.slife.vo.Item;
 
 /**
  * @author tod
@@ -103,7 +106,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		if(adAddVO.getType() == 0 || StringUtils.isEmpty(adAddVO.getTitle())){
 			return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
 		}
-
+		Calendar calendar = Calendar.getInstance();
 		switch (AdType.getByCode(adAddVO.getType())) {
 		case DISCOUNT:		//打折促销
 			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
@@ -111,10 +114,14 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			}
 			break;
 		case NEW:			//新品上新
-
+			adAddVO.setStartTime(calendar.getTime());
+			calendar.add(Calendar.DAY_OF_YEAR, NEW_PRODUCT_REMAIN_DAYS);
+			adAddVO.setEndTime(calendar.getTime());
 			break;
 		case OPEN:			//新店开业
-			
+			adAddVO.setStartTime(calendar.getTime());
+			calendar.add(Calendar.DAY_OF_YEAR, NEW_SHOP_REMAIN_DAYS);
+			adAddVO.setEndTime(calendar.getTime());
 			break;
 		case ADVANCE:		//预告预售
 			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
@@ -130,6 +137,16 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		default:
 			return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
 		}
+		
+		//items
+		if(StringUtils.isNotEmpty(adAddVO.getItems())){
+			List<Item> items = JSON.parseArray(adAddVO.getItems(), Item.class);
+			for (Item item : items) {
+					item.setLabel("¥" + item.getLabel());
+				item.setLabel(item.getLabel());
+			}
+			adAddVO.setItems(JSON.toJSONString(items));
+		}
 
 		ShopAd shopAd = new ShopAd();
 		shopAd.setShopId(adAddVO.getShopId());
@@ -143,6 +160,9 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		//冗余字段
 		shopAd.setGeohash(localShop.getGeohash());
 		shopAd.setShopName(localShop.getName());
+		shopAd.setBusinessId(localShop.getBusinessId());
+		shopAd.setMallId(localShop.getMallId());
+		shopAd.setFloor(localShop.getFloor());
 		
 		int ret = this.baseMapper.insert(shopAd);
 		if(ret > 0){
