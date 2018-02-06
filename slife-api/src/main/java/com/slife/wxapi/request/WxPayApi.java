@@ -33,7 +33,7 @@ public class WxPayApi {
 
     private String wxPayUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
-    private String  notifyUrl = "https://www.imsts.com";
+    private String  notifyUrl = "http://www.digcoo.com/api/shop/wxPayCallBack";
 
     private String appId = "wx70ce7ab503f9c688";
 
