@@ -4,11 +4,6 @@ package com.slife.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.enums.IdType;
-import org.springframework.data.annotation.Transient;
-
-import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.slife.base.entity.ApiEntity;
@@ -80,7 +75,17 @@ public class ShopAd extends ApiEntity<ShopAd> {
 
     @TableField(exist=false)
     private Byte flag;
+    
+    /**
+     * mall id：冗余字段
+     */
+    private Long mallId;
 
+    /**
+     * 楼层：冗余字段
+     */
+    private String floor;
+    
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -190,6 +195,22 @@ public class ShopAd extends ApiEntity<ShopAd> {
 
 	public void setBusinessId(Long businessId) {
 		this.businessId = businessId;
+	}
+
+	public Long getMallId() {
+		return mallId;
+	}
+
+	public void setMallId(Long mallId) {
+		this.mallId = mallId;
+	}
+
+	public String getFloor() {
+		return floor;
+	}
+
+	public void setFloor(String floor) {
+		this.floor = floor;
 	}
 
 }
