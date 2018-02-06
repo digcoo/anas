@@ -7,9 +7,11 @@ import java.util.Date;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.slife.dao.*;
 import com.slife.entity.*;
 import com.slife.entity.enums.PayStatus;
+import com.slife.utils.RedisKey;
 import com.slife.vo.PrepayVO;
 import com.slife.wxapi.request.WxPayApi;
 import com.slife.wxapi.request.WxPayReq;
@@ -19,6 +21,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +61,8 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 
 
 	private static final SimpleDateFormat YMDHMD_TIME_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
+	private static final SimpleDateFormat DAY_TIME_FORMAT = new SimpleDateFormat("yyyyMMdd");
+
 
 
 	protected Logger logger= LoggerFactory.getLogger(getClass());
@@ -74,6 +79,9 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 
 	@Autowired
 	ShopAdSpreadDao shopAdSpreadDao;
+
+	@Autowired
+	StringRedisTemplate stringRedisTemplate;
 
 
 	@Autowired
@@ -220,7 +228,8 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 				currentTimes++;
 			}
 		}
-		if (currentTimes >= MAX_COUNT_FREE_PUBLISH_OF_PER_DAY) {
+		Shop shop = shopDao.selectById(localShopAd.getShopId());
+		if (currentTimes >= getUserCanPubCount(shop.getUserId())) {
 			return ReturnDTOUtil.custom(HttpCodeEnum.AD_OVER_LIMIT);
 		}
 		
@@ -291,10 +300,10 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	public ReturnDTO<PrepayVO> payAd(long userId) {
 		User original = userDao.selectByPrimaryKey(userId);
 		PayOrder payOrder = new PayOrder();
-		payOrder.setItemName("大喇叭-广告费");
-		payOrder.setPrice(10);
+		payOrder.setItemName("大喇叭-广告服务费");
+		payOrder.setPrice(300);
 		payOrder.setQuantity(1);
-		payOrder.setTotal(10);
+		payOrder.setTotal(300);
 		payOrder.setOpenId(original.getOpenId());
 		payOrder.setUserId(original.getId());
 		payOrder.setPayStatus(PayStatus.PRE_PAY.getIndex());
@@ -326,7 +335,50 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 
 		return ReturnDTOUtil.success(prepayVO);
 
+	}
+
+	public boolean paySuccess(JSONObject callBackObject) {
+		long payOrderId = callBackObject.getLongValue("out_trade_no");
+		PayOrder payOrder = payOrderDao.selectById(payOrderId);
+		if(payOrder == null){
+			return  true;
+		}
+		if(payOrder.getPayStatus() ==PayStatus.PAID.getIndex()){
+			return  true;
+		}
+		payOrder.setCallback(callBackObject.getString("callBackBody"));
+		payOrder.setPayStatus(PayStatus.PAID.getIndex());
+		payOrder.setPayDate(new Date());
+		payOrder.setTransactionId(callBackObject.getString("transaction_id"));
+		long incrResult = incrUserCanPubCount(payOrder.getUserId());
+		if(incrResult > 0){
+			payOrderDao.updateById(payOrder);
+			return  true;
+		}
+		return false;
+	}
 
 
+	private long getUserCanPubCount(long userId){
+		String key = RedisKey.SHOP_CAN_PUBLISH_NUM + String.valueOf(userId)+":"+DAY_TIME_FORMAT.format(new Date());
+		String value = stringRedisTemplate.opsForValue().get(key);
+		if(value ==null){
+			return MAX_COUNT_FREE_PUBLISH_OF_PER_DAY;
+		}
+		else{
+			return Integer.valueOf(value);
+		}
+	}
+
+	private long  incrUserCanPubCount(long userId){
+		String key = RedisKey.SHOP_CAN_PUBLISH_NUM + String.valueOf(userId)+":"+DAY_TIME_FORMAT.format(new Date());
+		String value = stringRedisTemplate.opsForValue().get(key);
+		long result = 0L;
+		if(value == null){
+			result =  stringRedisTemplate.opsForValue().increment(key,MAX_COUNT_FREE_PUBLISH_OF_PER_DAY  + 1);
+		} else{
+			result = stringRedisTemplate.opsForValue().increment(key,1);
+		}
+		return  result;
 	}
 }

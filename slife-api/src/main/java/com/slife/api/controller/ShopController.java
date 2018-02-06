@@ -1,6 +1,8 @@
 package com.slife.api.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.slife.utils.XMLParser;
 import com.slife.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -25,6 +27,11 @@ import com.alibaba.fastjson.JSON;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.service.impl.ShopAdService;
 import com.slife.service.impl.ShopService;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/api/shop")
@@ -148,5 +155,36 @@ public class ShopController {
     public ReturnDTO<PrepayVO>  payAd(long userId, HttpServletRequest request) {
         logger.debug("[ShopController]-[payAd] : userId = " + userId);
         return shopAdService.payAd(userId);
+    }
+
+    @PostMapping(value = "/wxPayCallBack")
+    @ResponseBody
+    public String  wxPayCallBack( HttpServletRequest request) {
+        try{
+            InputStream in = request.getInputStream();
+            BufferedReader bf = new BufferedReader(new InputStreamReader(in));
+            String str = null;
+            StringBuffer xmlBuffer = new StringBuffer();
+            while ((str = bf.readLine()) != null) {
+                xmlBuffer.append(str);
+            }
+            String callBackXml = xmlBuffer.toString();
+            logger.debug("[ShopController]-[wxPayCallBack] : callBack : " + callBackXml);
+
+            JSONObject callBackObject = XMLParser.getMapFromXML(callBackXml);
+            callBackObject.put("callBackBody",callBackXml);
+            if("SUCCESS".equals(callBackObject.getString("result_code"))){
+                if( shopAdService.paySuccess(callBackObject)){
+                    return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
+                }
+            }else{
+                return "<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[ERROR]]></return_msg></xml>";
+            }
+        }catch (Throwable th){
+            logger.error("[ShopController]-[wxPayCallBack] error : ", th);
+
+        }
+        return "<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[ERROR]]></return_msg></xml>";
+
     }
 }

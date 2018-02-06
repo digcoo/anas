@@ -18,4 +18,9 @@ public interface RedisKey {
     String SHOP_FOLLOW_NUM = "shop:id:";
 
     String USER_TICKET = "ticket:uuid:";
+
+    String SHOP_HAS_PUBLISH_NUM = "shop:has:publish:count:";
+
+    String SHOP_CAN_PUBLISH_NUM = "shop:can:publish:count:";
+
 }
