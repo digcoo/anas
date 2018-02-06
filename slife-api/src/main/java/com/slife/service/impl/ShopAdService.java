@@ -299,7 +299,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
                     ad.setTimeDesc(com.slife.util.DateUtils.formatDate(shopAd.getPublishTime(), "yyyy-MM-dd HH:mm"));
                     ad.setFavorNum(0);
                     ad.setFlag(shopAd.getFlag());
-//                    ad.setFavorNum(slifeRedisTemplate.getFavorNum(shopAd.getId()));
+                    ad.setFavorNum(slifeRedisTemplate.getFavorNum(shopAd.getId()));
                     return ad;
                 }
         ).collect(Collectors.toList());

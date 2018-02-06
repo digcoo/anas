@@ -42,7 +42,7 @@ public class SlifeRedisTemplate {
     }
     
     public int getFavorNum(Long adId){
-    	return Integer.parseInt(stringRedisTemplate.opsForValue().get(RedisKey.USER_FOLLOW_SHOPS+adId+":favornum"));
+    	return Integer.parseInt(stringRedisTemplate.opsForValue().get(RedisKey.ADS_FAVOR_NUM+adId+":favornum"));
     }
 
     /**
