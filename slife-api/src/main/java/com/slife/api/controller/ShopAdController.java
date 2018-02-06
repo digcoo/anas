@@ -188,6 +188,7 @@ public class ShopAdController extends BaseController {
                         ad.setAdId(shopAd.getId());
                         ad.setAdName(shopAd.getTitle());
                         ad.setItems(JSON.parseArray(shopAd.getItems(),Item.class));
+                        ad.setFlag(shopAd.getFlag());
                         ad.setTimeDesc(formatTime(shopAd.getPublishTime()));
                         ad.setLat(shop.getLat());
                         ad.setLng(shop.getLng());
