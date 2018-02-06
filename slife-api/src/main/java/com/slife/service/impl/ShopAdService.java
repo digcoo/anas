@@ -5,17 +5,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.slife.dao.*;
-import com.slife.entity.*;
-import com.slife.entity.enums.PayStatus;
-import com.slife.utils.RedisKey;
-import com.slife.vo.PrepayVO;
-import com.slife.wxapi.request.WxPayApi;
-import com.slife.wxapi.request.WxPayReq;
-import com.slife.wxapi.response.WxPayRsp;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -25,19 +15,39 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.base.service.impl.BaseService;
+import com.slife.dao.PayOrderDao;
+import com.slife.dao.ShopAdDao;
+import com.slife.dao.ShopAdSpreadDao;
+import com.slife.dao.ShopDao;
+import com.slife.dao.UserDao;
+import com.slife.entity.PayOrder;
+import com.slife.entity.Shop;
+import com.slife.entity.ShopAd;
+import com.slife.entity.ShopAdSpread;
+import com.slife.entity.User;
 import com.slife.entity.enums.AdStatus;
 import com.slife.entity.enums.AdType;
+import com.slife.entity.enums.PayStatus;
 import com.slife.entity.enums.SpreadType;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
 import com.slife.service.IShopAdService;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
+import com.slife.utils.RedisKey;
+import com.slife.utils.SlifeRedisTemplate;
+import com.slife.vo.Ad;
 import com.slife.vo.AdAddVO;
 import com.slife.vo.AdUpdateVO;
 import com.slife.vo.Item;
+import com.slife.vo.PrepayVO;
+import com.slife.wxapi.request.WxPayApi;
+import com.slife.wxapi.request.WxPayReq;
+import com.slife.wxapi.response.WxPayRsp;
 
 /**
  * @author tod
@@ -63,7 +73,8 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 	private static final SimpleDateFormat YMDHMD_TIME_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
 	private static final SimpleDateFormat DAY_TIME_FORMAT = new SimpleDateFormat("yyyyMMdd");
 
-
+    @Autowired
+    private SlifeRedisTemplate slifeRedisTemplate;
 
 	protected Logger logger= LoggerFactory.getLogger(getClass());
 
@@ -271,9 +282,28 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 
 	@Override
 	public ReturnDTO listForShop(Long shopId, int index) {
+        Shop shop = shopDao.selectById(shopId);
+        if(shop == null){
+            return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_NOT_EXISTS);
+        }
 		List<Integer> statuses = Arrays.asList(AdStatus.INIT.getStatus(), AdStatus.OFF.getStatus(), AdStatus.ON.getStatus());
-		List<ShopAd> ads = baseMapper.listForShop(shopId, statuses, index);
-		return ReturnDTOUtil.success(ads);
+		List<ShopAd> shopAdList = baseMapper.listForShop(shopId, statuses, index);
+		List<Ad>  adList = shopAdList.stream().map(
+                shopAd -> {
+                    Ad ad = new Ad();
+                    ad.setType(shopAd.getType());
+                    ad.setAdId(shopAd.getId());
+                    ad.setAdName(shopAd.getTitle());
+                    ad.setItems(JSON.parseArray(shopAd.getItems(),Item.class));
+                    ad.setStatus((int)shopAd.getStatus());
+                    ad.setTimeDesc(com.slife.util.DateUtils.formatDate(shopAd.getPublishTime(), "yyyy-MM-dd HH:mm"));
+                    ad.setFavorNum(0);
+                    ad.setFlag(shopAd.getFlag());
+//                    ad.setFavorNum(slifeRedisTemplate.getFavorNum(shopAd.getId()));
+                    return ad;
+                }
+        ).collect(Collectors.toList());
+		return ReturnDTOUtil.success(adList);
 	}
 
 	@Override

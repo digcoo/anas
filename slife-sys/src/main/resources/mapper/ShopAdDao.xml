@@ -81,24 +81,22 @@
 		update `digcoo_anas_shop_ad` set status=#{status} where id = #{adId}
 	</update>
 
-    <select id="listForShop" resultMap="BaseResultMap">
-        select id, type, title,items,favor_num,publish_time,shop_id,geohash, shop_name, business_id from `digcoo_anas_shop_ad` where
-        shop_id = #{shopId} and status in
-        <foreach collection="statuses" item="status" open="(" close=")" separator=",">
-            #{status}
-        </foreach>
-        order by create_date desc limit #{index},10
-    </select>
     <update id="publishShopAd">
 		update `digcoo_anas_shop_ad` set status=#{status}, publish_time=#{publishTime} where id = #{adId}
 	</update>
 
     <select id="listForShop" resultMap="BaseResultMap">
-        select id, type, title, status, items,favor_num,publish_time,shop_id,geohash, shop_name, business_id from `digcoo_anas_shop_ad` where
-        shop_id = #{shopId} and status in
-        <foreach collection="statuses" item="status" open="(" close=")" separator=",">
-            #{status}
-        </foreach>
-        order by create_date desc limit #{index},10
+    <![CDATA[
+        select id, type, title, status, items,favor_num,publish_time,shop_id,geohash, shop_name, business_id,
+        	CASE
+                 WHEN  start_time<NOW() and end_time>Now()
+                      THEN 1
+                 WHEN  end_time<NOW()
+                      THEN 2
+            END flag from `digcoo_anas_shop_ad` where
+        shop_id = #{shopId} and status != -1
+        order by 
+        create_date desc limit #{index},10
+        ]]>
     </select>
 </mapper>

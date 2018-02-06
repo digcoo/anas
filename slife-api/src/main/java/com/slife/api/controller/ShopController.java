@@ -159,6 +159,7 @@ public class ShopController {
         return shopAdService.payAd(userId);
     }
 
+    @ApiOperation(value = "Cj-13 支付回调接口", notes = "支付回调接口",httpMethod = "POST")
     @PostMapping(value = "/wxPayCallBack")
     @ResponseBody
     public String  wxPayCallBack( HttpServletRequest request) {

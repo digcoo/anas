@@ -40,6 +40,10 @@ public class SlifeRedisTemplate {
         };
         stringRedisTemplate.execute(sessionCallback);
     }
+    
+    public int getFavorNum(Long adId){
+    	return Integer.parseInt(stringRedisTemplate.opsForValue().get(RedisKey.USER_FOLLOW_SHOPS+adId+":favornum"));
+    }
 
     /**
      * 用户收藏活动ID列表
