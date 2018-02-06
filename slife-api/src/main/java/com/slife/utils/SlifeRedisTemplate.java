@@ -1,5 +1,6 @@
 package com.slife.utils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisOperations;
@@ -8,6 +9,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+
 import java.util.Set;
 
 @Component
@@ -39,6 +41,11 @@ public class SlifeRedisTemplate {
             }
         };
         stringRedisTemplate.execute(sessionCallback);
+    }
+    
+    public int getFavorNum(Long adId){
+    	String favorNum = stringRedisTemplate.opsForValue().get(RedisKey.ADS_FAVOR_NUM+adId+":favornum");
+		return StringUtils.isEmpty(favorNum)? 0 : Integer.parseInt(favorNum);
     }
 
     /**

@@ -48,6 +48,10 @@ public class Ad implements Serializable {
     @ApiModelProperty(value="活动id",name="adId",required = true)
     private Long adId;
 
+    @ApiModelProperty(value="活动状态",name="status",required = true)
+    private int status;
+
+    
     public String getAdName() {
         return adName;
     }
@@ -118,6 +122,14 @@ public class Ad implements Serializable {
 
 	public void setAdId(Long adId) {
 		this.adId = adId;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 	
 }
