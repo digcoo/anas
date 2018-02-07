@@ -167,8 +167,9 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		if(StringUtils.isNotEmpty(adAddVO.getItems())){
 			List<Item> items = JSON.parseArray(adAddVO.getItems(), Item.class);
 			for (Item item : items) {
+				if (StringUtils.isNotEmpty(item.getLabel())) {
 					item.setLabel("¥" + item.getLabel());
-				item.setLabel(item.getLabel());
+				}
 			}
 			adAddVO.setItems(JSON.toJSONString(items));
 		}
