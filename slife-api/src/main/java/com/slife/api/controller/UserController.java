@@ -1,21 +1,28 @@
 package com.slife.api.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.slife.base.entity.ReturnDTO;
 import com.slife.entity.User;
-import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
 import com.slife.service.UserService;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.vo.AnasTicketVO;
 import com.slife.vo.SessionKeyVO;
-
-import io.swagger.annotations.*;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
 
 /**
  * Created by cq on 18-1-19.

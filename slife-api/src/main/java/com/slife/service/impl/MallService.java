@@ -31,8 +31,16 @@ public class MallService extends BaseService<MallDao, Mall> implements IMallServ
 	
 
 	@Override
-	public List<Mall> selectAll() {
-		return this.baseMapper.selectAll();
+	public List<MallVO> selectAll() {
+		List<Mall> malls = this.baseMapper.selectAll();
+		if(malls != null && malls.size() > 0){
+			List<MallVO> vos = new ArrayList<MallVO>(malls.size());
+			for (Mall mall : malls) {
+				vos.add(new MallVO(mall.getId(), mall.getName()));
+			}
+			return vos;
+		}
+		return null;
 	}
 
 	@Override

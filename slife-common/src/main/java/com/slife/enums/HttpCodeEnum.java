@@ -67,8 +67,8 @@ public enum HttpCodeEnum {
     //活动相关错误统一使用3000开头错误码
     AD_NOT_EXISTS(3000,"活动不存在！"),
     AD_NOT_PERMIT(3001,"活动已发布，未允许进行此操作！"),
-    AD_NOT_PERIOD(3002,"距离上一个活动小于10分钟，请稍后再来试试吧！"),
-    AD_OVER_LIMIT(3004,"今天免费发布活动的次数已达到上限了，请明天再来哦！"),
+    AD_NOT_PERIOD(3002,"距离上一个活动小于10分钟"),
+    AD_OVER_LIMIT(3004,"今日免费次数用完了"),
     AD_NOT_FAVOR(3005,"你还没有收藏活动"),
     AD_CANCEL_FAVOR(3006,"你已取消收藏"),
     ;
