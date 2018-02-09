@@ -1,16 +1,10 @@
 package com.slife.entity;
 
 
-import com.baomidou.mybatisplus.annotations.KeySequence;
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableName;
-import com.baomidou.mybatisplus.enums.IdType;
-import com.slife.base.entity.ApiEntity;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.io.Serializable;
-import java.util.Date;
+
+import com.baomidou.mybatisplus.annotations.TableName;
+import com.slife.base.entity.ApiEntity;
 
 /**
  * @author tod

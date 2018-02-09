@@ -131,7 +131,7 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		if(adAddVO.getType() == 0 || StringUtils.isEmpty(adAddVO.getTitle())){
 			return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
 		}
-		Calendar calendar = Calendar.getInstance();
+
 		switch (AdType.getByCode(adAddVO.getType())) {
 		case DISCOUNT:		//打折促销
 			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
@@ -139,14 +139,11 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			}
 			break;
 		case NEW:			//新品上新
-			adAddVO.setStartTime(calendar.getTime());
-			calendar.add(Calendar.DAY_OF_YEAR, NEW_PRODUCT_REMAIN_DAYS);
-			adAddVO.setEndTime(calendar.getTime());
+
 			break;
 		case OPEN:			//新店开业
-			adAddVO.setStartTime(calendar.getTime());
-			calendar.add(Calendar.DAY_OF_YEAR, NEW_SHOP_REMAIN_DAYS);
-			adAddVO.setEndTime(calendar.getTime());
+			
+			
 			break;
 		case ADVANCE:		//预告预售
 			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
@@ -257,6 +254,36 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 		shopAd.setId(adId);
 		shopAd.setPublishTime(publishTime);
 		shopAd.setStatus((byte)AdStatus.ON.getStatus());
+		
+		
+		Calendar calendar = Calendar.getInstance();
+		switch (AdType.getByCode(localShopAd.getType())) {
+		case DISCOUNT:		//打折促销
+			
+			break;
+		case NEW:			//新品上新
+			localShopAd.setStartTime(calendar.getTime());
+			calendar.add(Calendar.DAY_OF_YEAR, NEW_PRODUCT_REMAIN_DAYS);
+			localShopAd.setEndTime(calendar.getTime());
+			break;
+		case OPEN:			//新店开业
+			shopAd.setStartTime(calendar.getTime());
+			calendar.add(Calendar.DAY_OF_YEAR, NEW_SHOP_REMAIN_DAYS);
+			shopAd.setEndTime(calendar.getTime());
+			break;
+		case ADVANCE:		//预告预售
+			
+			break;
+		case OTHER:			//其他
+			
+			
+			break;
+
+		default:
+			
+			break;
+		}
+		
 		
 		int ret = baseMapper.updateById(shopAd);
 		if(ret > 0){
