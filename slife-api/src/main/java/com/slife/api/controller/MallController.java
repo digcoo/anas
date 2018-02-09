@@ -25,7 +25,7 @@ import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
 import com.slife.vo.MallVO;
 
-@Api(description = "商业中心模块接口")
+@Api(description = "商业中心数据接口")
 @RestController
 @RequestMapping("/api/mall")
 public class MallController {

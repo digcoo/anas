@@ -1,10 +1,41 @@
 package com.slife.api.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.shiro.util.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.slife.base.controller.BaseController;
 import com.slife.base.entity.ReturnDTO;
-import com.slife.entity.*;
+import com.slife.entity.Mall;
+import com.slife.entity.Report;
+import com.slife.entity.Shop;
+import com.slife.entity.ShopAd;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
 import com.slife.service.IMallService;
@@ -14,25 +45,21 @@ import com.slife.service.IShopService;
 import com.slife.util.DateUtils;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
-import com.slife.utils.RedisKey;
 import com.slife.utils.SlifeRedisTemplate;
-import com.slife.vo.*;
+import com.slife.vo.Ad;
+import com.slife.vo.FavorAdVO;
+import com.slife.vo.FavorVO;
+import com.slife.vo.FollowShopBaseVO;
+import com.slife.vo.FollowShopVO;
+import com.slife.vo.IndexAdVO;
+import com.slife.vo.IndexMallVO;
+import com.slife.vo.IndexVO;
+import com.slife.vo.Item;
+import com.slife.vo.ShopHomeVO;
 import com.spatial4j.core.context.SpatialContext;
 import com.spatial4j.core.distance.DistanceUtils;
 import com.spatial4j.core.io.GeohashUtils;
 import com.spatial4j.core.shape.Point;
-import io.swagger.annotations.*;
-import org.apache.shiro.util.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author tod
@@ -42,7 +69,7 @@ import java.util.stream.Stream;
  * <p>
  * Describe: merchant商家controller
  */
-@Api(description = "首页、收藏取消活动、搜索、商家主页、关注／取消关注商家、举报商家、关注的商家列表", protocols = "http")
+@Api(description = "用户操作相关接口", protocols = "http")
 @Controller
 @RequestMapping("/api")
 public class ShopAdController extends BaseController {
