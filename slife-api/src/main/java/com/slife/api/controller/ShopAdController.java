@@ -69,7 +69,7 @@ import com.spatial4j.core.shape.Point;
  * <p>
  * Describe: merchant商家controller
  */
-@Api(description = "用户操作相关接口", protocols = "http")
+@Api(description = "活动相关接口", protocols = "http")
 @Controller
 @RequestMapping("/api")
 public class ShopAdController extends BaseController {
