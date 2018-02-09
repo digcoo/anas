@@ -3,6 +3,7 @@ package com.slife.utils;
 /**
  * Created by cq on 18-2-4.
  */
+@Deprecated
 public class RedisKeysImpl implements RedisKey {
 
     /**
@@ -10,6 +11,6 @@ public class RedisKeysImpl implements RedisKey {
      * @return
      */
     public static String getUserTicket(String uuid){
-        return RedisKey.USER_TICKET+uuid;
+        return RedisKey.DIGCOO_SESSION_KEY+uuid;
     }
 }

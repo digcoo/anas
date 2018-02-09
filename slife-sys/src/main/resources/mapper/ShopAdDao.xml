@@ -65,7 +65,7 @@
           where
           status=1 and
           <![CDATA[ start_time<NOW() and end_time>=Now()  ]]> and mall_id = #{mallId}
-          <if test="floor!=nul">
+          <if test="floor!=null">
             and floor = #{floor}
           </if>
         order by publish_time desc limit #{index},10

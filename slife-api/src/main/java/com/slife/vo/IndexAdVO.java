@@ -79,6 +79,8 @@ public class IndexAdVO implements Serializable {
     @ApiModelProperty(value="距离描述",name="distanceDesc")
     private String distanceDesc;
 
+    @ApiModelProperty(value="收藏与否",name="isFavor")
+    private Boolean isFavor;
 
     public String getName() {
         return name;
@@ -190,5 +192,13 @@ public class IndexAdVO implements Serializable {
 
     public void setAdId(Long adId) {
         this.adId = adId;
+    }
+
+    public Boolean getFavor() {
+        return isFavor;
+    }
+
+    public void setFavor(Boolean favor) {
+        isFavor = favor;
     }
 }

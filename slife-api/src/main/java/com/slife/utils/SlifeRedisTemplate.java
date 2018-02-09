@@ -11,12 +11,15 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class SlifeRedisTemplate {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+
     /**
      * 用户收藏取消收藏活动
      * @param userId 用户id
@@ -42,6 +45,19 @@ public class SlifeRedisTemplate {
         };
         stringRedisTemplate.execute(sessionCallback);
     }
+
+    /**
+     * 用户收藏取消收藏活动
+     * @param userId 用户id
+     * @param adId 活动id
+     *
+     */
+
+    public boolean isCollect(Long userId,Long adId){
+        Double score = stringRedisTemplate.opsForZSet().score(RedisKey.USER_FAVOR_ADS+userId,String.valueOf(adId));
+        return score!=null;
+    }
+
     
     public int getFavorNum(Long adId){
     	String favorNum = stringRedisTemplate.opsForValue().get(RedisKey.ADS_FAVOR_NUM+adId+":favornum");
@@ -116,6 +132,22 @@ public class SlifeRedisTemplate {
 
     public Set<String> getFollowShopIdsWithPage(Long userId,Integer index){
         return stringRedisTemplate.opsForZSet().reverseRange(RedisKey.USER_FOLLOW_SHOPS+userId,index==null?0:index,10);
+    }
+
+    public String setDigcooSessionKey(String sessionKey, String openId) {
+        String uuid = UUID.randomUUID().toString();
+        String value = String.join(RedisKey.DIGCOO_SESSION_KEY_DELIMITER,openId,sessionKey);
+        stringRedisTemplate.opsForValue().set(RedisKey.DIGCOO_SESSION_KEY+uuid, value, 30, TimeUnit.DAYS);
+        return uuid;
+    }
+
+    public String getDigcooSessionKey(String uuid){
+        String value = stringRedisTemplate.opsForValue().get(RedisKey.DIGCOO_SESSION_KEY+uuid);
+        //重置缓存有效期
+        if(StringUtils.isNotBlank(value)){
+            stringRedisTemplate.opsForValue().set(RedisKey.DIGCOO_SESSION_KEY+uuid, value, 30, TimeUnit.DAYS);
+        }
+        return value;
     }
 
 }

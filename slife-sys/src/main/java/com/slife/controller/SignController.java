@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by chen on 2017/7/14.
@@ -38,6 +39,12 @@ public class SignController extends BaseController{
         model.addAttribute("base", request.getContextPath());
         Subject s = SecurityUtils.getSubject();
         return s.isRemembered() || s.isAuthenticated() ? "redirect:index" : "sign/login";
+    }
+
+    @RequestMapping(value={"/web"}, method = RequestMethod.GET)
+    public String homePage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+            //response.sendRedirect("/web/index.html");
+        return "web/home";
     }
 
 

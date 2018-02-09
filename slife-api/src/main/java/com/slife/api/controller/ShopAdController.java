@@ -1,5 +1,8 @@
 package com.slife.api.controller;
 
+import com.slife.entity.*;
+import com.slife.service.*;
+import com.slife.utils.RedisKey;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -32,16 +35,8 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.slife.base.controller.BaseController;
 import com.slife.base.entity.ReturnDTO;
-import com.slife.entity.Mall;
-import com.slife.entity.Report;
-import com.slife.entity.Shop;
-import com.slife.entity.ShopAd;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
-import com.slife.service.IMallService;
-import com.slife.service.IReportService;
-import com.slife.service.IShopAdService;
-import com.slife.service.IShopService;
 import com.slife.util.DateUtils;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.util.StringUtils;
@@ -83,6 +78,8 @@ public class ShopAdController extends BaseController {
     @Autowired
     private IReportService reportService;
     @Autowired
+    private UserService userService;
+    @Autowired
     private SlifeRedisTemplate slifeRedisTemplate;
 
     private final static SpatialContext geo = SpatialContext.GEO;
@@ -95,15 +92,32 @@ public class ShopAdController extends BaseController {
     @ApiOperation(value = "T1-首页-获取附近的活动列表", notes = "根据geohash编码获取活动列表数据")
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
             @ApiImplicitParam(paramType = "query", dataType = "String", name = "geohash", value = "geo编码",required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "String", name = "business_ids", value = "逗号分隔的行业id",required = false)
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "business_ids", value = "逗号分隔的行业id",required = false),
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", value = "digcoo session key",required = false)
     })
     @ApiResponses({@ApiResponse(code = 200,message = "成功",response = IndexAdVO.class)})
     @GetMapping(value = "/ads")
     @ResponseBody
-    public ReturnDTO<IndexVO> getAds(@RequestParam("index") Integer index, @RequestParam("geohash") String geohash, @RequestParam(value = "business_ids",required = false) String businessIds) {
+    public ReturnDTO<IndexVO> getAds(@RequestParam("index") Integer index, @RequestParam("geohash") String geohash,
+                                     @RequestParam(value = "business_ids",required = false) String businessIds,
+                                     @RequestParam(value = "digcoo_session_key",required = false) String digcooSessionKey
+                                     ) {
+        User user = null;
+        if(StringUtils.isNotBlank(digcooSessionKey)) {
+            String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+            //session 过期
+            if(StringUtils.isBlank(sessionKeyAndOpenId)){
+                throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
+            }else{
+                String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
+                user = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+            }
+        }
+        final User user2 = user;
         if(StringUtils.isBlank(geohash) || geohash.length()<=5) {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
+
         IndexVO indexVO = new IndexVO();
         List<Mall> mallList = mallService.selectMallsByGeohash(geohash.substring(0,3));
         if(!CollectionUtils.isEmpty(mallList)) {
@@ -145,7 +159,7 @@ public class ShopAdController extends BaseController {
             List<Long> shopIdList = shopAdList.stream().map(ShopAd::getShopId).distinct().collect(Collectors.toList());
             List<Shop> shopList = shopService.selectBatchIds(shopIdList);
             Map<Long, Shop> shopMap = shopList.stream().filter(shop -> shop.getStatus()==3).collect(Collectors.toMap(Shop::getId,shop->shop));
-            List<IndexAdVO> indexAdVOList = shopAdList.stream().map(shopAd -> shopBeanMapper(shopMap,shopAd,geohash)).filter(Objects::nonNull).collect(Collectors.toList());
+            List<IndexAdVO> indexAdVOList = shopAdList.stream().map(shopAd -> shopBeanMapper(shopMap,shopAd,geohash,user2)).filter(Objects::nonNull).collect(Collectors.toList());
             indexVO.setAds(indexAdVOList);
         }
         return ReturnDTOUtil.success(indexVO);
@@ -168,11 +182,26 @@ public class ShopAdController extends BaseController {
     @ApiOperation(value = "T5-活动搜索", notes = "根据geohash编码以及活动名称模糊搜索活动列表数据")
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
             @ApiImplicitParam(paramType = "query", dataType = "String", name = "geohash", value = "geo编码",required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "String", name = "name", value = "活动名称模糊搜索",required = false) })
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "name", value = "活动名称模糊搜索",required = false),
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", value = "digcoo session key",required = false) })
     @ApiResponses({@ApiResponse(code = 200,message = "成功",response = IndexAdVO.class)})
     @GetMapping(value = "/ads/q")
     @ResponseBody
-    public ReturnDTO searchAds(@RequestParam("index") Integer index,@RequestParam("geohash") String geohash,@RequestParam(value = "name",required=false) String name ) {
+    public ReturnDTO searchAds(@RequestParam("index") Integer index,@RequestParam("geohash") String geohash,
+                               @RequestParam(value = "name",required=false) String name,
+                               @RequestParam(value = "digcoo_session_key",required = false) String digcooSessionKey) {
+        User user = null;
+        if(StringUtils.isNotBlank(digcooSessionKey)) {
+            String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+            //session 过期
+            if(StringUtils.isBlank(sessionKeyAndOpenId)){
+                throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
+            }else{
+                String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
+                user = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+            }
+        }
+        final User user2 = user;
         if(StringUtils.isBlank(geohash) || geohash.length()<=5) {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
@@ -183,7 +212,7 @@ public class ShopAdController extends BaseController {
             List<Long> shopIdList = shopAdList.stream().map(ShopAd::getShopId).distinct().collect(Collectors.toList());
             List<Shop> shopList = shopService.selectBatchIds(shopIdList);
             Map<Long, Shop> shopMap = shopList.stream().filter(shop -> shop.getStatus()==3).collect(Collectors.toMap(Shop::getId,Shop->Shop));
-            List<IndexAdVO> indexAdVOList = shopAdList.stream().map(shopAd -> shopBeanMapper(shopMap,shopAd,geohash)).filter(Objects::nonNull).sorted(Comparator.comparing(IndexAdVO::getDistance)).skip(index).limit(10).collect(Collectors.toList());
+            List<IndexAdVO> indexAdVOList = shopAdList.stream().map(shopAd -> shopBeanMapper(shopMap,shopAd,geohash,user2)).filter(Objects::nonNull).sorted(Comparator.comparing(IndexAdVO::getDistance)).skip(index).limit(10).collect(Collectors.toList());
             return ReturnDTOUtil.success(indexAdVOList);
         }
     }
@@ -309,7 +338,7 @@ public class ShopAdController extends BaseController {
     })
     @GetMapping(value = "/mall/{mallId}/shops")
     @ResponseBody
-    public ReturnDTO getAdsByMallId(@RequestParam("index") Integer index,@PathVariable("mallId") Long mallId,@RequestParam("floor") String floor) {
+    public ReturnDTO getAdsByMallId(@RequestParam("index") Integer index,@PathVariable("mallId") Long mallId,@RequestParam(value = "floor",required = false) String floor) {
         if(mallId == null) {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
@@ -409,7 +438,7 @@ public class ShopAdController extends BaseController {
 
     }
 
-    private IndexAdVO shopBeanMapper(Map<Long, Shop> shopMap,ShopAd shopAd,String geohash){
+    private IndexAdVO shopBeanMapper(Map<Long, Shop> shopMap,ShopAd shopAd,String geohash,User user){
         Shop shop = shopMap.get(shopAd.getShopId());
         if (shop == null){
             return null;
@@ -440,6 +469,7 @@ public class ShopAdController extends BaseController {
         indexAdVO.setDistance(distance1);
         indexAdVO.setDistanceDesc(distanceDesc);
         indexAdVO.setAdId(shopAd.getId());
+        indexAdVO.setFavor(user!=null&&slifeRedisTemplate.isCollect(user.getId(),shopAd.getId()));
         return indexAdVO;
     }
 

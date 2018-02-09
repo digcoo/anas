@@ -50,7 +50,7 @@ public enum HttpCodeEnum {
     USER_NOT_FOUND_ERR(1002,"用户不存在"),
     USER_NICK_DUPLICATE(1003,"用户昵称重复"),
     USER_SESSION_KEY_NO_FOUND(1004,"sessionKey获取失败"),
-
+    USER_SESSION_EXPIRED(1005,"登录信息过期"),
 
 
     //商户相关错误统一使用2000开头错误码

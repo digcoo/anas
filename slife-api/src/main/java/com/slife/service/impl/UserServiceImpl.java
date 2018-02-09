@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import javax.annotation.Resource;
 
 import ch.qos.logback.core.util.TimeUtil;
+import com.slife.utils.RedisKey;
 import com.slife.utils.RedisKeysImpl;
 import com.slife.vo.AnasTicketVO;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -46,8 +47,6 @@ public class UserServiceImpl implements UserService {
     @Resource
     private ShopDao shopDao;
 
-    private static final long TIMEOUT = 30*60*1000;
-
 
     @Override
     public SessionKeyVO getSessionKeyWx(String code) {
@@ -60,8 +59,6 @@ public class UserServiceImpl implements UserService {
             sessionKeyVO.setOpenId(sessionKey.getOpenId());
             sessionKeyVO.setSessionKey(sessionKey.getSessionKey());
             sessionKeyVO.setUnionId(sessionKey.getUnionid());
-            User user = userDao.selectByOpenId(sessionKey.getOpenId());
-            sessionKeyVO.setNewUser(user != null);
         }
         return sessionKeyVO;
     }
@@ -107,32 +104,18 @@ public class UserServiceImpl implements UserService {
         return userDao.updateHeadImg(id, path);
     }
 
-    @Override
-    public AnasTicketVO ticket(String code) {
-        SessionKeyWX sessionKey = requestWechatApi.getSessionKey(code);
-        AnasTicketVO ticketVO = new AnasTicketVO();
-        if (sessionKey != null && StringUtils.isEmpty(sessionKey.getOpenId())) {
-            return ticketVO.buildError(sessionKey.getErrcode(), sessionKey.getErrmsg());
-        }
-        String token = cacheSessionTicket(sessionKey.getSessionKey(), sessionKey.getOpenId());
-        User user = userDao.selectByOpenId(sessionKey.getOpenId());
-        ticketVO.setToken(token);
-        ticketVO.setUserId(user == null ? 0 : user.getId());
-        return ticketVO;
-    }
+//    @Override
+//    public AnasTicketVO ticket(String code) {
+//        SessionKeyWX sessionKey = requestWechatApi.getSessionKey(code);
+//        AnasTicketVO ticketVO = new AnasTicketVO();
+//        if (sessionKey != null && StringUtils.isEmpty(sessionKey.getOpenId())) {
+//            return ticketVO.buildError(sessionKey.getErrcode(), sessionKey.getErrmsg());
+//        }
+//        String token = cacheSessionTicket(sessionKey.getSessionKey(), sessionKey.getOpenId());
+//        User user = userDao.selectByOpenId(sessionKey.getOpenId());
+//        ticketVO.setToken(token);
+//        ticketVO.setUserId(user == null ? 0 : user.getId());
+//        return ticketVO;
+//    }
 
-
-    String cacheSessionTicket(String sessionKey, String openId) {
-        String uuid = UUID.randomUUID().toString();
-        String value = openId.join("#", sessionKey);
-        stringRedisTemplate.opsForValue().set(RedisKeysImpl.getUserTicket(uuid), value, TIMEOUT, TimeUnit.MICROSECONDS);
-        return uuid;
-    }
-    public String getSessionTicket(String uuid){
-        String value = stringRedisTemplate.opsForValue().get(RedisKeysImpl.getUserTicket(uuid));
-        if(StringUtils.isNotEmpty(value)){
-            stringRedisTemplate.opsForValue().set(RedisKeysImpl.getUserTicket(uuid), value, TIMEOUT, TimeUnit.MICROSECONDS);
-        }
-        return value;
-    }
 }

@@ -1,5 +1,6 @@
 package com.slife.api.controller;
 
+import com.slife.utils.SlifeRedisTemplate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -33,16 +34,18 @@ import com.slife.vo.SessionKeyVO;
 public class UserController {
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private SlifeRedisTemplate slifeRedisTemplate;
 
     @ApiOperation(value = "获取微信SessionKey", notes = "根据wx.login获取的code得到session key")
     @ApiImplicitParam(name = "code", paramType = "query", dataType = "String", required = true)
     @GetMapping("/session_key")
     @ApiResponses({@ApiResponse(code = 200, message = "成功", response = SessionKeyVO.class)})
-    public ReturnDTO<SessionKeyVO> getSessionKeyWx(@RequestParam("code") String code) {
+    public ReturnDTO getSessionKeyWx(@RequestParam("code") String code) {
         SessionKeyVO sessionKeyVO = userService.getSessionKeyWx(code);
         if (StringUtils.isEmpty(sessionKeyVO.getErrCode())) {
-			return ReturnDTOUtil.success(sessionKeyVO);
+            String digcooSessionKey = slifeRedisTemplate.setDigcooSessionKey(sessionKeyVO.getSessionKey(),sessionKeyVO.getOpenId());
+			return ReturnDTOUtil.success(digcooSessionKey);
 		}else{
 			return ReturnDTOUtil.custom(Integer.parseInt(sessionKeyVO.getErrCode()), sessionKeyVO.getErrMsg());
 		}
@@ -90,12 +93,12 @@ public class UserController {
         return userService.editHeadImg(Long.parseLong(id), headImg)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
     }
 
-    @ApiOperation(value = "获取登录token", notes = "根据wx.login获取的code得到token")
-    @ApiImplicitParam(name = "code", paramType = "query", dataType = "String", required = true)
-    @GetMapping("/ticket")
-    public ReturnDTO ticket(@RequestParam("code") String code){
-        AnasTicketVO ticketVO = userService.ticket(code);
-        return ReturnDTOUtil.success(ticketVO);
-    }
+//    @ApiOperation(value = "获取登录token", notes = "根据wx.login获取的code得到token")
+//    @ApiImplicitParam(name = "code", paramType = "query", dataType = "String", required = true)
+//    @GetMapping("/ticket")
+//    public ReturnDTO ticket(@RequestParam("code") String code){
+//        AnasTicketVO ticketVO = userService.ticket(code);
+//        return ReturnDTOUtil.success(ticketVO);
+//    }
 
 }

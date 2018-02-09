@@ -20,5 +20,5 @@ public interface UserService {
 
     Integer editHeadImg(long id, String path) throws SlifeException;
 
-    AnasTicketVO ticket(String code);
+    //AnasTicketVO ticket(String code);
 }

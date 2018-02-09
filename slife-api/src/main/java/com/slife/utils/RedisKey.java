@@ -17,10 +17,13 @@ public interface RedisKey {
 
     String SHOP_FOLLOW_NUM = "shop:id:";
 
-    String USER_TICKET = "ticket:uuid:";
+    String DIGCOO_SESSION_KEY = "digcoo:session:key:";
+
+    String DIGCOO_SESSION_KEY_DELIMITER = "#:#";
 
     String SHOP_HAS_PUBLISH_NUM = "shop:has:publish:count:";
 
     String SHOP_CAN_PUBLISH_NUM = "shop:can:publish:count:";
+
 
 }
