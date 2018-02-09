@@ -1,13 +1,14 @@
 package com.slife.api.controller;
 
 
-import com.alibaba.fastjson.JSONObject;
-import com.slife.utils.XMLParser;
-import com.slife.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,18 +25,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.service.impl.ShopAdService;
 import com.slife.service.impl.ShopService;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Map;
+import com.slife.utils.XMLParser;
+import com.slife.vo.AdAddVO;
+import com.slife.vo.AdUpdateVO;
+import com.slife.vo.PrepayVO;
+import com.slife.vo.ShopBaseVO;
+import com.slife.vo.ShopMallVO;
+import com.slife.vo.ShopVO;
 
 @Controller
 @RequestMapping(value = "/api/shop")
-@Api(description = "店铺注册相关接口")
+@Api(description = "商家模块接口")
 public class ShopController {
 
     protected Logger logger= LoggerFactory.getLogger(getClass());

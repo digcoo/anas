@@ -145,11 +145,11 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			
 			
 			break;
-		case ADVANCE:		//预告预售
-			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
-				return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
-			}
-			break;
+//		case ADVANCE:		//预告预售
+//			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
+//				return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
+//			}
+//			break;
 		case OTHER:			//其他
 			if(adAddVO.getStartTime() == null || adAddVO.getEndTime() == null){
 				return ReturnDTOUtil.custom(HttpCodeEnum.UNPROCESABLE_ENTITY);
@@ -271,9 +271,9 @@ public class ShopAdService extends BaseService<ShopAdDao, ShopAd> implements ISh
 			calendar.add(Calendar.DAY_OF_YEAR, NEW_SHOP_REMAIN_DAYS);
 			shopAd.setEndTime(calendar.getTime());
 			break;
-		case ADVANCE:		//预告预售
-			
-			break;
+//		case ADVANCE:		//预告预售
+//			
+//			break;
 		case OTHER:			//其他
 			
 			

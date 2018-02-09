@@ -21,7 +21,7 @@ import java.util.function.Predicate;
  */
 @RequestMapping("/api/upload/")
 @Controller
-@Api(description = "上传文件")
+@Api(description = "图片操作相关接口")
 public class UploadFileController {
 
     @Value("${aliyun.oss.domain}")

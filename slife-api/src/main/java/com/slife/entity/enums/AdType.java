@@ -5,7 +5,7 @@ public enum AdType {
     DISCOUNT(1, "打折促销"),
     NEW(2, "新品上市"),
     OPEN(3, "新店开业"),
-    ADVANCE(4, "预告活动"),
+//    ADVANCE(4, "预告活动"),
     OTHER(5, "其他活动"),
     ;
 

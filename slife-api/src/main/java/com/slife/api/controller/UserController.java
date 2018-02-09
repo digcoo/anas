@@ -29,7 +29,7 @@ import com.slife.vo.SessionKeyVO;
  */
 @RequestMapping("/api/user")
 @RestController
-@Api(description = "获取用户信息相关接口")
+@Api(description = "用户操作相关接口")
 public class UserController {
     @Autowired
     private UserService userService;
