@@ -21,7 +21,7 @@ import com.slife.vo.FeedBackVO;
 /**
  * Created by cq on 18-1-21.
  */
-@Api(description = "意见反馈")
+@Api(description = "意见反馈操作接口")
 @RestController
 @RequestMapping("/api/feedback/")
 public class FeedbackController {

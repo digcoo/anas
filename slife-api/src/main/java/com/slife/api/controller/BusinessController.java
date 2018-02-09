@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/api/business")
-@Api(description = "行业信息和广告类型")
+@Api(description = "基础业务数据接口（行业信息、广告类型）")
 public class BusinessController {
 
     @Autowired
