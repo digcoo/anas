@@ -25,6 +25,7 @@ import com.slife.util.ReturnDTOUtil;
 import com.slife.utils.RedisKey;
 import com.slife.utils.SlifeRedisTemplate;
 import com.slife.vo.SessionKeyVO;
+import com.slife.vo.UserAddVO;
 import com.slife.vo.UserVO;
 
 /**
@@ -54,10 +55,37 @@ public class UserController {
     }
 
     @ApiOperation(value = "添加新用户", notes = "将微信获取的用户信息添加到系统")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", value = "digcoo session key",required = true)
+    })
     @PostMapping("/add")
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
-    public ReturnDTO addUser(@RequestBody User user) throws SlifeException{
-    	return userService.addUser(user) == 1?ReturnDTOUtil.success(user):ReturnDTOUtil.fail();
+    public ReturnDTO addUser(
+    		@RequestParam(value = "digcoo_session_key",required = true) String digcooSessionKey,
+    		@RequestBody UserAddVO userVO) throws SlifeException{
+    	String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+        //session 过期
+        if(StringUtils.isBlank(sessionKeyAndOpenId)){
+            throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
+        }else{
+            String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
+            User localUser = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+            if(localUser != null){
+            	throw new SlifeException(HttpCodeEnum.USER_EXIST);
+            }
+            
+            User newUser = new User();
+            newUser.setCity(userVO.getCity());
+            newUser.setCountry(userVO.getCountry());
+            newUser.setGender(userVO.getGender());
+            newUser.setHeadImg(userVO.getHeadImg());
+            newUser.setMobile(userVO.getMobile());
+            newUser.setNick(userVO.getNick());
+            newUser.setProvince(userVO.getProvince());
+            newUser.setOpenId(sessionKeyAndOpenIdArray[1]);
+            
+            return userService.addUser(newUser) == 1?ReturnDTOUtil.success(newUser):ReturnDTOUtil.fail();
+        }
     }
 
     @ApiOperation(value = "获取用户信息", notes = "根据digcoo_session_key获取用户信息")
