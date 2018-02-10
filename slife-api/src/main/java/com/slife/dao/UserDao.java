@@ -1,8 +1,8 @@
 package com.slife.dao;
 
-import com.slife.base.dao.CrudDao;
-import com.slife.entity.User;
 import org.apache.ibatis.annotations.Param;
+
+import com.slife.entity.User;
 
 /**
  * Created by cq on 18-1-20.
@@ -18,10 +18,10 @@ public interface UserDao {
 
     int updateByPrimaryKey(User record);
 
-    int updateNick(@Param("id") long id ,@Param("nick") String nick);
+    int updateNick(@Param("userId") Long userId, @Param("nick") String nick);
 
-    int updateHeadImg(@Param("id") long id ,@Param("headImg") String headImg);
+    int updateHeadImg(@Param("userId") Long userId, @Param("headImg") String headImg);
 
-    int updateToShop(@Param("id") long id, @Param("type") int type);
+    int upgradeToShop(@Param("userId") long userId, @Param("type") int type);
 
 }

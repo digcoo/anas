@@ -163,7 +163,7 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
 //		}
         
         //升级为商家用户
-        userDao.updateToShop(shop.getUserId(), UserType.SHOP_USER.getCode());
+        userDao.upgradeToShop(shop.getUserId(), UserType.SHOP_USER.getCode());
         
         shopDao.updateById(shop);
         return ReturnDTOUtil.success();

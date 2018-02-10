@@ -2,7 +2,6 @@ package com.slife.service;
 
 import com.slife.entity.User;
 import com.slife.exception.SlifeException;
-import com.slife.vo.AnasTicketVO;
 import com.slife.vo.SessionKeyVO;
 
 /**
@@ -16,9 +15,9 @@ public interface UserService {
 
     Integer addUser(User user);
 
-    Integer editNick(long id, String nick) throws SlifeException;
+    Integer editNick(Long userId, String nick) throws SlifeException;
 
-    Integer editHeadImg(long id, String path) throws SlifeException;
+    Integer editHeadImg(Long userId, String path) throws SlifeException;
 
     //AnasTicketVO ticket(String code);
 }

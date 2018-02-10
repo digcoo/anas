@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.slife.base.entity.ReturnDTO;
+import com.slife.entity.User;
+import com.slife.enums.HttpCodeEnum;
+import com.slife.exception.SlifeException;
+import com.slife.service.UserService;
 import com.slife.service.impl.ShopAdService;
 import com.slife.service.impl.ShopService;
+import com.slife.utils.RedisKey;
+import com.slife.utils.SlifeRedisTemplate;
 import com.slife.utils.XMLParser;
 import com.slife.vo.AdAddVO;
 import com.slife.vo.AdUpdateVO;
@@ -49,32 +56,46 @@ public class ShopController {
     
     @Autowired
     private ShopAdService shopAdService;
+    
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    private SlifeRedisTemplate slifeRedisTemplate;
 
 
     @ApiOperation(value = "30-获取店铺信息", notes = "30-获取店铺信息",httpMethod = "GET")
     @GetMapping(value = "/getShopInfo")
     @ResponseBody
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "long", name = "userId", value = "用户Id",required = true)
+    @ApiImplicitParams({ 
+        @ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", required = true)
     })
-    public ReturnDTO<ShopVO> getShopInfo(@RequestParam("userId") long userId) {
-        return shopService.getShopInfo(userId);
-
+    public ReturnDTO<ShopVO> getShopInfo(@RequestParam(value = "digcoo_session_key",required = true) String digcooSessionKey) {
+    	String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+        //session 过期
+        if(StringUtils.isBlank(sessionKeyAndOpenId)){
+            throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
+        }else{
+            String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
+            User user = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+            if(user == null){
+            	throw new SlifeException(HttpCodeEnum.USER_NOT_FOUND_ERR);
+            }
+            return shopService.getShopInfo(user.getId());
+        }
     }
 
     @ApiOperation(value = "31-商家注册获取短信验证码", notes = "31-商家注册获取短信验证码",httpMethod = "GET")
     @GetMapping(value = "/requestRegSms")
     @ResponseBody
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "String", name = "phone", value = "手机号码",required = true)
+    	@ApiImplicitParam(paramType = "query", dataType = "String", name = "phone", value = "手机号码",required = true)
     })
     public ReturnDTO requestRegSms(String  phone, HttpServletRequest request) {
         return shopService.requestRegSms(phone);
     }
 
-
-
-
+    
     @ApiOperation(value = "32-商家注册步骤1", notes = "32-商家注册步骤1",httpMethod = "POST")
     @PostMapping(value = "/submitShopBaseInfo")
     @ResponseBody
@@ -131,7 +152,8 @@ public class ShopController {
     }
     
     @ApiOperation(value = "D-10 商家活动列表接口（商家自查）", notes = "商家活动列表接口（商家自查）",httpMethod = "GET")
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条",required = true),
+    @ApiImplicitParams({
+    	@ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条",required = true),
         @ApiImplicitParam(paramType = "query", dataType = "Long", name = "shopId", value = "商铺id",required = true) })
     @GetMapping(value = "/ad/list_for_shop")
     @ResponseBody
@@ -139,28 +161,47 @@ public class ShopController {
     	return shopAdService.listForShop(shopId, index);
     }
     
-    
-    /**
-     * todo 这里应该有惩罚恶意刷单现象：需要对价格有阶梯式涨价机制
-     * @param adId
-     * @param request
-     * @return
-     */
-    @ApiOperation(value = "D-11 9元上头条", notes = "9元上头条",httpMethod = "POST")
-    @PostMapping(value = "/ad/up9")
-    @ResponseBody
-    public ReturnDTO upAd(@Param("adId") Long adId, HttpServletRequest request) {
-    	logger.debug("[ShopController]-[upAd] : adId = " + adId);
-    	return shopAdService.upShopAd(adId);
-    }
+//    
+//    /**
+//     * todo 这里应该有惩罚恶意刷单现象：需要对价格有阶梯式涨价机制
+//     * @param adId
+//     * @param request
+//     * @return
+//     */
+//    @ApiOperation(value = "D-11 9元上头条", notes = "9元上头条",httpMethod = "POST")
+//    @PostMapping(value = "/ad/up9")
+//    @ResponseBody
+//    public ReturnDTO upAd(
+//    		@Param("adId") Long adId, HttpServletRequest request) {
+//    	logger.debug("[ShopController]-[upAd] : adId = " + adId);
+//    	return shopAdService.upShopAd(adId);
+//    }
 
 
-    @ApiOperation(value = "D-12 发起支付广告费用", notes = "支付广告费用",httpMethod = "POST")
+    @ApiOperation(value = "D-12 发起支付广告费用", notes = "支付广告费用",httpMethod = "POST")   
+    @ApiImplicitParams({
+    	@ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", required = true),
+    })
     @PostMapping(value = "/ad/pay")
     @ResponseBody
-    public ReturnDTO<PrepayVO>  payAd(long userId, HttpServletRequest request) {
-        logger.debug("[ShopController]-[payAd] : userId = " + userId);
-        return shopAdService.payAd(userId);
+    public ReturnDTO<PrepayVO>  payAd(
+    		@RequestParam(value = "digcoo_session_key",required = true) String digcooSessionKey,
+    		HttpServletRequest request) {
+    	
+        logger.debug("[ShopController]-[payAd] : sessionKey = " + digcooSessionKey);
+        
+        String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+        //session 过期
+        if(StringUtils.isBlank(sessionKeyAndOpenId)){
+            throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
+        }else{
+            String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
+            User user = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+            if(user == null){
+            	throw new SlifeException(HttpCodeEnum.USER_NOT_FOUND_ERR);
+            }
+            return shopAdService.payAd(user.getId());
+        }
     }
 
     @ApiOperation(value = "Cj-13 支付回调接口", notes = "支付回调接口",httpMethod = "POST")

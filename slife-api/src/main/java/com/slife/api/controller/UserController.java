@@ -1,6 +1,5 @@
 package com.slife.api.controller;
 
-import com.slife.utils.SlifeRedisTemplate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -19,11 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.slife.base.entity.ReturnDTO;
 import com.slife.entity.User;
+import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
 import com.slife.service.UserService;
 import com.slife.util.ReturnDTOUtil;
-import com.slife.vo.AnasTicketVO;
+import com.slife.utils.RedisKey;
+import com.slife.utils.SlifeRedisTemplate;
 import com.slife.vo.SessionKeyVO;
+import com.slife.vo.UserVO;
 
 /**
  * Created by cq on 18-1-19.
@@ -51,46 +53,92 @@ public class UserController {
 		}
     }
 
-
-    @ApiOperation(value = "获取用户信息", notes = "根据微信openId获取用户信息")
-    @ApiImplicitParam(name = "openId", paramType = "query", dataType = "String", required = true)
-    @GetMapping("/open_id")
-    @ApiResponses({@ApiResponse(code = 200, message = "成功", response = User.class)})
-    public ReturnDTO<User> getUserByOpenId(String openId) {
-        User user = userService.getUserByOpenId(openId);
-        return ReturnDTOUtil.success(user);
-    }
-
     @ApiOperation(value = "添加新用户", notes = "将微信获取的用户信息添加到系统")
     @PostMapping("/add")
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
     public ReturnDTO addUser(@RequestBody User user) throws SlifeException{
-        return userService.addUser(user)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+    	return userService.addUser(user) == 1?ReturnDTOUtil.success(user):ReturnDTOUtil.fail();
     }
 
-//    @ApiOperation(value = "更新用户信息", notes = "当用户进入个人资料页，根据updateTime判断，更新用户微信账号信息")
-//    @PostMapping("/edit")
-//    @ApiResponses({@ApiResponse(code = 200, message = "成功")})
-//    public ReturnDTO editUser(@RequestBody User user)  throws SlifeException{
-//        return userService.editUser(user)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
-//    }
+    @ApiOperation(value = "获取用户信息", notes = "根据digcoo_session_key获取用户信息")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", value = "digcoo session key",required = true)
+    })
+    @GetMapping("/getUser")
+    @ApiResponses({@ApiResponse(code = 200, message = "成功", response = User.class)})
+    public ReturnDTO<User> getUserByDigcooSessionKey(@RequestParam(value = "digcoo_session_key",required = true) String digcooSessionKey) {
+        String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+        //session 过期
+        if(StringUtils.isBlank(sessionKeyAndOpenId)){
+            throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
+        }else{
+            String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
+            User user = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+            if(user == null){
+            	throw new SlifeException(HttpCodeEnum.USER_NOT_FOUND_ERR);
+            }
+            
+            UserVO userVO = new UserVO();
+            userVO.setUserId(user.getId());
+            userVO.setType(user.getType());
+            userVO.setOpenId(user.getOpenId());
+            userVO.setMobile(user.getMobile());
+            userVO.setNick(user.getNick());
+            userVO.setHeadImg(user.getHeadImg());
+            
+            return ReturnDTOUtil.success(userVO);
+        }
+    }
 
     @ApiOperation(value = "修改昵称", notes = "用户重新修改昵称，默认昵称使用微信昵称")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "query", dataType = "long", required = true),
-            @ApiImplicitParam(name = "nick", paramType = "query", dataType = "String", required = true)})
+    @ApiImplicitParams({
+    		@ApiImplicitParam(name = "nick", paramType = "query", dataType = "String", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", required = true)
+            })
     @PostMapping("/nick/edit")
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
-    public ReturnDTO editNick(@RequestParam("id") String id, @RequestParam("nick") String nick) throws SlifeException{
-        return userService.editNick(Long.parseLong(id), nick)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+    public ReturnDTO editNick(@RequestParam("nick") String nick,
+    		@RequestParam(value="digcoo_session_key", required = true)String digcooSessionKey
+    		) throws SlifeException{
+    	String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+        //session 过期
+        if(StringUtils.isBlank(sessionKeyAndOpenId)){
+            throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
+        }else{
+            String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
+            User user = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+            if(user == null){
+            	throw new SlifeException(HttpCodeEnum.USER_NOT_FOUND_ERR);
+            }
+            return userService.editNick(user.getId(), nick)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+        }
     }
 
     @ApiOperation(value = "编辑头像", notes = "用户重新上传头像，默认使用微信头像")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id", paramType = "query", dataType = "long", required = true),
-            @ApiImplicitParam(name = "headImg", paramType = "form", dataType = "String", required = true)})
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "headImg", paramType = "form", dataType = "String", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", value = "digcoo session key",required = true)
+    })
     @PostMapping("/head_img/edit")
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
-    public ReturnDTO editHeadImg(@RequestParam("id") String id, @RequestParam("headImg") String headImg) throws SlifeException{
-        return userService.editHeadImg(Long.parseLong(id), headImg)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+    public ReturnDTO editHeadImg(
+    		@RequestParam("headImg") String headImg,
+    		@RequestParam(value="digcoo_session_key", required = true)String digcooSessionKey
+    		) throws SlifeException{
+    	
+    	String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+        //session 过期
+        if(StringUtils.isBlank(sessionKeyAndOpenId)){
+            throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
+        }else{
+            String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
+            User user = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+            if(user == null){
+            	throw new SlifeException(HttpCodeEnum.USER_NOT_FOUND_ERR);
+            }
+            return userService.editHeadImg(user.getId(), headImg)==1?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+        }
+    	
     }
 
 //    @ApiOperation(value = "获取登录token", notes = "根据wx.login获取的code得到token")

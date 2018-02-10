@@ -1,15 +1,9 @@
 package com.slife.service.impl;
 
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import javax.annotation.Resource;
 
-import ch.qos.logback.core.util.TimeUtil;
-import com.slife.utils.RedisKey;
-import com.slife.utils.RedisKeysImpl;
-import com.slife.vo.AnasTicketVO;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -78,30 +72,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Integer editNick(long id, String nick) throws SlifeException {
-        User original = userDao.selectByPrimaryKey(id);
-        if (original == null) {
-            throw new SlifeException(HttpCodeEnum.USER_NOT_FOUND_ERR);
-        }
-        User userOther = userDao.selectByIdAndNickname(id, nick);
-        if (userOther != null) {
-            throw new SlifeException(HttpCodeEnum.USER_NICK_DUPLICATE);
-        }
-        return userDao.updateNick(id, nick);
+    public Integer editNick(Long userId, String nick) throws SlifeException {
+        return userDao.updateNick(userId, nick);
     }
 
     @Override
-    public Integer editHeadImg(long id, String path) throws SlifeException {
-        User user = userDao.selectByPrimaryKey(id);
+    public Integer editHeadImg(Long userId, String path) throws SlifeException {
+        User user = userDao.selectByPrimaryKey(userId);
         if (user == null) {
             throw new SlifeException(HttpCodeEnum.USER_NOT_FOUND_ERR);
         }
 
         if (UserType.SHOP_USER.getCode() == user.getType()) {
-            shopDao.updateLogo(id, path);
+            shopDao.updateLogo(user.getId(), path);
         }
 
-        return userDao.updateHeadImg(id, path);
+        return userDao.updateHeadImg(userId, path);
     }
 
 //    @Override
@@ -116,6 +102,20 @@ public class UserServiceImpl implements UserService {
 //        ticketVO.setToken(token);
 //        ticketVO.setUserId(user == null ? 0 : user.getId());
 //        return ticketVO;
+//    }
+//
+//    String cacheSessionTicket(String sessionKey, String openId) {
+//        String uuid = UUID.randomUUID().toString();
+//        String value = openId.join("#", sessionKey);
+//        stringRedisTemplate.opsForValue().set(RedisKeysImpl.getUserTicket(uuid), value, TIMEOUT, TimeUnit.MICROSECONDS);
+//        return uuid;
+//    }
+//    public String getSessionTicket(String uuid){
+//        String value = stringRedisTemplate.opsForValue().get(RedisKeysImpl.getUserTicket(uuid));
+//        if(StringUtils.isNotEmpty(value)){
+//            stringRedisTemplate.opsForValue().set(RedisKeysImpl.getUserTicket(uuid), value, TIMEOUT, TimeUnit.MICROSECONDS);
+//        }
+//        return value;
 //    }
 
 }

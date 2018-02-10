@@ -79,18 +79,18 @@
   <update id="updateNick">
     update digcoo_anas_user
     set nick = #{nick,jdbcType=VARCHAR},update_date = now()
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{userId,jdbcType=BIGINT}
   </update>
 
   <update id="updateHeadImg">
     update digcoo_anas_user
     set head_img = #{headImg,jdbcType=VARCHAR}, update_date = now()
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{userId,jdbcType=BIGINT}
   </update>
   
-  <update id="updateToShop">
+  <update id="upgradeToShop">
     update digcoo_anas_user
     set type = #{type,jdbcType=TINYINT}, update_date = now()
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{userId,jdbcType=BIGINT}
   </update>
 </mapper>
