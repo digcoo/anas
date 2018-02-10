@@ -62,7 +62,7 @@ public class UserController {
     @ApiResponses({@ApiResponse(code = 200, message = "成功")})
     public ReturnDTO addUser(
     		@RequestParam(value = "digcoo_session_key",required = true) String digcooSessionKey,
-    		@RequestBody UserAddVO userVO) throws SlifeException{
+    		@RequestBody UserAddVO user) throws SlifeException{
     	String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
         //session 过期
         if(StringUtils.isBlank(sessionKeyAndOpenId)){
@@ -75,13 +75,13 @@ public class UserController {
             }
             
             User newUser = new User();
-            newUser.setCity(userVO.getCity());
-            newUser.setCountry(userVO.getCountry());
-            newUser.setGender(userVO.getGender());
-            newUser.setHeadImg(userVO.getHeadImg());
-            newUser.setMobile(userVO.getMobile());
-            newUser.setNick(userVO.getNick());
-            newUser.setProvince(userVO.getProvince());
+            newUser.setCity(user.getCity());
+            newUser.setCountry(user.getCountry());
+            newUser.setGender(user.getGender());
+            newUser.setHeadImg(user.getHeadImg());
+            newUser.setMobile(user.getMobile());
+            newUser.setNick(user.getNick());
+            newUser.setProvince(user.getProvince());
             newUser.setOpenId(sessionKeyAndOpenIdArray[1]);
             
             return userService.addUser(newUser) == 1?ReturnDTOUtil.success(newUser):ReturnDTOUtil.fail();
