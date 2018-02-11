@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,7 +72,12 @@ public class UserController {
             throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
         }else{
             String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
-            User localUser = userService.getUserByOpenId(sessionKeyAndOpenIdArray[0]);
+            User localUser = null;
+    		try{
+    			localUser = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+    		}catch(SlifeException e){
+    			
+    		}
             if(localUser != null){
                 return ReturnDTOUtil.success(localUser);
             }else{
@@ -82,8 +89,9 @@ public class UserController {
                 newUser.setMobile(user.getMobile());
                 newUser.setNick(user.getNick());
                 newUser.setProvince(user.getProvince());
-                newUser.setOpenId(sessionKeyAndOpenIdArray[0]);
+                newUser.setOpenId(sessionKeyAndOpenIdArray[1]);
                 newUser.setType(UserType.COMMON.getCode());
+                newUser.setFollowTime(new Date());
                 return userService.addUser(newUser) == 1?ReturnDTOUtil.success(newUser):ReturnDTOUtil.fail();
             }
 

@@ -2,13 +2,14 @@ package com.slife.dao;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.slife.base.dao.CrudDao;
 import com.slife.entity.User;
 
 /**
  * Created by cq on 18-1-20.
  */
-public interface UserDao {
-    Integer insert(User record);
+public interface UserDao extends CrudDao<User> {
+//    Integer insert(User record);
 
     User selectByPrimaryKey(@Param("id") long id);
 
