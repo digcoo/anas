@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.slife.base.entity.ReturnDTO;
 import com.slife.entity.User;
+import com.slife.entity.enums.UserType;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
 import com.slife.service.UserService;
@@ -82,6 +83,7 @@ public class UserController {
                 newUser.setNick(user.getNick());
                 newUser.setProvince(user.getProvince());
                 newUser.setOpenId(sessionKeyAndOpenIdArray[0]);
+                newUser.setType(UserType.COMMON.getCode());
                 return userService.addUser(newUser) == 1?ReturnDTOUtil.success(newUser):ReturnDTOUtil.fail();
             }
 
