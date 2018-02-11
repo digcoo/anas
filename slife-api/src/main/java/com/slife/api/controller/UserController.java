@@ -69,22 +69,22 @@ public class UserController {
             throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
         }else{
             String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
-            User localUser = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+            User localUser = userService.getUserByOpenId(sessionKeyAndOpenIdArray[0]);
             if(localUser != null){
-            	throw new SlifeException(HttpCodeEnum.USER_EXIST);
+                return ReturnDTOUtil.success(localUser);
+            }else{
+                User newUser = new User();
+                newUser.setCity(user.getCity());
+                newUser.setCountry(user.getCountry());
+                newUser.setGender(user.getGender());
+                newUser.setHeadImg(user.getHeadImg());
+                newUser.setMobile(user.getMobile());
+                newUser.setNick(user.getNick());
+                newUser.setProvince(user.getProvince());
+                newUser.setOpenId(sessionKeyAndOpenIdArray[0]);
+                return userService.addUser(newUser) == 1?ReturnDTOUtil.success(newUser):ReturnDTOUtil.fail();
             }
-            
-            User newUser = new User();
-            newUser.setCity(user.getCity());
-            newUser.setCountry(user.getCountry());
-            newUser.setGender(user.getGender());
-            newUser.setHeadImg(user.getHeadImg());
-            newUser.setMobile(user.getMobile());
-            newUser.setNick(user.getNick());
-            newUser.setProvince(user.getProvince());
-            newUser.setOpenId(sessionKeyAndOpenIdArray[1]);
-            
-            return userService.addUser(newUser) == 1?ReturnDTOUtil.success(newUser):ReturnDTOUtil.fail();
+
         }
     }
 
