@@ -49,7 +49,7 @@ public class UserController {
     @ApiResponses({@ApiResponse(code = 200, message = "成功", response = SessionKeyVO.class)})
     public ReturnDTO getSessionKeyWx(@RequestParam("code") String code) {
         SessionKeyVO sessionKeyVO = userService.getSessionKeyWx(code);
-        if (StringUtils.isEmpty(sessionKeyVO.getErrCode())) {
+        if (StringUtils.isBlank(sessionKeyVO.getErrCode())) {
             String digcooSessionKey = slifeRedisTemplate.setDigcooSessionKey(sessionKeyVO.getSessionKey(),sessionKeyVO.getOpenId());
 			return ReturnDTOUtil.success(digcooSessionKey);
 		}else{
@@ -66,6 +66,11 @@ public class UserController {
     public ReturnDTO addUser(
     		@RequestParam(value = "digcoo_session_key",required = true) String digcooSessionKey,
     		@RequestBody UserAddVO user) throws SlifeException{
+    	
+        if(StringUtils.isBlank(digcooSessionKey)) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+    	
     	String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
         //session 过期
         if(StringUtils.isBlank(sessionKeyAndOpenId)){
@@ -105,7 +110,12 @@ public class UserController {
     @GetMapping("/getUser")
     @ApiResponses({@ApiResponse(code = 200, message = "成功", response = User.class)})
     public ReturnDTO<User> getUserByDigcooSessionKey(@RequestParam(value = "digcoo_session_key",required = true) String digcooSessionKey) {
-        String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+        
+        if(StringUtils.isBlank(digcooSessionKey)) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+        
+    	String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
         //session 过期
         if(StringUtils.isBlank(sessionKeyAndOpenId)){
             throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
@@ -138,6 +148,11 @@ public class UserController {
     public ReturnDTO editNick(@RequestParam("nick") String nick,
     		@RequestParam(value="digcoo_session_key", required = true)String digcooSessionKey
     		) throws SlifeException{
+    	
+        if(StringUtils.isBlank(digcooSessionKey)) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+    	
     	String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
         //session 过期
         if(StringUtils.isBlank(sessionKeyAndOpenId)){
@@ -163,6 +178,10 @@ public class UserController {
     		@RequestParam("headImg") String headImg,
     		@RequestParam(value="digcoo_session_key", required = true)String digcooSessionKey
     		) throws SlifeException{
+    	
+        if(StringUtils.isBlank(digcooSessionKey)) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
     	
     	String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
         //session 过期

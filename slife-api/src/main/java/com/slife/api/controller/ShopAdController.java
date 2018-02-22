@@ -166,16 +166,29 @@ public class ShopAdController extends BaseController {
     }
 
     @ApiOperation(value = "T2/T3-收藏／取消收藏活动", notes = "根据userId和adId保存或删除相应redis")
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Long", name = "userId", value = "用户id",required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "Long", name = "adId", value = "活动id",required = true) })
+    @ApiImplicitParams({ 
+    	@ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", value = "digcoo session key", required = true),
+        @ApiImplicitParam(paramType = "query", dataType = "Long", name = "adId", value = "活动id",required = true) })
     @PostMapping(value = "/ads/favor")
     @ResponseBody
-    public ReturnDTO favor(@RequestParam("userId") Long userId,@RequestParam("adId") Long adId) {
-        if(userId == null || adId==null) {
+    public ReturnDTO favor(
+    		@RequestParam("digcoo_session_key") String digcooSessionKey,
+    		@RequestParam("adId") Long adId) {
+    	
+        if(StringUtils.isBlank(digcooSessionKey) || adId==null) {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
-        slifeRedisTemplate.collectOrNot(userId,adId);
-        return ReturnDTOUtil.success();
+        
+        String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+        //session 过期
+        if(StringUtils.isBlank(sessionKeyAndOpenId)){
+            throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
+        }else{
+            String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
+            User localUser = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+            slifeRedisTemplate.collectOrNot(localUser.getId(),adId);
+            return ReturnDTOUtil.success();
+        }
     }
 
 
@@ -258,75 +271,116 @@ public class ShopAdController extends BaseController {
     }
 
     @ApiOperation(value = "T8-关注／取消收关注商家", notes = "根据userId和shopId保存或删除相应redis")
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Long", name = "userId", value = "用户id",required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "Long", name = "shopId", value = "店铺id",required = true) })
+    @ApiImplicitParams({ 
+    	@ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", value = "digcoo session key",required = true),
+        @ApiImplicitParam(paramType = "query", dataType = "Long", name = "shopId", value = "店铺id",required = true) })
     @PostMapping(value = "/shop/follow")
     @ResponseBody
-    public ReturnDTO follow(@RequestParam("userId") Long userId,@RequestParam("shopId") Long shopId) {
-        if(userId == null || shopId==null) {
+    public ReturnDTO follow(
+    		@RequestParam("digcoo_session_key") String digcooSessionKey, 
+    		@RequestParam("shopId") Long shopId) {
+        
+    	if(StringUtils.isBlank(digcooSessionKey) || shopId==null) {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
-        slifeRedisTemplate.followOrNot(userId,shopId);
-        return ReturnDTOUtil.success();
+    	
+        String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+        //session 过期
+        if(StringUtils.isBlank(sessionKeyAndOpenId)){
+            throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
+        }else{
+            String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
+            User localUser = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+            slifeRedisTemplate.followOrNot(localUser.getId(), shopId);
+            return ReturnDTOUtil.success();
+        }
     }
 
     @ApiOperation(value = "T9-举报商家", notes = "举报商家")
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Long", name = "userId", value = "用户id",required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "Long", name = "shopId", value = "店铺id",required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "Byte", name = "type", value = "类型",required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "String", name = "content", value = "举报内容",required = true)})
+    @ApiImplicitParams({ 
+    	@ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", value = "digcoo session key",required = true),
+        @ApiImplicitParam(paramType = "query", dataType = "Long", name = "shopId", value = "店铺id",required = true),
+        @ApiImplicitParam(paramType = "query", dataType = "Byte", name = "type", value = "类型",required = true),
+        @ApiImplicitParam(paramType = "query", dataType = "String", name = "content", value = "举报内容",required = true)})
     @PostMapping(value = "/shop/report")
     @ResponseBody
-    public ReturnDTO report(@RequestParam("userId") Long userId,@RequestParam("shopId") Long shopId,@RequestParam("type") Byte type,@RequestParam("content") String content) {
-        if(userId == null || shopId==null) {
+    public ReturnDTO report(
+    		@RequestParam("digcoo_session_key") String digcooSessionKey, 
+    		@RequestParam("shopId") Long shopId,
+    		@RequestParam("type") Byte type,
+    		@RequestParam("content") String content) {
+        
+    	if(StringUtils.isBlank(digcooSessionKey) || shopId==null) {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
-        Report report = new Report();
-        report.setShopId(shopId);
-        report.setUserId(userId);
-        report.setType(type);
-        report.setContent(content);
-        return reportService.insert(report)?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+        
+        String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+        //session 过期
+        if(StringUtils.isBlank(sessionKeyAndOpenId)){
+            throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
+        }else{
+            String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
+            User localUser = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+	        Report report = new Report();
+	        report.setShopId(shopId);
+	        report.setUserId(localUser.getId());
+	        report.setType(type);
+	        report.setContent(content);
+	        return reportService.insert(report)?ReturnDTOUtil.success():ReturnDTOUtil.fail();
+        }
     }
 
 
     @ApiOperation(value = "T10-关注商家列表", notes = "根据userId获取相应关注商家列表")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "Long", name = "userId", value = "用户id",required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", value = "digcoo session key",required = true)
             })
     @GetMapping(value = "/shop/follow/shops")
     @ResponseBody
-    public ReturnDTO followShops(@RequestParam("index") Integer index,@RequestParam("userId") Long userId) {
-        if(userId == null) {
+    public ReturnDTO followShops(
+    		@RequestParam("index") Integer index, 
+    		@RequestParam("digcoo_session_key") String digcooSessionKey) {
+        
+    	if(StringUtils.isBlank(digcooSessionKey)) {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
-        Set<String> shopIdList = slifeRedisTemplate.getAllFollowShopIds(userId);
-        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(shopIdList)) {
-            List<Long> shopIdList2 = shopIdList.stream().map(s -> Long.parseLong(s)).collect(Collectors.toList());
-            List<Shop> shopList = shopService.selectBatchIds(shopIdList2);
-            List<ShopAd> shopAdList = shopAdService.selectList(Condition.create().in("shop_id", shopIdList2).orderBy("publish_time",false));
-            Map<Long, List<ShopAd>> shopMap = shopAdList.stream().filter(Objects::nonNull).collect(Collectors.groupingBy(ShopAd::getShopId));
-            return ReturnDTOUtil.success(shopList.stream().filter(shop -> shop.getStatus() == 3).map(shop -> {
-                ShopAd shopAd = shopMap.get(shop.getId()).get(0);
-                if(shopAd == null){
-                    return null;
-                }else{
-                    FollowShopVO followShopVO = new FollowShopVO();
-                    followShopVO.setShopId(shop.getId());
-                    followShopVO.setAddr(shop.getAddr());
-                    followShopVO.setLat(shop.getLat());
-                    followShopVO.setLng(shop.getLng());
-                    followShopVO.setShopName(shop.getName());
-                    followShopVO.setLogo(shop.getLogo());
-                    followShopVO.setAdId(shopAd.getId());
-                    followShopVO.setTimeDesc(formatTime(shopAd.getPublishTime()));
-                    followShopVO.setAdName(shopAd.getTitle());
-                    return followShopVO;
-                }
-            }).filter(Objects::nonNull).skip(index).limit(10).collect(Collectors.toList()));
+        
+        String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+        //session 过期
+        if(StringUtils.isBlank(sessionKeyAndOpenId)){
+            throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
         }else{
-            return ReturnDTOUtil.custom(HttpCodeEnum.NO_DATA);
+            String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
+            User localUser = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+        
+	        Set<String> shopIdList = slifeRedisTemplate.getAllFollowShopIds(localUser.getId());
+	        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(shopIdList)) {
+	            List<Long> shopIdList2 = shopIdList.stream().map(s -> Long.parseLong(s)).collect(Collectors.toList());
+	            List<Shop> shopList = shopService.selectBatchIds(shopIdList2);
+	            List<ShopAd> shopAdList = shopAdService.selectList(Condition.create().in("shop_id", shopIdList2).orderBy("publish_time",false));
+	            Map<Long, List<ShopAd>> shopMap = shopAdList.stream().filter(Objects::nonNull).collect(Collectors.groupingBy(ShopAd::getShopId));
+	            return ReturnDTOUtil.success(shopList.stream().filter(shop -> shop.getStatus() == 3).map(shop -> {
+	                ShopAd shopAd = shopMap.get(shop.getId()).get(0);
+	                if(shopAd == null){
+	                    return null;
+	                }else{
+	                    FollowShopVO followShopVO = new FollowShopVO();
+	                    followShopVO.setShopId(shop.getId());
+	                    followShopVO.setAddr(shop.getAddr());
+	                    followShopVO.setLat(shop.getLat());
+	                    followShopVO.setLng(shop.getLng());
+	                    followShopVO.setShopName(shop.getName());
+	                    followShopVO.setLogo(shop.getLogo());
+	                    followShopVO.setAdId(shopAd.getId());
+	                    followShopVO.setTimeDesc(formatTime(shopAd.getPublishTime()));
+	                    followShopVO.setAdName(shopAd.getTitle());
+	                    return followShopVO;
+	                }
+	            }).filter(Objects::nonNull).skip(index).limit(10).collect(Collectors.toList()));
+	        }else{
+	            return ReturnDTOUtil.custom(HttpCodeEnum.NO_DATA);
+	        }
         }
     }
 
@@ -359,59 +413,85 @@ public class ShopAdController extends BaseController {
     @ApiOperation(value = "T12-我的关注", notes = "根据userId获取相应关注商家列表")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
-            @ApiImplicitParam(paramType = "path", dataType = "Long", name = "userId", value = "用户id",required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", value = "digcoo session key",required = true)
     })
-    @GetMapping(value = "/user/{userId}/follow/shops")
+    @GetMapping(value = "/user/follow/shops")
     @ResponseBody
-    public ReturnDTO userFollowShops(@RequestParam("index") Integer index,@PathVariable("userId") Long userId) {
-        if (userId == null) {
+    public ReturnDTO userFollowShops(
+    		@RequestParam("index") Integer index,
+    		@RequestParam("digcoo_session_key") String digcooSessionKey) {
+        
+    	if(StringUtils.isBlank(digcooSessionKey)) {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
-        Set<String> shopIdList = slifeRedisTemplate.getAllFollowShopIds(userId);
-        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(shopIdList)) {
-            List<Long> shopIdList2 = shopIdList.stream().map(s -> Long.parseLong(s)).collect(Collectors.toList());
-            List<Shop> shopList = shopService.selectBatchIds(shopIdList2);
-            return ReturnDTOUtil.success(shopList.stream().filter(shop -> shop.getStatus() == 3).map(shop -> {
-                    FollowShopBaseVO followShopVO = new FollowShopBaseVO();
-                    followShopVO.setShopId(shop.getId());
-                    followShopVO.setAddr(shop.getAddr());
-                    followShopVO.setLat(shop.getLat());
-                    followShopVO.setLng(shop.getLng());
-                    followShopVO.setShopName(shop.getName());
-                    followShopVO.setLogo(shop.getLogo());
-                    return followShopVO;
-            }).skip(index).limit(10).collect(Collectors.toList()));
-        } else {
-            return ReturnDTOUtil.custom(HttpCodeEnum.NO_DATA);
+    	
+        String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+        //session 过期
+        if(StringUtils.isBlank(sessionKeyAndOpenId)){
+            throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
+        }else{
+            String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
+            User localUser = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+        
+	        Set<String> shopIdList = slifeRedisTemplate.getAllFollowShopIds(localUser.getId());
+	        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(shopIdList)) {
+	            List<Long> shopIdList2 = shopIdList.stream().map(s -> Long.parseLong(s)).collect(Collectors.toList());
+	            List<Shop> shopList = shopService.selectBatchIds(shopIdList2);
+	            return ReturnDTOUtil.success(shopList.stream().filter(shop -> shop.getStatus() == 3).map(shop -> {
+	                    FollowShopBaseVO followShopVO = new FollowShopBaseVO();
+	                    followShopVO.setShopId(shop.getId());
+	                    followShopVO.setAddr(shop.getAddr());
+	                    followShopVO.setLat(shop.getLat());
+	                    followShopVO.setLng(shop.getLng());
+	                    followShopVO.setShopName(shop.getName());
+	                    followShopVO.setLogo(shop.getLogo());
+	                    return followShopVO;
+	            }).skip(index).limit(10).collect(Collectors.toList()));
+	        } else {
+	            return ReturnDTOUtil.custom(HttpCodeEnum.NO_DATA);
+	        }
         }
     }
 
     @ApiOperation(value = "T13-我的收藏", notes = "根据userId获取相应收藏活动列表")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "Integer", name = "index", value = "查询初始记录，每次查询十条", defaultValue = "0",required = true),
-            @ApiImplicitParam(paramType = "path", dataType = "Long", name = "userId", value = "用户id",required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", value = "digcoo session key",required = true)
     })
-    @GetMapping(value = "/user/{userId}/favor/ads")
+    @GetMapping(value = "/user/favor/ads")
     @ResponseBody
-    public ReturnDTO userFavorAds(@RequestParam("index") Integer index,@PathVariable("userId") Long userId) {
-        if (userId == null) {
+    public ReturnDTO userFavorAds(
+    		@RequestParam("index") Integer index,
+    		@RequestParam("digcoo_session_key") String digcooSessionKey) {
+        
+    	if(StringUtils.isBlank(digcooSessionKey)) {
             throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
         }
-        Set<String> adIdList = slifeRedisTemplate.getAllFavorAdIds(userId);
-        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(adIdList)) {
-            FavorVO favorVO = new FavorVO();
-            List<Long> adIdList2 = adIdList.stream().map(s -> Long.parseLong(s)).collect(Collectors.toList());
-            List<ShopAd> shopAdList = shopAdService.selectBatchIds(adIdList2);
-            if(!CollectionUtils.isEmpty(shopAdList)){
-                List<Long> shopIdList = shopAdList.stream().map(ShopAd::getShopId).distinct().collect(Collectors.toList());
-                List<Shop> shopList = shopService.selectBatchIds(shopIdList);
-                Map<Long, Shop> shopMap = shopList.stream().filter(shop -> shop.getStatus()==3).collect(Collectors.toMap(Shop::getId,shop->shop));
-                List<FavorAdVO> favorAdVOList = shopAdList.stream().map(shopAd -> adBeanMapper(shopMap,shopAd)).filter(Objects::nonNull).collect(Collectors.toList());
-                favorVO.setAds(favorAdVOList);
-                return ReturnDTOUtil.success(favorVO);
-            }
+    	
+        String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+        //session 过期
+        if(StringUtils.isBlank(sessionKeyAndOpenId)){
+            throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
+        }else{
+            String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
+            User localUser = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+        
+	        Set<String> adIdList = slifeRedisTemplate.getAllFavorAdIds(localUser.getId());
+	        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(adIdList)) {
+	            FavorVO favorVO = new FavorVO();
+	            List<Long> adIdList2 = adIdList.stream().map(s -> Long.parseLong(s)).collect(Collectors.toList());
+	            List<ShopAd> shopAdList = shopAdService.selectBatchIds(adIdList2);
+	            if(!CollectionUtils.isEmpty(shopAdList)){
+	                List<Long> shopIdList = shopAdList.stream().map(ShopAd::getShopId).distinct().collect(Collectors.toList());
+	                List<Shop> shopList = shopService.selectBatchIds(shopIdList);
+	                Map<Long, Shop> shopMap = shopList.stream().filter(shop -> shop.getStatus()==3).collect(Collectors.toMap(Shop::getId,shop->shop));
+	                List<FavorAdVO> favorAdVOList = shopAdList.stream().map(shopAd -> adBeanMapper(shopMap,shopAd)).filter(Objects::nonNull).collect(Collectors.toList());
+	                favorVO.setAds(favorAdVOList);
+	                return ReturnDTOUtil.success(favorVO);
+	            }
+	        }
+	        return ReturnDTOUtil.custom(HttpCodeEnum.NO_DATA);
         }
-        return ReturnDTOUtil.custom(HttpCodeEnum.NO_DATA);
     }
 
     private String formatTime(Date date){
