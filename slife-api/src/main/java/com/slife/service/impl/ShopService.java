@@ -90,12 +90,12 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
     	
     	String phoneCodekey = RedisKey.PHONE_CODE_KEY + shopBaseVO.getPhone();
 
-    	String phoneCode = shopBaseVO.getPhoneCode();
-    	String  code = stringRedisTemplate.opsForValue().get(phoneCodekey);
-
-    	if(code == null || !code .equals(phoneCode)){
-    		return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_SMS_ERROR);
-    	}
+//    	String phoneCode = shopBaseVO.getPhoneCode();
+//    	String  code = stringRedisTemplate.opsForValue().get(phoneCodekey);
+//
+//    	if(code == null || !code .equals(phoneCode)){
+//    		return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_SMS_ERROR);
+//    	}
     	
     	User user = userDao.selectByPrimaryKey(shopBaseVO.getUserId());
         
