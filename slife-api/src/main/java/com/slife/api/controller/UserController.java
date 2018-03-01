@@ -1,5 +1,6 @@
 package com.slife.api.controller;
 
+import com.slife.wxapi.response.SessionKeyWX;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -43,14 +44,23 @@ public class UserController {
     @ApiOperation(value = "获取微信SessionKey", notes = "根据wx.login获取的code得到session key")
     @ApiImplicitParam(name = "code", paramType = "query", dataType = "String", required = true)
     @GetMapping("/session_key")
-    @ApiResponses({@ApiResponse(code = 200, message = "成功", response = SessionKeyVO.class)})
     public ReturnDTO getSessionKeyWx(@RequestParam("code") String code) {
-        SessionKeyVO sessionKeyVO = userService.getSessionKeyWx(code);
-        if (StringUtils.isEmpty(sessionKeyVO.getErrCode())) {
-            String digcooSessionKey = slifeRedisTemplate.setDigcooSessionKey(sessionKeyVO.getSessionKey(),sessionKeyVO.getOpenId());
-			return ReturnDTOUtil.success(digcooSessionKey);
+        SessionKeyWX sessionKeyWX = userService.getSessionKeyWx(code);
+        if (StringUtils.isEmpty(sessionKeyWX.getErrcode())) {
+            String digcooSessionKey = slifeRedisTemplate.setDigcooSessionKey(sessionKeyWX.getSessionKey(),sessionKeyWX.getOpenId());
+            SessionKeyVO sessionKeyVO = new SessionKeyVO();
+            sessionKeyVO.setDigcooSessionKey(digcooSessionKey);
+            User user = userService.getUserByOpenId(sessionKeyWX.getOpenId());
+            UserVO userVO = new UserVO();
+            userVO.setUserId(user.getId());
+            userVO.setType(user.getType());
+            userVO.setMobile(user.getMobile());
+            userVO.setNick(user.getNick());
+            userVO.setHeadImg(user.getHeadImg());
+            sessionKeyVO.setUser(userVO);
+			return ReturnDTOUtil.success(sessionKeyVO);
 		}else{
-			return ReturnDTOUtil.custom(Integer.parseInt(sessionKeyVO.getErrCode()), sessionKeyVO.getErrMsg());
+			return ReturnDTOUtil.custom(Integer.parseInt(sessionKeyWX.getErrcode()), sessionKeyWX.getErrmsg());
 		}
     }
 
@@ -109,7 +119,6 @@ public class UserController {
             UserVO userVO = new UserVO();
             userVO.setUserId(user.getId());
             userVO.setType(user.getType());
-            userVO.setOpenId(user.getOpenId());
             userVO.setMobile(user.getMobile());
             userVO.setNick(user.getNick());
             userVO.setHeadImg(user.getHeadImg());

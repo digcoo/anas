@@ -3,6 +3,7 @@ package com.slife.collect;
 import java.io.IOException;
 import java.text.MessageFormat;
 
+import com.slife.util.ResourceUtil;
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
@@ -15,7 +16,7 @@ public class VipSpiderTest {
 	@Test
 	public void collect() throws IOException{
 		String base_url = "http://category.vip.com/ajax/mapi.php?service=product_info&callback=categoryMerchandiseInfo1&productIds={0}&functions=brandShowName,surprisePrice,pcExtra&warehouse=VIP_SH&mobile_platform=1&app_name=shop_pc&app_";
-		String productIds = FileUtil.readFileAsString("/Users/junifer/Documents/tmp/productIds.txt");
+		String productIds = FileUtil.readFileAsString("/Users/vip/Downloads/lipImage/productIds.txt");
 		String[] split = productIds.split(",");
 		int page = (split.length-1)/50 + 1;
 		String url = null;
@@ -27,7 +28,8 @@ public class VipSpiderTest {
 			JSONArray jsonArray = JSON.parseObject(jsonStr).getJSONObject("data").getJSONArray("products");
 			for (int j = 0; j < jsonArray.size(); j++) {
 				String image_url = jsonArray.getJSONObject(j).getString("smallImage");
-				System.out.println(image_url);
+				ResourceUtil.readUrlFile(image_url);
+				//System.out.println(image_url);
 			}
 		}
 		

@@ -10,75 +10,48 @@ import java.io.Serializable;
 public class SessionKeyVO implements Serializable{
 
     /**
-     * 微信openId
+     * 应用sessionKey
      */
-    private String openId;
+    private String digcooSessionKey;
 
     /**
-     * 微信sessionKey
+     * user对象
      */
-    private String sessionKey;
-
-    /**
-     * 微信unionid
-     */
-    private String unionId;
+    private UserVO userVO;
     
     private String errCode;
     
     private String errMsg;
 
-    /**
-     * 判断使用是否已经再系统中
-     */
-    private boolean newUser;
-
-    public String getOpenId() {
-        return openId;
+    public String getDigcooSessionKey() {
+        return digcooSessionKey;
     }
 
-    public void setOpenId(String openId) {
-        this.openId = openId;
+    public void setDigcooSessionKey(String digcooSessionKey) {
+        this.digcooSessionKey = digcooSessionKey;
     }
 
-    public String getSessionKey() {
-        return sessionKey;
+    public UserVO getUser() {
+        return userVO;
     }
 
-    public void setSessionKey(String sessionKey) {
-        this.sessionKey = sessionKey;
+    public void setUser(UserVO user) {
+        this.userVO = user;
     }
 
-    public String getUnionId() {
-        return unionId;
+    public String getErrCode() {
+        return errCode;
     }
 
-    public void setUnionId(String unionId) {
-        this.unionId = unionId;
+    public void setErrCode(String errCode) {
+        this.errCode = errCode;
     }
 
-    public boolean isNewUser() {
-        return newUser;
+    public String getErrMsg() {
+        return errMsg;
     }
 
-    public void setNewUser(boolean newUser) {
-        this.newUser = newUser;
+    public void setErrMsg(String errMsg) {
+        this.errMsg = errMsg;
     }
-
-	public String getErrMsg() {
-		return errMsg;
-	}
-
-	public void setErrMsg(String errMsg) {
-		this.errMsg = errMsg;
-	}
-
-	public String getErrCode() {
-		return errCode;
-	}
-
-	public void setErrCode(String errCode) {
-		this.errCode = errCode;
-	}
-	
 }

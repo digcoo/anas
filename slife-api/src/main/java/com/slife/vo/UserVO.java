@@ -8,7 +8,7 @@ public class UserVO{
 	
 	private Long userId;
 	
-    private String openId;
+    //private String openId;
 
     private int type;
 
@@ -26,13 +26,13 @@ public class UserVO{
 		this.userId = userId;
 	}
 
-	public String getOpenId() {
-		return openId;
-	}
-
-	public void setOpenId(String openId) {
-		this.openId = openId;
-	}
+//	public String getOpenId() {
+//		return openId;
+//	}
+//
+//	public void setOpenId(String openId) {
+//		this.openId = openId;
+//	}
 
 	public int getType() {
 		return type;

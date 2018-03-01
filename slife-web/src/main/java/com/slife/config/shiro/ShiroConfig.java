@@ -22,7 +22,6 @@ import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreato
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 
 import java.util.LinkedHashMap;
 
@@ -49,6 +48,7 @@ public class ShiroConfig {
         //配置访问权限
         LinkedHashMap<String, String> filterChainDefinitionMap=new LinkedHashMap<>();
 
+        filterChainDefinitionMap.put("/web/**","anon");
         filterChainDefinitionMap.put("/logout","logout");
         filterChainDefinitionMap.put("/api/**", "anon");//网站图标
         //开放的静态资源

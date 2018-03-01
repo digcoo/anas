@@ -14,7 +14,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.math.BigInteger;
@@ -32,10 +34,11 @@ import java.util.List;
 //@EnableWebMvc
 public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
-   @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/attach/**").addResourceLocations("file:E:/ideaword/moban/slife/attach/");
-    }
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/web/**").addResourceLocations("classpath:/web/");
+//        super.addResourceHandlers(registry);
+//    }
 
 
 
@@ -65,6 +68,11 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
         };
     }
 
+//    @Override
+//    public void addViewControllers(ViewControllerRegistry registry) {
+//        super.addViewControllers(registry);
+//        registry.addViewController("/").setViewName("/index");
+//    }
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
