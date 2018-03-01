@@ -90,12 +90,12 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
     	
     	String phoneCodekey = RedisKey.PHONE_CODE_KEY + shopBaseVO.getPhone();
 
-    	String phoneCode = shopBaseVO.getPhoneCode();
-    	String  code = stringRedisTemplate.opsForValue().get(phoneCodekey);
-
-    	if(code == null || !code .equals(phoneCode)){
-    		return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_SMS_ERROR);
-    	}
+//    	String phoneCode = shopBaseVO.getPhoneCode();
+//    	String  code = stringRedisTemplate.opsForValue().get(phoneCodekey);
+//
+//    	if(code == null || !code .equals(phoneCode)){
+//    		return ReturnDTOUtil.custom(HttpCodeEnum.SHOP_SMS_ERROR);
+//    	}
     	
     	User user = userDao.selectByPrimaryKey(shopBaseVO.getUserId());
         
@@ -148,7 +148,7 @@ public class ShopService extends BaseService<ShopDao, Shop> implements IShopServ
         shop.setRoom(shopMallVO.getRoom());
         shop.setAgentIdentifyCard(shopMallVO.getAgentIdentifyCard());
         shop.setAgentPortrait(shopMallVO.getAgentPortrait());
-        shop.setBusinessLicense(shopMallVO.getBusinessLicense());
+//        shop.setBusinessLicense(shopMallVO.getBusinessLicense());
         shop.setStatus((byte)ShopStatus.RIGISTER_TWO.getCode());	//注册第二部，等待审核
         
         //todo 调用自动识别身份

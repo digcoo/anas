@@ -27,9 +27,9 @@ public class ShopMallVO {
 
     @ApiModelProperty(value = "正面照片",required = true)
     private String agentPortrait;
-
-    @ApiModelProperty(value = "营业执照",required = false)
-    private String businessLicense;
+//
+//    @ApiModelProperty(value = "营业执照",required = false)
+//    private String businessLicense;
 
     public long getUserId() {
         return userId;
@@ -86,12 +86,12 @@ public class ShopMallVO {
     public void setAgentPortrait(String agentPortrait) {
         this.agentPortrait = agentPortrait;
     }
-
-    public String getBusinessLicense() {
-        return businessLicense;
-    }
-
-    public void setBusinessLicense(String businessLicense) {
-        this.businessLicense = businessLicense;
-    }
+//
+//    public String getBusinessLicense() {
+//        return businessLicense;
+//    }
+//
+//    public void setBusinessLicense(String businessLicense) {
+//        this.businessLicense = businessLicense;
+//    }
 }

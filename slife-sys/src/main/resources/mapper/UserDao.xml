@@ -43,7 +43,7 @@
     from digcoo_anas_user
     where open_id = #{openId,jdbcType=VARCHAR}
   </select>
-
+<!-- 
   <insert id="insert" parameterType="com.slife.entity.User">
     insert into digcoo_anas_user (open_id, 
       gender, mobile,
@@ -57,7 +57,7 @@
       #{province,jdbcType=VARCHAR}, #{followTime,jdbcType=TIMESTAMP}, #{city,jdbcType=VARCHAR}, 
       #{qrTicket,jdbcType=VARCHAR}, now(), now(),
       #{type,jdbcType=TINYINT})
-  </insert>
+  </insert> -->
 
   <update id="updateByPrimaryKey" parameterType="com.slife.entity.User">
     update digcoo_anas_user

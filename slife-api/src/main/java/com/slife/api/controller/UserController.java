@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.slife.base.entity.ReturnDTO;
 import com.slife.entity.User;
+import com.slife.entity.enums.UserType;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
 import com.slife.service.UserService;
@@ -73,13 +76,23 @@ public class UserController {
     public ReturnDTO addUser(
     		@RequestParam(value = "digcoo_session_key",required = true) String digcooSessionKey,
     		@RequestBody UserAddVO user) throws SlifeException{
+    	
+        if(StringUtils.isBlank(digcooSessionKey)) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+    	
     	String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
         //session 过期
         if(StringUtils.isBlank(sessionKeyAndOpenId)){
             throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
         }else{
             String[] sessionKeyAndOpenIdArray =sessionKeyAndOpenId.split(RedisKey.DIGCOO_SESSION_KEY_DELIMITER);
-            User localUser = userService.getUserByOpenId(sessionKeyAndOpenIdArray[0]);
+            User localUser = null;
+    		try{
+    			localUser = userService.getUserByOpenId(sessionKeyAndOpenIdArray[1]);
+    		}catch(SlifeException e){
+    			
+    		}
             if(localUser != null){
                 return ReturnDTOUtil.success(localUser);
             }else{
@@ -91,7 +104,9 @@ public class UserController {
                 newUser.setMobile(user.getMobile());
                 newUser.setNick(user.getNick());
                 newUser.setProvince(user.getProvince());
-                newUser.setOpenId(sessionKeyAndOpenIdArray[0]);
+                newUser.setOpenId(sessionKeyAndOpenIdArray[1]);
+                newUser.setType(UserType.COMMON.getCode());
+                newUser.setFollowTime(new Date());
                 return userService.addUser(newUser) == 1?ReturnDTOUtil.success(newUser):ReturnDTOUtil.fail();
             }
 
@@ -105,7 +120,12 @@ public class UserController {
     @GetMapping("/getUser")
     @ApiResponses({@ApiResponse(code = 200, message = "成功", response = User.class)})
     public ReturnDTO<User> getUserByDigcooSessionKey(@RequestParam(value = "digcoo_session_key",required = true) String digcooSessionKey) {
-        String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
+        
+        if(StringUtils.isBlank(digcooSessionKey)) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+        
+    	String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
         //session 过期
         if(StringUtils.isBlank(sessionKeyAndOpenId)){
             throw new SlifeException(HttpCodeEnum.USER_SESSION_EXPIRED);
@@ -137,6 +157,11 @@ public class UserController {
     public ReturnDTO editNick(@RequestParam("nick") String nick,
     		@RequestParam(value="digcoo_session_key", required = true)String digcooSessionKey
     		) throws SlifeException{
+    	
+        if(StringUtils.isBlank(digcooSessionKey)) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+    	
     	String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
         //session 过期
         if(StringUtils.isBlank(sessionKeyAndOpenId)){
@@ -162,6 +187,10 @@ public class UserController {
     		@RequestParam("headImg") String headImg,
     		@RequestParam(value="digcoo_session_key", required = true)String digcooSessionKey
     		) throws SlifeException{
+    	
+        if(StringUtils.isBlank(digcooSessionKey)) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
     	
     	String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
         //session 过期

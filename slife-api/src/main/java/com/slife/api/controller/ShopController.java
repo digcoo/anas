@@ -71,6 +71,11 @@ public class ShopController {
         @ApiImplicitParam(paramType = "query", dataType = "String", name = "digcoo_session_key", required = true)
     })
     public ReturnDTO<ShopVO> getShopInfo(@RequestParam(value = "digcoo_session_key",required = true) String digcooSessionKey) {
+    	
+        if(StringUtils.isBlank(digcooSessionKey)) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
+    	
     	String sessionKeyAndOpenId = slifeRedisTemplate.getDigcooSessionKey(digcooSessionKey);
         //session 过期
         if(StringUtils.isBlank(sessionKeyAndOpenId)){
@@ -94,7 +99,6 @@ public class ShopController {
     public ReturnDTO requestRegSms(String  phone, HttpServletRequest request) {
         return shopService.requestRegSms(phone);
     }
-
     
     @ApiOperation(value = "32-商家注册步骤1", notes = "32-商家注册步骤1",httpMethod = "POST")
     @PostMapping(value = "/submitShopBaseInfo")
@@ -187,6 +191,10 @@ public class ShopController {
     public ReturnDTO<PrepayVO>  payAd(
     		@RequestParam(value = "digcoo_session_key",required = true) String digcooSessionKey,
     		HttpServletRequest request) {
+    	
+        if(StringUtils.isBlank(digcooSessionKey)) {
+            throw new SlifeException(HttpCodeEnum.INVALID_REQUEST);
+        }
     	
         logger.debug("[ShopController]-[payAd] : sessionKey = " + digcooSessionKey);
         
