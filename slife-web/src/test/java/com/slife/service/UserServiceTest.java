@@ -13,7 +13,7 @@ import com.slife.WebApplicationTests;
 import com.slife.entity.User;
 import com.slife.entity.enums.Gender;
 import com.slife.entity.enums.UserType;
-import com.slife.vo.SessionKeyVO;
+import com.slife.wxapi.response.SessionKeyWX;
 
 /**
  * Created by tod.tao on 2018/1/23.
@@ -49,7 +49,7 @@ public class UserServiceTest extends WebApplicationTests{
     
     @Test
     public void getSessionKeyWx(){
-    	SessionKeyVO sessionKeyWx = userService.getSessionKeyWx("071lgpkj16cFRx0AOokj1eJqkj1lgpkp");
+    	SessionKeyWX sessionKeyWx = userService.getSessionKeyWx("071lgpkj16cFRx0AOokj1eJqkj1lgpkp");
     	System.out.println(JSON.toJSONString(sessionKeyWx));
     	assertThat(sessionKeyWx).isNotNull();
     }
