@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
 
+import com.slife.wxapi.response.SessionKeyWX;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -49,7 +50,7 @@ public class UserServiceTest extends WebApplicationTests{
     
     @Test
     public void getSessionKeyWx(){
-    	SessionKeyVO sessionKeyWx = userService.getSessionKeyWx("071lgpkj16cFRx0AOokj1eJqkj1lgpkp");
+    	SessionKeyWX sessionKeyWx = userService.getSessionKeyWx("071lgpkj16cFRx0AOokj1eJqkj1lgpkp");
     	System.out.println(JSON.toJSONString(sessionKeyWx));
     	assertThat(sessionKeyWx).isNotNull();
     }

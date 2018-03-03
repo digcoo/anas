@@ -54,13 +54,16 @@ public class UserController {
             SessionKeyVO sessionKeyVO = new SessionKeyVO();
             sessionKeyVO.setDigcooSessionKey(digcooSessionKey);
             User user = userService.getUserByOpenId(sessionKeyWX.getOpenId());
-            UserVO userVO = new UserVO();
-            userVO.setUserId(user.getId());
-            userVO.setType(user.getType());
-            userVO.setMobile(user.getMobile());
-            userVO.setNick(user.getNick());
-            userVO.setHeadImg(user.getHeadImg());
-            sessionKeyVO.setUser(userVO);
+			if(user!=null){
+				UserVO userVO = new UserVO();
+				userVO.setUserId(user.getId());
+				userVO.setType(user.getType());
+				userVO.setMobile(user.getMobile());
+				userVO.setNick(user.getNick());
+				userVO.setHeadImg(user.getHeadImg());
+				sessionKeyVO.setUser(userVO);
+			}
+
 			return ReturnDTOUtil.success(sessionKeyVO);
 		}else{
 			return ReturnDTOUtil.custom(Integer.parseInt(sessionKeyWX.getErrcode()), sessionKeyWX.getErrmsg());
