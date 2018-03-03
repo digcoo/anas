@@ -5,15 +5,19 @@ import com.slife.aliyun.OSSMultipartManager;
 import com.slife.base.entity.ReturnDTO;
 import com.slife.enums.HttpCodeEnum;
 import com.slife.exception.SlifeException;
+import com.slife.qiniu.QiniuUploadManager;
 import com.slife.util.ReturnDTOUtil;
 import com.slife.vo.UploadFileVO;
+
 import io.swagger.annotations.*;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+
 import java.util.function.Predicate;
 
 /**
@@ -28,8 +32,12 @@ public class UploadFileController {
     private String ossDomain;
     @Value("${aliyun.oss.endpoint}")
     private String endpoint;
+    @Value("${qiniu.oss.domain}")
+    private String videoDomain;
     @Resource
     private OSSMultipartManager ossMultipartManager;
+    @Resource
+    private QiniuUploadManager qiniuUploadManager;
 
     private long fileSizeFlag = 5 * 1024 * 1024; //用来区分上传文件为大文件还是小文件
 
@@ -93,6 +101,25 @@ public class UploadFileController {
             return ReturnDTOUtil.error();
         }
     }
+
+    @ResponseBody
+    @ApiOperation(value = "上传视频接口", notes = "用户上传短视频,返回key", response = String.class)
+    @PostMapping(value = "video", produces = "application/json", consumes = "multipart/form-data")
+    @ApiResponses({@ApiResponse(code = 200, message = "成功", response = String.class)})
+    public ReturnDTO<UploadFileVO> video(@RequestPart("uploadFile") MultipartFile uploadFile) {
+        checkParam.test(uploadFile);
+        String videoUrl = "";
+        try {
+        	videoUrl = qiniuUploadManager.upload(uploadFile);
+        } catch (Exception e) {
+            return ReturnDTOUtil.error();
+        }
+        UploadFileVO uploadFileVO = new UploadFileVO();
+        uploadFileVO.setPath(videoUrl);
+        uploadFileVO.setDomain(videoDomain);
+        return ReturnDTOUtil.success(uploadFileVO);
+    }
+    
 
     Predicate<MultipartFile> checkParam = (uploadFile) -> {
         if (uploadFile == null) {

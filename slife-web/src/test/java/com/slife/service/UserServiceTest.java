@@ -14,7 +14,7 @@ import com.slife.WebApplicationTests;
 import com.slife.entity.User;
 import com.slife.entity.enums.Gender;
 import com.slife.entity.enums.UserType;
-import com.slife.vo.SessionKeyVO;
+import com.slife.wxapi.response.SessionKeyWX;
 
 /**
  * Created by tod.tao on 2018/1/23.
